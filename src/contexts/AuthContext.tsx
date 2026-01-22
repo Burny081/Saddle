@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/utils/supabaseClient';
+import { getUserLocation, getIPAddress } from '@/utils/ipLocation';
 
 export type UserRole = 'superadmin' | 'admin' | 'commercial' | 'secretaire' | 'manager' | 'comptable' | 'client';
 
@@ -175,6 +176,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
 
+      // Détecter automatiquement la localisation et l'IP
+      const [locationData, ipAddress] = await Promise.all([
+        getUserLocation(),
+        getIPAddress()
+      ]);
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -199,12 +206,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(profile);
         await loadUsers();
 
-        // Update last login time
+        // Update last login time + IP + location (détection automatique)
+        const updateData: any = { 
+          last_login: new Date().toISOString()
+        };
+
+        // Ajouter les informations de localisation automatiques
+        if (locationData) {
+          updateData.last_login_ip = ipAddress;
+          updateData.last_login_location = `${locationData.city}, ${locationData.region}, ${locationData.country}`;
+          updateData.last_login_country = locationData.country_code;
+          updateData.timezone = locationData.timezone;
+        }
+
         supabase
           .from('profiles')
-          .update({ last_login: new Date().toISOString() })
+          .update(updateData)
           .eq('id', data.user.id)
-          .then(() => {});
+          .then(() => {
+            console.log('✓ Localisation détectée automatiquement:', locationData);
+          });
+
+        // Enregistrer la session avec localisation
+        if (locationData) {
+          await supabase.from('user_sessions').insert({
+            user_id: data.user.id,
+            ip_address: ipAddress,
+            location: `${locationData.city}, ${locationData.country}`,
+            device_name: navigator.userAgent.match(/\(([^)]+)\)/)?.[1] || 'Unknown',
+            device_type: /mobile/i.test(navigator.userAgent) ? 'mobile' : 'desktop',
+            browser: navigator.userAgent.match(/(?:Firefox|Chrome|Safari|Edge)\/[\d.]+/)?.[0] || 'Unknown',
+            os: navigator.platform || 'Unknown',
+            is_current: true,
+            last_activity: new Date().toISOString(),
+            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24h
+          });
+        }
 
         setLoading(false);
         return true;
