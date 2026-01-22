@@ -62,8 +62,6 @@ export default function UserLocationCard() {
     );
   }
 
-  const hasLocationData = locationInfo?.last_login_location || currentLocation;
-
   return (
     <div className="space-y-4">
       {/* Localisation actuelle */}
