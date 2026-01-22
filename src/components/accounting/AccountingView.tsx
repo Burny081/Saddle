@@ -54,7 +54,7 @@ import { useData } from '@/contexts/DataContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCompanyInfo } from '@/contexts/CompanyContext';
-import { COMPANY, formatCurrency, generateId, getFromStorage, setToStorage, APP_SETTINGS } from '@/config/constants';
+import { formatCurrency, generateId, getFromStorage, setToStorage, APP_SETTINGS } from '@/config/constants';
 
 // Types for accounting entries
 interface AccountingEntry {
@@ -350,7 +350,7 @@ export function AccountingView({ onBack }: AccountingViewProps) {
         XLSX.utils.book_append_sheet(wb, wsSummary, 'Résumé');
 
         // Download
-        const fileName = `Comptabilite_${companyInfo.short_name}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        const fileName = `Comptabilite_${companyInfo.shortName}_${new Date().toISOString().split('T')[0]}.xlsx`;
         XLSX.writeFile(wb, fileName);
     }, [metrics, selectedPeriod]);
 

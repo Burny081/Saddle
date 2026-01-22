@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabaseClient';
 
 export type UserRole = 'superadmin' | 'admin' | 'commercial' | 'secretaire' | 'manager' | 'comptable' | 'client';
@@ -232,15 +231,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // For backward compatibility - these functions are expected by existing components
-  const addUser = useCallback((user: User, password: string) => {
+  const addUser = useCallback((_user: User, _password: string) => {
     console.log('addUser called - should use Supabase Auth Dashboard instead');
   }, []);
 
-  const updateUser = useCallback((id: string, updates: Partial<User>, newPassword?: string) => {
+  const updateUser = useCallback((_id: string, _updates: Partial<User>, _newPassword?: string) => {
     console.log('updateUser called - should implement Supabase update');
   }, []);
 
-  const deleteUser = useCallback((id: string) => {
+  const deleteUser = useCallback((_id: string) => {
     console.log('deleteUser called - should implement Supabase delete');
   }, []);
 

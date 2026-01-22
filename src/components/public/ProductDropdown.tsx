@@ -123,6 +123,7 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
                                     <button
                                         onClick={() => setSearchTerm('')}
                                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        aria-label="Clear search"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -244,6 +245,7 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
                                         <button
                                             onClick={() => setSearchTerm('')}
                                             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                                            aria-label="Clear search"
                                         >
                                             <X className="w-4 h-4" />
                                         </button>
@@ -288,7 +290,7 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
                                                 <button
                                                     key={sub.id}
                                                     onClick={() => handleNavigate(item.id, sub.id)}
-                                                    className="block w-full text-left py-1.5 px-2 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-between group/link"
+                                                    className="w-full text-left py-1.5 px-2 rounded-lg text-sm text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center justify-between group/link"
                                                 >
                                                     <span className={searchTerm && sub.name[language].toLowerCase().includes(searchTerm.toLowerCase()) ? 'bg-yellow-100 dark:bg-yellow-900/30 rounded px-1' : ''}>
                                                         {sub.name[language]}

@@ -174,6 +174,9 @@ export function UsersView({ onBack }: UsersViewProps) {
             name: formData.name,
             email: formData.email,
             role: formData.role as UserType['role'],
+            is_active: true,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
         };
 
         addUser(newUser, formData.password);

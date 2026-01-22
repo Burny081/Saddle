@@ -1,5 +1,4 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '@/utils/supabaseClient';
 import type { Profile } from '@/types/database';
 

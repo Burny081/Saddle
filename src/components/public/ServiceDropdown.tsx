@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, ArrowRight, Search, X, ExternalLink } from 'lucide-react';
+import { ChevronDown, ArrowRight, Search, X, ExternalLink } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -125,6 +125,7 @@ export function ServiceDropdown({ onNavigate, trigger = 'hover', isMobile = fals
                                     <button
                                         onClick={() => setSearchTerm('')}
                                         className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        aria-label="Clear search"
                                     >
                                         <X className="w-4 h-4" />
                                     </button>
@@ -232,6 +233,7 @@ export function ServiceDropdown({ onNavigate, trigger = 'hover', isMobile = fals
                                             <button
                                                 onClick={() => setSearchTerm('')}
                                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                                                aria-label="Clear search"
                                             >
                                                 <X className="w-4 h-4" />
                                             </button>

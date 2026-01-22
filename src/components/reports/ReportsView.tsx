@@ -20,7 +20,7 @@ import { useData } from '@/contexts/DataContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useCompanyInfo } from '@/contexts/CompanyContext';
-import { COMPANY, formatCurrency } from '@/config/constants';
+import { formatCurrency } from '@/config/constants';
 import { generateBusinessReport } from '@/utils/pdfGenerator';
 
 interface ReportsViewProps {
