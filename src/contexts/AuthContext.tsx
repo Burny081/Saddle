@@ -27,6 +27,7 @@ interface AuthContextType {
   users: User[];
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  register: (userData: { name: string; email: string; password: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
   addUser: (user: User, password: string) => void;
   updateUser: (id: string, updates: Partial<User>, newPassword?: string) => void;
   deleteUser: (id: string) => void;
@@ -230,6 +231,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const register = useCallback(async (userData: { name: string; email: string; password: string; phone?: string; address?: string }) => {
+    try {
+      // 1. Create auth user in Supabase
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: userData.email,
+        password: userData.password,
+      });
+
+      if (authError) {
+        console.error('Auth signup error:', authError);
+        return { success: false, error: authError.message };
+      }
+
+      if (!authData.user) {
+        return { success: false, error: 'Failed to create user' };
+      }
+
+      // 2. Create profile with client role
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .insert({
+          id: authData.user.id,
+          name: userData.name,
+          email: userData.email,
+          role: 'client',
+          phone: userData.phone || null,
+          address: userData.address || null,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        // Rollback: delete auth user
+        await supabase.auth.admin.deleteUser(authData.user.id);
+        return { success: false, error: profileError.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Registration error:', error);
+      return { success: false, error: 'Une erreur est survenue lors de l\'inscription' };
+    }
+  }, []);
+
   // For backward compatibility - these functions are expected by existing components
   const addUser = useCallback((_user: User, _password: string) => {
     console.log('addUser called - should use Supabase Auth Dashboard instead');
@@ -248,6 +295,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     users,
     login,
     logout,
+    register,
     addUser,
     updateUser,
     deleteUser,

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
+import { X, Mail, Lock, LogIn, AlertCircle, UserPlus, User, Phone, MapPin, CheckCircle } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
@@ -13,29 +13,95 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ isOpen, onClose }: LoginModalProps) {
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const { t } = useLanguage();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setName('');
+    setPhone('');
+    setAddress('');
+    setError('');
+    setSuccess('');
+  };
+
+  const switchMode = () => {
+    setIsLoginMode(!isLoginMode);
+    resetForm();
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const success = await login(email, password);
-      if (success) {
-        setEmail('');
-        setPassword('');
+      const loginSuccess = await login(email, password);
+      if (loginSuccess) {
+        resetForm();
         onClose();
       } else {
         setError(t('auth.invalidCredentials'));
       }
     } catch {
       setError(t('auth.error'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    // Validation
+    if (!name || !email || !password) {
+      setError('Veuillez remplir tous les champs obligatoires');
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError(t('auth.passwordMismatch'));
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError(t('auth.passwordMin'));
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const result = await register({ name, email, password, phone, address });
+      if (result.success) {
+        setSuccess(t('auth.signupSuccess'));
+        resetForm();
+        // Switch to login mode after 2 seconds
+        setTimeout(() => {
+          setIsLoginMode(true);
+          setSuccess('');
+        }, 2000);
+      } else {
+        setError(result.error || t('auth.signupError'));
+      }
+    } catch {
+      setError(t('auth.signupError'));
     } finally {
       setLoading(false);
     }
@@ -80,12 +146,16 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     <img src="/logo.png" alt="SPS" className="h-full w-full object-contain" />
                   </div>
 
-                  <h2 className="text-3xl font-bold">{t('auth.login')}</h2>
-                  <p className="mt-2 text-blue-100">{t('auth.welcome')}</p>
+                  <h2 className="text-3xl font-bold">
+                    {isLoginMode ? t('auth.login') : t('auth.registration')}
+                  </h2>
+                  <p className="mt-2 text-blue-100">
+                    {isLoginMode ? t('auth.welcome') : t('auth.createAccount')}
+                  </p>
                 </div>
 
                 {/* Form */}
-                <form onSubmit={handleSubmit} className="p-8">
+                <form onSubmit={isLoginMode ? handleLogin : handleRegister} className="p-8">
                   {error && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -93,14 +163,46 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                       className="mb-6 flex items-center gap-3 rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-900/20 dark:text-red-400"
                     >
                       <AlertCircle className="h-5 w-5 flex-shrink-0" />
-                      <span>{error}</span>
+                      <span className="text-sm">{error}</span>
                     </motion.div>
                   )}
 
-                  <div className="space-y-6">
+                  {success && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-6 flex items-center gap-3 rounded-lg bg-green-50 p-4 text-green-700 dark:bg-green-900/20 dark:text-green-400"
+                    >
+                      <CheckCircle className="h-5 w-5 flex-shrink-0" />
+                      <span className="text-sm">{success}</span>
+                    </motion.div>
+                  )}
+
+                  <div className="space-y-5">
+                    {/* Registration Fields */}
+                    {!isLoginMode && (
+                      <div>
+                        <Label htmlFor="name" className="text-base">
+                          {t('auth.name')} <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="relative mt-2">
+                          <User className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                          <Input
+                            id="name"
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="h-12 pl-11 text-base"
+                            placeholder="Jean Dupont"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     <div>
                       <Label htmlFor="email" className="text-base">
-                        {t('auth.email')}
+                        {t('auth.email')} <span className="text-red-500">*</span>
                       </Label>
                       <div className="relative mt-2">
                         <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -110,14 +212,53 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           className="h-12 pl-11 text-base"
-                          placeholder="exemple@sps.com"
+                          placeholder="exemple@email.com"
+                          required
                         />
                       </div>
                     </div>
 
+                    {!isLoginMode && (
+                      <>
+                        <div>
+                          <Label htmlFor="phone" className="text-base">
+                            {t('auth.phone')}
+                          </Label>
+                          <div className="relative mt-2">
+                            <Phone className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                            <Input
+                              id="phone"
+                              type="tel"
+                              value={phone}
+                              onChange={(e) => setPhone(e.target.value)}
+                              className="h-12 pl-11 text-base"
+                              placeholder="+237 6XX XX XX XX"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="address" className="text-base">
+                            {t('auth.address')}
+                          </Label>
+                          <div className="relative mt-2">
+                            <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                            <Input
+                              id="address"
+                              type="text"
+                              value={address}
+                              onChange={(e) => setAddress(e.target.value)}
+                              className="h-12 pl-11 text-base"
+                              placeholder="Yaoundé, Cameroun"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
                     <div>
                       <Label htmlFor="password" className="text-base">
-                        {t('auth.password')}
+                        {t('auth.password')} <span className="text-red-500">*</span>
                       </Label>
                       <div className="relative mt-2">
                         <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -128,9 +269,30 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                           onChange={(e) => setPassword(e.target.value)}
                           className="h-12 pl-11 text-base"
                           placeholder="••••••••"
+                          required
                         />
                       </div>
                     </div>
+
+                    {!isLoginMode && (
+                      <div>
+                        <Label htmlFor="confirmPassword" className="text-base">
+                          {t('auth.confirmPassword')} <span className="text-red-500">*</span>
+                        </Label>
+                        <div className="relative mt-2">
+                          <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                          <Input
+                            id="confirmPassword"
+                            type="password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="h-12 pl-11 text-base"
+                            placeholder="••••••••"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
 
                     <Button
                       type="submit"
@@ -144,19 +306,32 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </div>
                       ) : (
                         <>
-                          {t('auth.signin')}
-                          <LogIn className="ml-2 h-5 w-5" />
+                          {isLoginMode ? t('auth.signin') : t('auth.register')}
+                          {isLoginMode ? <LogIn className="ml-2 h-5 w-5" /> : <UserPlus className="ml-2 h-5 w-5" />}
                         </>
                       )}
                     </Button>
                   </div>
 
-                  {/* Help text */}
-                  <div className="mt-6 rounded-lg bg-slate-100 p-4 dark:bg-slate-800">
-                    <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
-                      {t('auth.contactAdmin')}
-                    </p>
+                  {/* Switch mode */}
+                  <div className="mt-6 text-center">
+                    <button
+                      type="button"
+                      onClick={switchMode}
+                      className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                    >
+                      {isLoginMode ? t('auth.noAccount') : t('auth.alreadyHaveAccount')}
+                    </button>
                   </div>
+
+                  {/* Help text */}
+                  {isLoginMode && (
+                    <div className="mt-6 rounded-lg bg-slate-100 p-4 dark:bg-slate-800">
+                      <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                        {t('auth.contactAdmin')}
+                      </p>
+                    </div>
+                  )}
                 </form>
               </div>
             </motion.div>

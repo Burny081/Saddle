@@ -35,12 +35,12 @@ interface AuthContextType {
 // Initial seed data - passwords should be hashed in production
 const getDefaultUsers = (): StoredUser[] => [
   { id: generateId(), name: 'Jean Dupont', email: 'superadmin@sps.com', role: 'superadmin', password: AUTH_CONFIG.defaultDemoPassword },
-  { id: generateId(), name: 'Marie Martin', email: 'admin@sps.com', role: 'admin', password: AUTH_CONFIG.defaultDemoPassword },
-  { id: generateId(), name: 'Paul Kamga', email: 'commercial@sps.com', role: 'commercial', password: AUTH_CONFIG.defaultDemoPassword },
-  { id: generateId(), name: 'Sophie Bernard', email: 'secretaire@sps.com', role: 'secretaire', password: AUTH_CONFIG.defaultDemoPassword },
-  { id: generateId(), name: 'Pierre Dubois', email: 'manager@sps.com', role: 'manager', password: AUTH_CONFIG.defaultDemoPassword },
-  { id: generateId(), name: 'Claire Moreau', email: 'comptable@sps.com', role: 'comptable', password: AUTH_CONFIG.defaultDemoPassword },
-  { id: generateId(), name: 'Marc Laurent', email: 'client@sps.com', role: 'client', password: AUTH_CONFIG.defaultDemoPassword },
+  { id: generateId(), name: 'Admin SPS', email: 'admin@sps.com', role: 'admin', password: AUTH_CONFIG.defaultDemoPassword },
+  { id: generateId(), name: 'Commercial SPS', email: 'commercial@sps.com', role: 'commercial', password: AUTH_CONFIG.defaultDemoPassword },
+  { id: generateId(), name: 'Secrétaire SPS', email: 'secretaire@sps.com', role: 'secretaire', password: AUTH_CONFIG.defaultDemoPassword },
+  { id: generateId(), name: 'Manager SPS', email: 'manager@sps.com', role: 'manager', password: AUTH_CONFIG.defaultDemoPassword },
+  { id: generateId(), name: 'Comptable SPS', email: 'comptable@sps.com', role: 'comptable', password: AUTH_CONFIG.defaultDemoPassword },
+  { id: generateId(), name: 'Client SPS', email: 'client@sps.com', role: 'client', password: AUTH_CONFIG.defaultDemoPassword },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
