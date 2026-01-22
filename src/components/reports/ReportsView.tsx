@@ -22,6 +22,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useCompanyInfo } from '@/contexts/CompanyContext';
 import { formatCurrency } from '@/config/constants';
 import { generateBusinessReport } from '@/utils/pdfGenerator';
+import { AdvancedReportsExport } from './AdvancedReportsExport';
 
 interface ReportsViewProps {
     onBack?: () => void;
@@ -168,6 +169,15 @@ export function ReportsView({ onBack }: ReportsViewProps) {
                     {t('action.exportPdf')}
                 </Button>
             </div>
+
+            {/* Advanced Reports Export */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+            >
+                <AdvancedReportsExport />
+            </motion.div>
 
             {/* Key Performance Indicators */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

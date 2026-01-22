@@ -130,12 +130,22 @@ export function SettingsView({ onBack }: SettingsViewProps) {
         senderEmail: string;
         senderName: string;
         enableSSL: boolean;
+        autoSendOrderConfirmation?: boolean;
+        autoSendInvoice?: boolean;
+        autoSendStockAlert?: boolean;
+        autoSendWelcome?: boolean;
+        stockAlertRecipients?: string;
     }>({
         smtpServer: 'smtp.gmail.com',
         smtpPort: '587',
         senderEmail: COMPANY.email,
         senderName: COMPANY.name,
         enableSSL: true,
+        autoSendOrderConfirmation: true,
+        autoSendInvoice: true,
+        autoSendStockAlert: true,
+        autoSendWelcome: true,
+        stockAlertRecipients: '',
     });
 
     // Invoice/Document settings
@@ -1572,6 +1582,85 @@ export function SettingsView({ onBack }: SettingsViewProps) {
                                         disabled={!canEditSettings}
                                     />
                                 </div>
+
+                                {/* Email automation settings */}
+                                <Card className="bg-blue-50 border-blue-200">
+                                    <CardHeader>
+                                        <CardTitle className="text-base">Emails automatiques</CardTitle>
+                                        <CardDescription>Activez l'envoi automatique d'emails aux clients</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <Label>Confirmation de commande</Label>
+                                            <Switch
+                                                checked={emailSettings.autoSendOrderConfirmation !== false}
+                                                onCheckedChange={(checked) => {
+                                                    const config = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+                                                    config.enableOrderConfirmation = checked;
+                                                    localStorage.setItem('emailConfig', JSON.stringify(config));
+                                                    setEmailSettings({ ...emailSettings, autoSendOrderConfirmation: checked });
+                                                }}
+                                                disabled={!canEditSettings}
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <Label>Envoi automatique des factures</Label>
+                                            <Switch
+                                                checked={emailSettings.autoSendInvoice !== false}
+                                                onCheckedChange={(checked) => {
+                                                    const config = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+                                                    config.enableInvoiceEmail = checked;
+                                                    localStorage.setItem('emailConfig', JSON.stringify(config));
+                                                    setEmailSettings({ ...emailSettings, autoSendInvoice: checked });
+                                                }}
+                                                disabled={!canEditSettings}
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <Label>Alertes de stock bas</Label>
+                                            <Switch
+                                                checked={emailSettings.autoSendStockAlert !== false}
+                                                onCheckedChange={(checked) => {
+                                                    const config = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+                                                    config.enableStockAlerts = checked;
+                                                    localStorage.setItem('emailConfig', JSON.stringify(config));
+                                                    setEmailSettings({ ...emailSettings, autoSendStockAlert: checked });
+                                                }}
+                                                disabled={!canEditSettings}
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <Label>Email de bienvenue nouveaux clients</Label>
+                                            <Switch
+                                                checked={emailSettings.autoSendWelcome !== false}
+                                                onCheckedChange={(checked) => {
+                                                    const config = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+                                                    config.enableWelcomeEmail = checked;
+                                                    localStorage.setItem('emailConfig', JSON.stringify(config));
+                                                    setEmailSettings({ ...emailSettings, autoSendWelcome: checked });
+                                                }}
+                                                disabled={!canEditSettings}
+                                            />
+                                        </div>
+                                        {emailSettings.autoSendStockAlert !== false && (
+                                            <div className="space-y-2">
+                                                <Label htmlFor="stock-recipients">Destinataires des alertes de stock</Label>
+                                                <Input
+                                                    id="stock-recipients"
+                                                    value={emailSettings.stockAlertRecipients || ''}
+                                                    onChange={(e) => {
+                                                        const config = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+                                                        config.stockAlertRecipients = e.target.value;
+                                                        localStorage.setItem('emailConfig', JSON.stringify(config));
+                                                        setEmailSettings({ ...emailSettings, stockAlertRecipients: e.target.value });
+                                                    }}
+                                                    disabled={!canEditSettings}
+                                                    placeholder="admin@example.com, manager@example.com"
+                                                />
+                                            </div>
+                                        )}
+                                    </CardContent>
+                                </Card>
 
                                 {canEditSettings && (
                                     <div className="flex gap-3">

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Mail, Lock, LogIn, AlertCircle, UserPlus, User, Phone, MapPin, CheckCircle } from 'lucide-react';
+import { X, Mail, Lock, LogIn, AlertCircle, UserPlus, User, Phone, MapPin, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
@@ -23,6 +23,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [gettingLocation, setGettingLocation] = useState(false);
   const { login, register } = useAuth();
   const { t } = useLanguage();
 
@@ -40,6 +41,49 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const switchMode = () => {
     setIsLoginMode(!isLoginMode);
     resetForm();
+  };
+
+  // Get user location automatically when switching to registration mode
+  useEffect(() => {
+    if (!isLoginMode && !address && 'geolocation' in navigator) {
+      getLocationAutomatically();
+    }
+  }, [isLoginMode]);
+
+  const getLocationAutomatically = async () => {
+    setGettingLocation(true);
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          timeout: 10000,
+          enableHighAccuracy: false
+        });
+      });
+
+      const { latitude, longitude } = position.coords;
+      
+      // Use reverse geocoding to get address
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+        );
+        const data = await response.json();
+        
+        if (data.address) {
+          const city = data.address.city || data.address.town || data.address.village || '';
+          const country = data.address.country || '';
+          const locationString = [city, country].filter(Boolean).join(', ');
+          setAddress(locationString || data.display_name);
+        }
+      } catch (error) {
+        console.error('Reverse geocoding error:', error);
+        setAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+      }
+    } catch (error) {
+      console.error('Geolocation error:', error);
+    } finally {
+      setGettingLocation(false);
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -121,15 +165,15 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md"
+              className="relative w-full max-w-md my-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900">
+              <div className="overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900 max-h-[90vh] flex flex-col">
                 {/* Header with gradient */}
                 <div className="relative bg-gradient-to-br from-red-600 to-blue-600 p-8 text-white">
                   <Button
@@ -155,7 +199,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 </div>
 
                 {/* Form */}
-                <form onSubmit={isLoginMode ? handleLogin : handleRegister} className="p-8">
+                <form onSubmit={isLoginMode ? handleLogin : handleRegister} className="p-8 overflow-y-auto flex-1">
                   {error && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -240,6 +284,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <div>
                           <Label htmlFor="address" className="text-base">
                             {t('auth.address')}
+                            {gettingLocation && (
+                              <span className="ml-2 text-xs text-blue-600 dark:text-blue-400">
+                                <Loader2 className="inline h-3 w-3 animate-spin" /> Détection en cours...
+                              </span>
+                            )}
                           </Label>
                           <div className="relative mt-2">
                             <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -250,6 +299,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                               onChange={(e) => setAddress(e.target.value)}
                               className="h-12 pl-11 text-base"
                               placeholder="Yaoundé, Cameroun"
+                              disabled={gettingLocation}
                             />
                           </div>
                         </div>

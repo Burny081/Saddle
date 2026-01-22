@@ -10,6 +10,8 @@ import {
 } from '@/config/constants';
 import * as CatalogAPI from '@/utils/apiCatalog';
 import * as SalesAPI from '@/utils/apiSales';
+import { useNotifications } from '@/hooks/useNotifications';
+import { sendOrderConfirmation, sendInvoice, sendWelcomeEmail, sendStockAlert } from '@/utils/emailService';
 
 // Fallback empty data (no more mock data dependency)
 const fallbackArticles: Article[] = [];
@@ -129,6 +131,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const [sales, setSales] = useState<Sale[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { addNotification } = useNotifications();
 
     // Load data from Supabase (with empty array fallback)
     const loadData = useCallback(async () => {
@@ -204,11 +207,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
             if (updates.unit !== undefined) apiUpdates.unit = updates.unit;
 
             await CatalogAPI.updateArticle(id, apiUpdates);
+
+            // Check for low stock notification
+            if (updates.stock !== undefined) {
+                const article = articles.find(a => a.id === id);
+                if (article && updates.stock <= article.minStock) {
+                    addNotification(
+                        'warning',
+                        'Stock bas',
+                        `${article.name}: ${updates.stock} unités restantes`,
+                        '/stock'
+                    );
+                }
+            }
         } catch (err) {
             console.error('Failed to update article:', err);
         }
         setArticles(prev => prev.map(item => item.id === id ? { ...item, ...updates } : item));
-    }, []);
+    }, [articles, addNotification]);
 
     const deleteArticle = useCallback(async (id: string) => {
         try {
@@ -272,11 +288,29 @@ export function DataProvider({ children }: { children: ReactNode }) {
                 is_active: true
             });
             setClients(prev => [...prev, mapApiClientToLocal(apiClient)]);
+            
+            // Add notification for new client
+            addNotification(
+                'info',
+                'Nouveau client',
+                `${client.name} a été ajouté avec succès`,
+                '/clients'
+            );
+
+            // Send welcome email if enabled
+            const emailConfig = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+            if (emailConfig.enableWelcomeEmail && client.email) {
+                await sendWelcomeEmail({
+                    email: client.email,
+                    name: client.name,
+                    shopUrl: window.location.origin
+                });
+            }
         } catch (err) {
             console.error('Failed to create client:', err);
             setClients(prev => [...prev, { ...client, id: newId, totalSpent: 0 }]);
         }
-    }, []);
+    }, [addNotification]);
 
     const updateClient = useCallback(async (id: string, updates: Partial<Client>) => {
         try {
@@ -339,12 +373,87 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
             setSales(prev => [mapApiSaleToLocal(apiSale), ...prev]);
 
-            // Update local stock
+            // Add success notification
+            addNotification(
+                'success',
+                'Nouvelle vente',
+                `Facture ${invoiceNumber} créée avec succès`,
+                '/sales'
+            );
+
+            // Send order confirmation email if enabled
+            const emailConfig = JSON.parse(localStorage.getItem('emailConfig') || '{}');
+            const client = clients.find(c => c.name === saleData.clientName);
+            
+            if (emailConfig.enableOrderConfirmation && client?.email) {
+                await sendOrderConfirmation({
+                    orderNumber: invoiceNumber,
+                    clientName: saleData.clientName,
+                    clientEmail: client.email,
+                    date: new Date().toLocaleDateString('fr-FR'),
+                    status: 'En traitement',
+                    items: saleData.items.map(item => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        total: item.price * item.quantity
+                    })),
+                    total: saleData.total,
+                    trackingUrl: window.location.origin + '/sales'
+                });
+            }
+
+            // Send invoice email if enabled and marked as paid
+            if (emailConfig.enableInvoiceEmail && saleData.paid && client?.email) {
+                await sendInvoice({
+                    invoiceNumber,
+                    clientName: saleData.clientName,
+                    clientEmail: client.email,
+                    clientPhone: client.phone,
+                    date: new Date().toLocaleDateString('fr-FR'),
+                    items: saleData.items.map(item => ({
+                        name: item.name,
+                        quantity: item.quantity,
+                        price: item.price,
+                        total: item.price * item.quantity
+                    })),
+                    subtotal,
+                    tax: taxAmount,
+                    total: saleData.total,
+                    downloadUrl: window.location.origin + '/sales'
+                });
+            }
+
+            // Update local stock and check for low stock
             setArticles(prevArticles => {
                 return prevArticles.map(article => {
                     const saleItem = saleData.items.find(item => item.id === article.id && item.type === 'article');
                     if (saleItem) {
-                        return { ...article, stock: article.stock - saleItem.quantity };
+                        const newStock = article.stock - saleItem.quantity;
+                        
+                        // Check for low stock
+                        if (newStock <= article.minStock) {
+                            addNotification(
+                                'warning',
+                                'Stock bas',
+                                `${article.name}: ${newStock} unités restantes`,
+                                '/stock'
+                            );
+
+                            // Send stock alert email if enabled
+                            if (emailConfig.enableStockAlerts && emailConfig.stockAlertRecipients) {
+                                const recipients = emailConfig.stockAlertRecipients.split(',').map((r: string) => r.trim());
+                                sendStockAlert({
+                                    articleName: article.name,
+                                    currentStock: newStock,
+                                    minStock: article.minStock,
+                                    suggestedOrder: Math.max(article.minStock * 3 - newStock, 0),
+                                    unit: article.unit || 'unités',
+                                    orderUrl: window.location.origin + '/stock'
+                                }, recipients);
+                            }
+                        }
+                        
+                        return { ...article, stock: newStock };
                     }
                     return article;
                 });
@@ -369,7 +478,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
                 });
             });
         }
-    }, []);
+    }, [addNotification]);
 
     const updateSale = useCallback(async (id: string, updates: Partial<Sale>) => {
         try {

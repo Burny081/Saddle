@@ -7,15 +7,20 @@ import { LoginModal } from '@/components/LoginModal';
 import { PointsOfSaleView } from '@/components/public/PointsOfSaleView';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { DashboardView } from '@/components/dashboards/DashboardView';
+import { AnalyticsDashboard } from '@/components/dashboards/AnalyticsDashboard';
 import { ArticlesView } from '@/components/catalog/ArticlesView';
 import { ServicesView } from '@/components/catalog/ServicesView';
-import { StockView } from '@/components/stock/StockView';
+import { EnhancedStockView } from '@/components/stock/EnhancedStockView';
 import { SalesView } from '@/components/sales/SalesView';
 import { ClientsView } from '@/components/catalog/ClientsView';
 import { UsersView } from '@/components/admin/UsersView';
+import ImageManagementView from '@/components/admin/ImageManagementView';
+import PromotionsView from '@/components/promotions/PromotionsView';
+import SecurityView from '@/components/security/SecurityView';
 import { ReportsView } from '@/components/reports/ReportsView';
 import { SettingsView } from '@/components/settings/SettingsView';
 import { ClientShopView } from '@/components/shop/ClientShopView';
+import { OrdersView } from '@/components/shop/OrdersView';
 import { SuppliersView } from '@/components/suppliers/SuppliersView';
 import { StoresView } from '@/components/stores/StoresView';
 import ComptableView from '@/components/comptable/ComptableView';
@@ -106,15 +111,19 @@ function AppContent() {
     switch (currentView) {
       case 'dashboard':
         return <DashboardView onNavigate={setCurrentView} />;
+      case 'analytics':
+        return <AnalyticsDashboard />;
       case 'articles':
       case 'articles-new':
         return <ArticlesView initialCreate={currentView === 'articles-new'} onBack={navigateToDashboard} />;
       case 'services':
         return <ServicesView onBack={navigateToDashboard} />;
       case 'stock':
-        return <StockView onBack={navigateToDashboard} />;
+        return <EnhancedStockView onBack={navigateToDashboard} />;
       case 'shop':
         return <ClientShopView initialCategory={shopParams.category} initialSubCategory={shopParams.subCategory} onBack={navigateToDashboard} />;
+      case 'orders':
+        return <OrdersView onBack={navigateToDashboard} />;
       case 'visitors':
         return <VisitorAnalyticsView onBack={navigateToDashboard} />;
       case 'sales':
@@ -125,6 +134,12 @@ function AppContent() {
         return <ClientsView initialCreate={currentView === 'clients-new'} onBack={navigateToDashboard} />;
       case 'users':
         return <UsersView onBack={navigateToDashboard} />;
+      case 'images':
+        return <ImageManagementView />;
+      case 'promotions':
+        return <PromotionsView />;
+      case 'security':
+        return <SecurityView />;
       case 'suppliers':
         return <SuppliersView onBack={navigateToDashboard} />;
       case 'stores':
