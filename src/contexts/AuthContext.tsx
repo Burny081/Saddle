@@ -270,10 +270,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(async (userData: { name: string; email: string; password: string; phone?: string; address?: string }) => {
     try {
-      // 1. Create auth user in Supabase
+      // 1. Create auth user in Supabase (auto-confirmed if email verification disabled)
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
+        options: {
+          data: {
+            name: userData.name,
+            phone: userData.phone || '',
+          },
+          emailRedirectTo: undefined, // No email confirmation needed
+        }
       });
 
       if (authError) {
@@ -285,7 +292,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: 'Failed to create user' };
       }
 
-      // 2. Create profile with client role
+      // 2. Detect location automatically
+      const [locationData, ipAddress] = await Promise.all([
+        getUserLocation(),
+        getIPAddress()
+      ]);
+
+      // 3. Create profile with client role + location info
       const { error: profileError } = await supabase
         .from('profiles')
         .insert({
@@ -296,17 +309,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           phone: userData.phone || null,
           address: userData.address || null,
           is_active: true,
+          last_login_ip: ipAddress || null,
+          last_login_location: locationData ? `${locationData.city}, ${locationData.region}, ${locationData.country}` : null,
+          last_login_country: locationData?.country_code || null,
+          timezone: locationData?.timezone || null,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
 
       if (profileError) {
         console.error('Profile creation error:', profileError);
-        // Rollback: delete auth user
-        await supabase.auth.admin.deleteUser(authData.user.id);
         return { success: false, error: profileError.message };
       }
 
+      // 4. Notify admins of new client registration
+      await supabase.from('notifications').insert({
+        user_id: null, // System notification
+        title: 'Nouveau client inscrit',
+        message: `${userData.name} (${userData.email}) vient de créer un compte`,
+        type: 'new_user',
+        priority: 'medium',
+        metadata: {
+          user_id: authData.user.id,
+          user_name: userData.name,
+          user_email: userData.email,
+          location: locationData ? `${locationData.city}, ${locationData.country}` : 'Unknown',
+          ip_address: ipAddress
+        },
+        created_at: new Date().toISOString()
+      }).select();
+
+      console.log('✓ Inscription réussie - Compte actif immédiatement');
       return { success: true };
     } catch (error) {
       console.error('Registration error:', error);

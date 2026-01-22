@@ -8,6 +8,7 @@ import { PointsOfSaleView } from '@/components/public/PointsOfSaleView';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { DashboardView } from '@/components/dashboards/DashboardView';
 import { AnalyticsDashboard } from '@/components/dashboards/AnalyticsDashboard';
+import ClientDashboard from '@/components/dashboards/ClientDashboard';
 import { ArticlesView } from '@/components/catalog/ArticlesView';
 import { ServicesView } from '@/components/catalog/ServicesView';
 import { EnhancedStockView } from '@/components/stock/EnhancedStockView';
@@ -110,6 +111,10 @@ function AppContent() {
 
     switch (currentView) {
       case 'dashboard':
+        // Dashboard différent selon le rôle
+        if (user?.role === 'client') {
+          return <ClientDashboard />;
+        }
         return <DashboardView onNavigate={setCurrentView} />;
       case 'analytics':
         return <AnalyticsDashboard />;

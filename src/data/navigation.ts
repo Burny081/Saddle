@@ -18,6 +18,9 @@ import {
   Image,
   Percent,
   Shield,
+  Heart,
+  FileText,
+  Gift,
   type LucideIcon,
 } from 'lucide-react';
 import { UserRole } from '@/contexts/AuthContext';
@@ -32,16 +35,23 @@ export interface NavItem {
 export const navItems: NavItem[] = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'nav.dashboard', roles: ['superadmin', 'admin', 'commercial', 'secretaire', 'manager', 'comptable', 'client'] },
   { id: 'analytics', icon: LineChart, label: 'Analytique', roles: ['superadmin', 'admin', 'manager'] },
-  { id: 'articles', icon: Package, label: 'nav.articles', roles: ['superadmin', 'admin', 'commercial', 'secretaire', 'manager', 'client'] },
-  { id: 'services', icon: Briefcase, label: 'nav.services', roles: ['superadmin', 'admin', 'commercial', 'secretaire', 'client'] },
+  
+  // Navigation Client
+  { id: 'shop', icon: ShoppingCart, label: 'Boutique', roles: ['client'] },
+  { id: 'orders', icon: ShoppingBag, label: 'Mes Commandes', roles: ['client'] },
+  { id: 'favorites', icon: Heart, label: 'Mes Favoris', roles: ['client'] },
+  { id: 'quotes', icon: FileText, label: 'Mes Devis', roles: ['client'] },
+  { id: 'loyalty', icon: Gift, label: 'Fidélité', roles: ['client'] },
+  
+  // Navigation Staff
+  { id: 'articles', icon: Package, label: 'nav.articles', roles: ['superadmin', 'admin', 'commercial', 'secretaire', 'manager'] },
+  { id: 'services', icon: Briefcase, label: 'nav.services', roles: ['superadmin', 'admin', 'commercial', 'secretaire'] },
   { id: 'sales', icon: ShoppingCart, label: 'nav.sales', roles: ['superadmin', 'admin', 'commercial', 'secretaire', 'comptable'] },
   { id: 'commercial', icon: TrendingUp, label: 'Espace Commercial', roles: ['superadmin', 'admin', 'commercial'] },
   { id: 'promotions', icon: Percent, label: 'Promotions', roles: ['superadmin', 'admin', 'commercial'] },
   { id: 'security', icon: Shield, label: 'Sécurité', roles: ['superadmin', 'admin'] },
   { id: 'stock', icon: Box, label: 'nav.stock', roles: ['superadmin', 'admin', 'manager'] },
   { id: 'suppliers', icon: Building2, label: 'nav.suppliers', roles: ['superadmin', 'admin', 'manager'] },
-  { id: 'shop', icon: ShoppingCart, label: 'Boutique', roles: ['client'] },
-  { id: 'orders', icon: ShoppingBag, label: 'Mes Commandes', roles: ['client'] },
   { id: 'clients', icon: Users, label: 'nav.clients', roles: ['superadmin', 'admin', 'commercial', 'secretaire'] },
   { id: 'visitors', icon: Globe, label: 'Analytique Visiteurs', roles: ['superadmin', 'admin'] },
   { id: 'users', icon: UserCheckIcon, label: 'Utilisateurs', roles: ['superadmin', 'admin'] },
@@ -49,7 +59,7 @@ export const navItems: NavItem[] = [
   { id: 'stores', icon: Store, label: 'Boutiques', roles: ['superadmin', 'admin'] },
   { id: 'accounting', icon: Calculator, label: 'Comptabilité', roles: ['superadmin', 'admin', 'comptable'] },
   { id: 'reports', icon: BarChart3, label: 'nav.reports', roles: ['superadmin', 'admin', 'commercial', 'comptable'] },
-  { id: 'settings', icon: Settings, label: 'nav.settings', roles: ['superadmin', 'admin'] },
+  { id: 'settings', icon: Settings, label: 'nav.settings', roles: ['superadmin', 'admin', 'client'] },
 ];
 
 export const getRoleColor = (role: UserRole) => {

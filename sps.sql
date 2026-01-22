@@ -3237,6 +3237,63 @@ ORDER BY COUNT(*) DESC, MAX(attempted_at) DESC;
 -- SELECT * FROM public.regional_settings;
 -- SELECT * FROM public.integration_settings;
 --
+-- ============================================================================
+-- SECTION 21: NOTIFICATIONS SYSTEM
+-- ============================================================================
+
+-- 21.1 NOTIFICATIONS TABLE
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE, -- NULL = notification système pour tous les admins
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  type VARCHAR(50) NOT NULL CHECK (type IN ('new_user', 'new_order', 'low_stock', 'security_alert', 'system', 'info', 'warning', 'error')),
+  priority VARCHAR(20) DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high', 'urgent')),
+  is_read BOOLEAN DEFAULT FALSE,
+  metadata JSONB, -- Données supplémentaires (user_id, order_id, etc.)
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  read_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON public.notifications(is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON public.notifications(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_notifications_type ON public.notifications(type);
+
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+
+-- Users can only see their own notifications and system notifications (user_id IS NULL)
+CREATE POLICY "Users can view own notifications" ON public.notifications
+  FOR SELECT USING (user_id = auth.uid() OR user_id IS NULL);
+
+-- Users can mark their own notifications as read
+CREATE POLICY "Users can update own notifications" ON public.notifications
+  FOR UPDATE USING (user_id = auth.uid());
+
+-- Only admins can create system notifications
+CREATE POLICY "Admins can create notifications" ON public.notifications
+  FOR INSERT WITH CHECK (EXISTS (
+    SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('superadmin', 'admin')
+  ));
+
+-- 21.2 NOTIFICATION PREFERENCES
+CREATE TABLE IF NOT EXISTS public.notification_preferences (
+  user_id UUID PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
+  email_notifications BOOLEAN DEFAULT TRUE,
+  push_notifications BOOLEAN DEFAULT TRUE,
+  new_user_alerts BOOLEAN DEFAULT TRUE,
+  new_order_alerts BOOLEAN DEFAULT TRUE,
+  low_stock_alerts BOOLEAN DEFAULT TRUE,
+  security_alerts BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.notification_preferences ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can manage own preferences" ON public.notification_preferences
+  FOR ALL USING (user_id = auth.uid());
+
 -- Check RLS is enabled on all tables:
 -- SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public';
 --
@@ -3255,9 +3312,13 @@ BEGIN
   RAISE NOTICE '  * Module Images (Upload, Galerie)';
   RAISE NOTICE '  * Module Emails (SMTP, Historique)';
   RAISE NOTICE '  * Module Promotions & Fidelite';
+  RAISE NOTICE '  * Module Notifications (Alertes temps reel)';
   RAISE NOTICE '';
   RAISE NOTICE 'PROCHAINES ETAPES:';
-  RAISE NOTICE '   1. Create your first user in Authentication > Users';
+  RAISE NOTICE '   1. DESACTIVER la verification email dans Supabase Dashboard:';
+  RAISE NOTICE '      Authentication > Providers > Email > Confirm email: OFF';
+  RAISE NOTICE '   2. Create your first user in Authentication > Users';
+
   RAISE NOTICE '   2. Update their profile to role = superadmin';
   RAISE NOTICE '   3. Configure your .env with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY';
   RAISE NOTICE '   4. Launch your application!';
