@@ -1,0 +1,18 @@
+/* ReportsView custom styles for moving inline styles to CSS */
+.reports-bar-container {
+  height: 200px;
+}
+.reports-bar {
+  /* Height will be set via inline style in React, but you can use a CSS variable for dynamic height if needed */
+  min-height: 0;
+}
+.reports-bar-min {
+  min-height: 4px;
+}
+/* For dynamic bar height, you can use a style block or CSS variable if you want to go further */
+.reports-bar[data-barheight] {
+  height: calc(var(--bar-height, 100) * 1%);
+}
+.reports-bar-progress[data-barwidth] {
+  width: calc(var(--bar-width, 100) * 1%);
+}

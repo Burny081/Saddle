@@ -1,0 +1,4 @@
+/* AccountingView custom styles for moving inline styles to CSS */
+.accounting-bar-progress[data-barwidth] {
+  width: calc(var(--bar-width, 100) * 1%);
+}

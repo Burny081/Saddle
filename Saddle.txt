@@ -1,0 +1,10 @@
+
+Ameiliorer la fonction du button de traduction pour qu'il traduit tout forme de texte dans le site de francais en anglais completement et non-plus partiellement 
+
+
+
+ 
+
+
+La secretaire doit aussi gerer les message des client et aussi les commande mais la je vois pas les produit sur la page nouvelle vente et chaque vente doit etre enregistrer avec le nom de la secretaire qui l'as fait 
+
