@@ -341,6 +341,7 @@ export default function AuditLogView() {
               value={filterType}
               onChange={(e) => setFilterType(e.target.value as AuditEventType | 'all')}
               className="px-3 py-2 border rounded-lg bg-white"
+              aria-label="Filtrer par type d'événement"
             >
               <option value="all">Tous les types</option>
               <option value="login">Connexion</option>
@@ -359,6 +360,7 @@ export default function AuditLogView() {
               value={filterSeverity}
               onChange={(e) => setFilterSeverity(e.target.value as AuditSeverity | 'all')}
               className="px-3 py-2 border rounded-lg bg-white"
+              aria-label="Filtrer par sévérité"
             >
               <option value="all">Toutes les sévérités</option>
               <option value="success">Succès</option>

@@ -199,6 +199,7 @@ export default function ImageUploader({
           accept={acceptedTypes.join(',')}
           onChange={handleFileSelect}
           disabled={files.length >= maxFiles}
+          aria-label="Sélectionner des images à télécharger"
         />
         
         <div className="flex flex-col items-center gap-3">
@@ -286,6 +287,7 @@ export default function ImageUploader({
                         removeFile(file.id);
                       }}
                       className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
+                      aria-label={`Supprimer ${file.file.name}`}
                     >
                       <X className="h-4 w-4" />
                     </button>

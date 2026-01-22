@@ -239,6 +239,7 @@ export function OrdersView({ onBack }: OrdersViewProps) {
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value as OrderStatus | 'all')}
                                 className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                aria-label="Filtrer les commandes par statut"
                             >
                                 <option value="all">Tous les statuts</option>
                                 {Object.entries(statusConfig).map(([key, config]) => (
