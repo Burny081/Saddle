@@ -21,6 +21,7 @@ import {
   Heart,
   FileText,
   Gift,
+  User,
   type LucideIcon,
 } from 'lucide-react';
 import { UserRole } from '@/contexts/AuthContext';
@@ -42,6 +43,7 @@ export const navItems: NavItem[] = [
   { id: 'favorites', icon: Heart, label: 'Mes Favoris', roles: ['client'] },
   { id: 'quotes', icon: FileText, label: 'Mes Devis', roles: ['client'] },
   { id: 'loyalty', icon: Gift, label: 'Fidélité', roles: ['client'] },
+  { id: 'profile', icon: User, label: 'Mon Profil', roles: ['client'] },
   
   // Navigation Staff
   { id: 'articles', icon: Package, label: 'nav.articles', roles: ['superadmin', 'admin', 'commercial', 'secretaire', 'manager'] },
@@ -59,7 +61,7 @@ export const navItems: NavItem[] = [
   { id: 'stores', icon: Store, label: 'Boutiques', roles: ['superadmin', 'admin'] },
   { id: 'accounting', icon: Calculator, label: 'Comptabilité', roles: ['superadmin', 'admin', 'comptable'] },
   { id: 'reports', icon: BarChart3, label: 'nav.reports', roles: ['superadmin', 'admin', 'commercial', 'comptable'] },
-  { id: 'settings', icon: Settings, label: 'nav.settings', roles: ['superadmin', 'admin', 'client'] },
+  { id: 'settings', icon: Settings, label: 'nav.settings', roles: ['superadmin', 'admin'] },
 ];
 
 export const getRoleColor = (role: UserRole) => {

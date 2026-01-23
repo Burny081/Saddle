@@ -9,6 +9,10 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { DashboardView } from '@/components/dashboards/DashboardView';
 import { AnalyticsDashboard } from '@/components/dashboards/AnalyticsDashboard';
 import ClientDashboard from '@/components/dashboards/ClientDashboard';
+import ClientProfile from '@/components/client/ClientProfile';
+import ClientLoyaltyView from '@/components/client/ClientLoyaltyView';
+import ClientQuotesView from '@/components/client/ClientQuotesView';
+import ClientFavoritesView from '@/components/client/ClientFavoritesView';
 import { ArticlesView } from '@/components/catalog/ArticlesView';
 import { ServicesView } from '@/components/catalog/ServicesView';
 import { EnhancedStockView } from '@/components/stock/EnhancedStockView';
@@ -113,7 +117,7 @@ function AppContent() {
       case 'dashboard':
         // Dashboard différent selon le rôle
         if (user?.role === 'client') {
-          return <ClientDashboard />;
+          return <ClientDashboard onNavigate={setCurrentView} />;
         }
         return <DashboardView onNavigate={setCurrentView} />;
       case 'analytics':
@@ -129,6 +133,14 @@ function AppContent() {
         return <ClientShopView initialCategory={shopParams.category} initialSubCategory={shopParams.subCategory} onBack={navigateToDashboard} />;
       case 'orders':
         return <OrdersView onBack={navigateToDashboard} />;
+      case 'favorites':
+        return <ClientFavoritesView />;
+      case 'quotes':
+        return <ClientQuotesView />;
+      case 'loyalty':
+        return <ClientLoyaltyView />;
+      case 'profile':
+        return <ClientProfile />;
       case 'visitors':
         return <VisitorAnalyticsView onBack={navigateToDashboard} />;
       case 'sales':

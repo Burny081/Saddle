@@ -17,11 +17,23 @@
 - 👤 **Administration** - Utilisateurs, rôles, tâches, documents
 - 📊 **Rapports BI** - Analytics avancés, exports, visualisations
 
+### �️ **Espace Client Premium** ✨ NOUVEAU
+- 🏠 **Dashboard Client** - Statistiques personnelles, actions rapides, dark mode
+- 🛒 **Boutique E-commerce** - Catalogue complet, panier, favoris
+- 📦 **Mes Commandes** - Historique et suivi en temps réel
+- ❤️ **Mes Favoris** - Articles sauvegardés, vue grille/liste
+- 📄 **Mes Devis** - Consultation, acceptation, téléchargement PDF
+- 🎁 **Programme Fidélité** - Points, niveaux (Bronze/Silver/Gold), récompenses
+- 👤 **Mon Profil** - Édition infos, géolocalisation automatique
+- 💬 **Chat Support** - Widget flottant, messages instantanés
+
 ### 🔐 **Système d'Authentification**
-- **6 Rôles Utilisateur**: Super Admin, Admin, Manager, Commercial, Comptable, Secrétaire, Client
+- **7 Rôles Utilisateur**: Super Admin, Admin, Manager, Commercial, Comptable, Secrétaire, **Client**
 - **Permissions Granulaires** par module et action
 - **Multi-Store Access** avec contrôle fin des accès
 - **Session Management** sécurisé
+- **Géolocalisation IP automatique** (client-side, 24h cache)
+- **Inscription instantanée** sans vérification email
 
 ---
 
@@ -31,20 +43,22 @@
 ```env
 🌐 URL: https://pztiflkwumhpvtfdkoli.supabase.co
 🔑 Clé Publique: sb_publishable_BLZau8kh8s3hIy9ZzSrOhw_b59sQtI8
-🗃️ Base de Données: 68 tables PostgreSQL (2762 lignes SQL)
+🗃️ Base de Données: 70+ tables PostgreSQL (3267 lignes SQL, 21 sections)
 🛡️ Sécurité: Row Level Security (RLS) activé
 🔄 Real-time: Subscriptions PostgreSQL
 📊 Storage: Images et documents
+🎯 Tables Client: sales, customer_loyalty, loyalty_transactions, profiles
 ```
 
 ### 💻 **Développement Local**
 ```bash
-🖥️ URL: http://localhost:3001
+🖥️ URL: http://localhost:5173
 ⚡ Hot Reload: Activé avec Vite HMR
-🔄 Build: Ultra-rapide (<2s)
+🔄 Build: Ultra-rapide (~10s)
 🎨 Tailwind: JIT compilation
 📦 TypeScript: Strict mode
 🧪 Tests: Vitest + Testing Library
+🌙 Dark Mode: next-themes avec système complet
 ```
 
 ### 🏗️ **Architecture Frontend**
@@ -90,9 +104,10 @@ VITE_APP_ENVIRONMENT="production"
 ```
 
 ### **3. 🗃️ Déploiement Base de Données**
+
 ```bash
 # 1. Ouvrir Supabase Dashboard
-open https://pztiflkwumhpvtfdkoli.supabase.co
+open <https://pztiflkwumhpvtfdkoli.supabase.co>
 
 # 2. SQL Editor → Coller sps.sql (2762 lignes)
 # 3. Exécuter le script complet
@@ -100,6 +115,7 @@ open https://pztiflkwumhpvtfdkoli.supabase.co
 ```
 
 ### **4. ▶️ Lancement Développement**
+
 ```bash
 # Démarrer le serveur de développement
 npm run dev
@@ -109,6 +125,7 @@ npm run dev:debug
 ```
 
 ### **5. 🏗️ Build Production**
+
 ```bash
 # Build optimisé pour production
 npm run build
@@ -120,7 +137,7 @@ npm run preview
 npm run analyze
 ```
 
-✅ **Application disponible**: http://localhost:3001
+✅ **Application disponible**: <http://localhost:3001>
 
 ---
 
@@ -164,12 +181,12 @@ npm run analyze
 
 Tous les comptes utilisent le mot de passe: `admin123`
 
-- **Super Admin**: superadmin@sps.com
-- **Admin**: admin@sps.com
-- **Secrétaire**: secretaire@sps.com
-- **Manager**: manager@sps.com
-- **Comptable**: comptable@sps.com
-- **Client**: client@sps.com
+- **Super Admin**: <superadmin@sps.com>
+- **Admin**: <admin@sps.com>
+- **Secrétaire**: <secretaire@sps.com>
+- **Manager**: <manager@sps.com>
+- **Comptable**: <comptable@sps.com>
+- **Client**: <client@sps.com>
 
 ## 🛠️ Technologies
 
@@ -183,7 +200,7 @@ Tous les comptes utilisent le mot de passe: `admin123`
 
 ## 📂 Structure
 
-```
+```plaintext
 src/
 ├── app/
 │   ├── App.tsx                    # Point d'entrée principal
