@@ -62,7 +62,7 @@ export function DashboardLayout({ children, currentView, onViewChange }: Dashboa
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 scroll-smooth scrollbar-thin scrollbar-thumb-muted-foreground/20 hover:scrollbar-thumb-muted-foreground/40">
-          <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-2 duration-300">
             {children}
           </div>
         </main>

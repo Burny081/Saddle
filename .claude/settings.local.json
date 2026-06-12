@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx uipro-cli:*)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS dashboard commercial management professional corporate\" --design-system -p \"Saddle Point Service\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS dashboard commercial management professional corporate\" --design-system -p \"Saddle Point Service\")",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"animation accessibility loading\" --domain ux)",
+      "Bash(python .claude/skills/ui-ux-pro-max/scripts/search.py \"ecommerce B2B electrical equipment industrial professional corporate\" --design-system -p \"Saddle Point\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"ecommerce B2B electrical equipment industrial professional corporate\" --design-system -p \"Saddle Point\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"B2B ecommerce electrical industrial equipment professional\" --design-system -p \"Saddle Point\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"landing page hero trust authority\" --domain landing -n 5)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"ecommerce industrial B2B\" --domain style -n 3)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"animation accessibility z-index loading hover\" --domain ux -n 6)",
+      "Bash(find C:/Users/PC/Pictures/MINDSET/saddle/saddle-ecommerce/src -name *.json -path */i18n* -o -name *.json -path */locale* -o -name *.json -path */lang* -o -name *.json -path */translation*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); home=d.get\\(''''home'''',{}\\); print\\(json.dumps\\(home, indent=2\\)\\)\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py --design-system)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py --domain ux)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"B2B electrical equipment ecommerce\" --design-system --project-name \"Saddle Point\")",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"ecommerce product listing cart checkout\" --domain ux --stack react)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"professional B2B ecommerce\" --domain style)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"product detail page ecommerce\" --domain product)",
+      "Bash(python3 .claude/skills/ui-ux-pro-max/scripts/search.py \"navigation footer auth forms\" --domain web)",
+      "Bash(python3 -c \":*)"
+    ]
+  }
+}

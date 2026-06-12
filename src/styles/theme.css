@@ -13,7 +13,8 @@
 
 :root {
   /* Professional Light Theme (Default) */
-  --font-sans: "Plus Jakarta Sans", "Outfit", system-ui, sans-serif;
+  --font-sans: "Poppins", "Open Sans", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Open Sans", "Plus Jakarta Sans", system-ui, sans-serif;
 
   /* Clean, Professional Background */
   --background: oklch(0.985 0.002 260);
@@ -123,6 +124,7 @@
 
 @theme inline {
   --font-sans: var(--font-sans);
+  --font-body: var(--font-body);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -178,6 +180,26 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+  }
+
+  /* Accessible Focus States */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   /* Professional Card Styles */

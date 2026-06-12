@@ -284,6 +284,7 @@ export async function deleteService(id: string): Promise<void> {
 
 /**
  * Récupérer tous les clients
+ * Lit depuis la table 'clients' qui est synchronisée avec 'profiles'
  */
 export async function getClients(filters?: {
   type?: 'individual' | 'business';
@@ -332,36 +333,100 @@ export async function getClientById(id: string): Promise<Client | null> {
 
 /**
  * Créer un client
+ * Crée un utilisateur dans 'profiles' avec role='client'
  */
 export async function createClient(client: Omit<Client, 'created_at' | 'updated_at' | 'total_spent'>): Promise<Client> {
   const { data, error } = await supabase
-    .from('clients')
-    .insert({ ...client, total_spent: 0 })
+    .from('profiles')
+    .insert({ 
+      ...client, 
+      role: 'client',
+      is_active: true 
+    })
     .select()
     .single();
   if (error) throw error;
-  return data;
-}
-
-/**
- * Mettre à jour un client
+  SYNCHRONISATION: Crée dans 'clients' ET dans 'profiles' avec role='client'
+ */
+export async function createClient(client: Omit<Client, 'created_at' | 'updated_at' | 'total_spent'>): Promise<Client> {
+  // 1. Créer dans la table 'clients'
+  const { data: clientData, error: clientError } = await supabase
+    .from('clients')
+    .insert({ 
+      ...client, 
+      total_spent: 0,
+      is_active: true 
+    })
+    .select()
+    .single();
+  
+  if (clientError) throw clientError;
+  
+  // 2. Créer aussi dans 'profiles' avec le même ID et role='client'
+  try {
+    await supabase
+      .from('profiles')
+      .insert({
+        id: clientData.id,
+        name: client.name,
+        email: client.email,
+        phone: client.phone,
+        address: client.address,
+        role: 'client',
+   SYNCHRONISATION: Met à jour dans 'clients' ET dans 'profiles'
  */
 export async function updateClient(id: string, updates: Partial<Client>): Promise<Client> {
+  // 1. Mettre à jour dans 'clients'
   const { data, error } = await supabase
     .from('clients')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', id)
     .select()
     .single();
+  
   if (error) throw error;
-  return data;
-}
+  SYNCHRONISATION: Désactive dans 'clients' ET dans 'profiles'
+ */
+export async function deleteClient(id: string): Promise<void> {
+  // 1. Désactiver dans 'clients'
+  const { error: clientError } = await supabase
+    .from('clients')
+    .update({ is_active: false })
+    .eq('id', id);
+    
+  if (clientError) throw clientError;
+  
+  // 2. Désactiver aussi dans 'profiles'
+  try {
+    await supabase
+      .from('profiles')
+      .update({ is_active: false })
+      .eq('id', id)
+      .eq('role', 'client');
+  } catch (profileError) {
+    console.warn('Profile deactivation failed:', profileError);
+  }ate().toISOString()
+      })
+      .eq('id', id)
+      .eq('role', 'client');
+  } catch (profileError) {
+    console.warn('Profile update failed:', profileError);
+  }
+  
+  return data
 
 /**
  * Supprimer un client
+ * Désactive l'utilisateur dans 'profiles' (ne supprime pas)
  */
 export async function deleteClient(id: string): Promise<void> {
-  const { error } = await supabase.from('clients').delete().eq('id', id);
+  // Désactiver seulement (recommandé pour préserver l'historique)
+  const { error } = await supabase
+    .from('profiles')
+    .update({ is_active: false })
+    .eq('id', id)
+    .eq('role', 'client');
+    
   if (error) throw error;
 }
 

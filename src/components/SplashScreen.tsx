@@ -1,24 +1,26 @@
 import { motion } from 'motion/react';
 
 export function SplashScreen() {
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-red-600 via-blue-900 to-blue-600">
-      {/* Animated background particles */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-primary via-primary/80 to-primary/60">
+      {/* Subtle ambient background - only 8 particles, no infinite loop in reduced motion */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {!prefersReducedMotion && [...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute h-2 w-2 rounded-full bg-white/20"
+            className="absolute h-2 w-2 rounded-full bg-white/10"
             initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
+              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
+              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
             }}
             animate={{
-              y: [null, Math.random() * window.innerHeight],
-              opacity: [0, 1, 0],
+              y: [null, Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)],
+              opacity: [0, 0.6, 0],
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: 4 + Math.random() * 2,
               repeat: Infinity,
               ease: 'linear',
             }}
@@ -36,17 +38,16 @@ export function SplashScreen() {
         {/* Electric Icon */}
         <motion.div
           className="mb-8 flex justify-center"
-          animate={{
-            scale: [1, 1.1, 1],
+          animate={prefersReducedMotion ? {} : {
+            scale: [1, 1.05, 1],
           }}
           transition={{
-            duration: 2,
+            duration: 2.5,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
         >
           <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-white/20" />
             <div className="relative flex h-48 w-48 items-center justify-center rounded-3xl bg-white/10 backdrop-blur-md shadow-2xl border border-white/20">
               <img src="/logo.png" alt="Saddle Point Service" className="h-40 w-40 object-contain drop-shadow-xl" />
             </div>

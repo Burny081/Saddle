@@ -27,7 +27,7 @@ export function ClientChatWidget() {
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Chat client - uniquement pour les clients
+    // Only show for client role
     if (!user || user.role !== 'client') {
         console.log('ClientChatWidget: Not showing for user:', user?.name, 'role:', user?.role);
         return null;

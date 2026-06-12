@@ -173,9 +173,9 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               className="relative w-full max-w-md my-8"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-slate-900 max-h-[90vh] flex flex-col">
+              <div className="overflow-hidden rounded-3xl bg-card shadow-2xl max-h-[90vh] flex flex-col">
                 {/* Header with gradient */}
-                <div className="relative bg-gradient-to-br from-red-600 to-blue-600 p-8 text-white">
+                <div className="relative bg-gradient-to-br from-primary to-primary/80 p-8 text-primary-foreground">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -346,7 +346,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                     <Button
                       type="submit"
-                      className="h-12 w-full bg-gradient-to-r from-red-600 to-blue-600 text-base font-semibold hover:from-red-700 hover:to-blue-700"
+                      className="h-12 w-full bg-primary text-primary-foreground text-base font-semibold hover:bg-primary/90 transition-colors duration-200 cursor-pointer"
                       disabled={loading}
                     >
                       {loading ? (
@@ -368,7 +368,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     <button
                       type="button"
                       onClick={switchMode}
-                      className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                      className="text-sm text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors duration-200"
                     >
                       {isLoginMode ? t('auth.noAccount') : t('auth.alreadyHaveAccount')}
                     </button>
@@ -376,8 +376,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                   {/* Help text */}
                   {isLoginMode && (
-                    <div className="mt-6 rounded-lg bg-slate-100 p-4 dark:bg-slate-800">
-                      <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                    <div className="mt-6 rounded-lg bg-muted p-4">
+                      <p className="text-sm text-muted-foreground text-center">
                         {t('auth.contactAdmin')}
                       </p>
                     </div>

@@ -36,14 +36,13 @@ export function StaffClientChatWidget() {
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Accès pour répondre aux clients selon les rôles autorisés
-    const authorizedRoles = ['superadmin', 'admin', 'manager', 'commercial', 'secretaire'];
-    if (!user || user.role === 'client' || !authorizedRoles.includes(user.role)) {
-        console.log('StaffClientChatWidget: Not showing for user:', user?.name, 'role:', user?.role, 'Authorized roles:', authorizedRoles);
+    // Only show for staff roles (not client)
+    if (!user || user.role === 'client') {
+        console.log('StaffClientChatWidget: Not showing for user:', user?.name, 'role:', user?.role);
         return null;
     }
 
-    console.log('StaffClientChatWidget: Showing for authorized user:', user.name, 'role:', user.role);
+    console.log('StaffClientChatWidget: Showing for staff user:', user.name, 'role:', user.role);
 
     // Load and organize messages by client
     useEffect(() => {

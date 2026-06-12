@@ -58,7 +58,7 @@ export function Sidebar({ currentView, onViewChange, open }: SidebarProps) {
                             type="button"
                             key={item.id}
                             onClick={() => onViewChange(item.id)}
-                            className={`relative group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 overflow-hidden ${isActive
+                            className={`relative group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-200 ease-out overflow-hidden cursor-pointer ${isActive
                                 ? 'text-white shadow-lg shadow-primary/25'
                                 : 'text-muted-foreground hover:text-foreground hover:bg-sidebar-accent/50'
                                 }`}
@@ -73,7 +73,7 @@ export function Sidebar({ currentView, onViewChange, open }: SidebarProps) {
                                 />
                             )}
 
-                            <item.icon className={`relative z-10 h-5 w-5 transition-transform duration-300 group-hover:scale-110 ${isActive ? 'text-white' : 'text-muted-foreground group-hover:text-primary'}`} />
+                            <item.icon className={`relative z-10 h-5 w-5 transition-colors duration-200 ${isActive ? 'text-white' : 'text-muted-foreground group-hover:text-primary'}`} />
                             <span className="relative z-10">{t(item.label)}</span>
 
                             {/* Hover Glow Effect for non-active items */}

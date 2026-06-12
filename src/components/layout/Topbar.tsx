@@ -47,7 +47,7 @@ export function Topbar({ sidebarOpen, setSidebarOpen, currentView }: TopbarProps
                     variant="ghost"
                     size="icon"
                     onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className="text-muted-foreground hover:text-foreground hover:bg-primary/10 rounded-lg h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10"
+                    className="text-muted-foreground hover:text-foreground hover:bg-primary/10 rounded-lg h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 cursor-pointer transition-colors duration-200"
                 >
                     {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </Button>
@@ -67,6 +67,7 @@ export function Topbar({ sidebarOpen, setSidebarOpen, currentView }: TopbarProps
                     <input
                         type="text"
                         placeholder={t('placeholder.search')}
+                        aria-label={t('placeholder.search')}
                         className="bg-transparent border-none outline-none text-sm w-full placeholder:text-muted-foreground/70"
                     />
                 </div>
@@ -76,7 +77,7 @@ export function Topbar({ sidebarOpen, setSidebarOpen, currentView }: TopbarProps
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="lg:hidden rounded-lg h-8 w-8 sm:h-9 sm:w-9 hover:bg-secondary/10"
+                    className="lg:hidden rounded-lg h-8 w-8 sm:h-9 sm:w-9 hover:bg-secondary/10 cursor-pointer transition-colors duration-200"
                 >
                     <Search className="h-4 w-4 text-muted-foreground" />
                 </Button>
@@ -91,7 +92,7 @@ export function Topbar({ sidebarOpen, setSidebarOpen, currentView }: TopbarProps
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="hidden sm:flex rounded-lg h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 hover:bg-secondary/10"
+                    className="hidden sm:flex rounded-lg h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 hover:bg-secondary/10 cursor-pointer transition-colors duration-200"
                     onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
                 >
                     <Globe className="h-4 w-4 lg:h-5 lg:w-5 text-muted-foreground" />
@@ -107,7 +108,7 @@ export function Topbar({ sidebarOpen, setSidebarOpen, currentView }: TopbarProps
                     variant="ghost"
                     size="icon"
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                    className="hidden sm:flex rounded-lg h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 hover:bg-secondary/10"
+                    className="hidden sm:flex rounded-lg h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 hover:bg-secondary/10 cursor-pointer transition-colors duration-200"
                 >
                     {theme === 'dark' ? <Sun className="h-4 w-4 lg:h-5 lg:w-5 text-yellow-500" /> : <Moon className="h-4 w-4 lg:h-5 lg:w-5 text-indigo-500" />}
                 </Button>

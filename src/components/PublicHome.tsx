@@ -22,8 +22,7 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
   const companyInfo = useCompanyInfo();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Debug logging
-  console.log('PublicHome companyInfo:', companyInfo);
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const values = [
     { icon: Shield, title: t('home.values.reliability'), color: 'from-blue-500 to-blue-600' },
@@ -153,7 +152,7 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
             <Button
               variant="ghost"
               size="icon"
-              className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="relative h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors duration-200"
               onClick={() => onBrowseShop()}
             >
               <ShoppingCart className="h-4 w-4 sm:h-5 sm:w-5 text-slate-600" />
@@ -163,7 +162,7 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="md:hidden h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors duration-200"
               onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
             >
               <Globe className="h-4 w-4 text-slate-600" />
@@ -184,7 +183,7 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="lg:hidden h-8 w-8 sm:h-9 sm:w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-colors duration-200"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -304,7 +303,7 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
                 className="text-center lg:text-left"
               >
                 <div className="mb-4 sm:mb-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500 to-blue-600 px-4 sm:px-6 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white">
@@ -345,13 +344,14 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
+                transition={{ duration: prefersReducedMotion ? 0 : 0.5 }}
                 className="relative mt-8 lg:mt-0"
               >
                 <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-2xl">
                   <img
                     src="https://images.unsplash.com/photo-1759830337357-29c472b6746c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVjdHJpY2FsJTIwZXF1aXBtZW50JTIwaW5kdXN0cmlhbHxlbnwxfHx8fDE3Njg0Nzg3MTl8MA&ixlib=rb-4.1.0&q=80&w=1080"
                     alt="Electrical equipment"
+                    loading="eager"
                     className="h-[280px] sm:h-[350px] md:h-[400px] lg:h-[500px] w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 to-transparent" />
@@ -423,7 +423,7 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="group relative overflow-hidden border-none bg-white p-8 text-center shadow-lg transition-all hover:shadow-2xl dark:bg-slate-800">
+                  <Card className="group relative overflow-hidden border-none bg-white p-8 text-center shadow-lg transition-shadow duration-200 hover:shadow-2xl dark:bg-slate-800 cursor-pointer">
                     <div className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-0 transition-opacity group-hover:opacity-10`} />
                     <div className="relative">
                       <div className={`mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${value.color} text-white shadow-lg`}>
@@ -457,12 +457,13 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="group overflow-hidden border-none shadow-lg transition-all hover:shadow-2xl">
+                  <Card className="group overflow-hidden border-none shadow-lg transition-shadow duration-200 hover:shadow-2xl cursor-pointer">
                     <div className="relative h-48 overflow-hidden">
                       <img
                         src={product.image}
                         alt={product.title}
-                        className="h-full w-full object-cover transition-transform group-hover:scale-110"
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       <div className="absolute bottom-4 left-4">
