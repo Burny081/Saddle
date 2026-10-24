@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MapPin, Globe, Wifi, Clock, Shield, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
+import { Button } from '@/app/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/utils/supabaseClient';
 import { getUserLocation, formatLocation, type IPLocationData } from '@/utils/ipLocation';
@@ -18,10 +19,10 @@ export default function UserLocationCard() {
   const [locationInfo, setLocationInfo] = useState<UserLocationInfo | null>(null);
   const [currentLocation, setCurrentLocation] = useState<IPLocationData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [locationLoading, setLocationLoading] = useState(false);
 
   useEffect(() => {
     loadUserLocationInfo();
-    detectCurrentLocation();
   }, [user]);
 
   const loadUserLocationInfo = async () => {
@@ -45,8 +46,13 @@ export default function UserLocationCard() {
   };
 
   const detectCurrentLocation = async () => {
-    const location = await getUserLocation();
-    setCurrentLocation(location);
+    setLocationLoading(true);
+    try {
+      const location = await getUserLocation();
+      setCurrentLocation(location);
+    } finally {
+      setLocationLoading(false);
+    }
   };
 
   if (loading) {
@@ -72,7 +78,7 @@ export default function UserLocationCard() {
             Localisation Actuelle
             <span className="ml-auto text-xs font-normal text-gray-500 flex items-center gap-1">
               <Shield className="h-3 w-3" />
-              Détection automatique
+              Demande manuelle
             </span>
           </CardTitle>
         </CardHeader>
@@ -87,7 +93,7 @@ export default function UserLocationCard() {
                     {formatLocation(currentLocation)}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    Détectée via votre connexion Internet
+                    Détectée via votre connexion Internet après votre demande
                   </p>
                 </div>
               </div>
@@ -107,9 +113,14 @@ export default function UserLocationCard() {
               </div>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-sm text-gray-500 py-2">
-              <AlertCircle className="h-4 w-4" />
-              Localisation indisponible
+            <div className="space-y-3 py-2">
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <AlertCircle className="h-4 w-4" />
+                La localisation approximative n'est pas demandée automatiquement.
+              </div>
+              <Button type="button" variant="outline" size="sm" onClick={detectCurrentLocation} disabled={locationLoading}>
+                {locationLoading ? 'Détection en cours…' : 'Afficher ma localisation approximative'}
+              </Button>
             </div>
           )}
         </CardContent>
@@ -173,9 +184,8 @@ export default function UserLocationCard() {
           <div>
             <p className="text-xs font-medium text-yellow-800">Protection de Sécurité</p>
             <p className="text-xs text-yellow-700 mt-1">
-              Ces informations sont détectées automatiquement pour protéger votre compte.
-              Elles ne peuvent pas être modifiées manuellement et sont utilisées pour détecter 
-              les connexions suspectes depuis des localisations inhabituelles.
+              Les données de localisation ne sont collectées qu'après votre accord ou votre demande explicite.
+              Les historiques déjà enregistrés restent disponibles pour la sécurité du compte.
             </p>
           </div>
         </div>

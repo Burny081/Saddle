@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { supabase } from '@/utils/supabaseClient';
-import { getUserLocation, getIPAddress } from '@/utils/ipLocation';
+import { collectLocationData } from '@/utils/ipLocation';
 
 export type UserRole = 'superadmin' | 'admin' | 'commercial' | 'secretaire' | 'manager' | 'comptable' | 'client';
 
@@ -26,9 +26,9 @@ export interface StoredUser extends User {
 interface AuthContextType {
   user: User | null;
   users: User[];
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string, locationConsent?: boolean) => Promise<boolean>;
   logout: () => void;
-  register: (userData: { name: string; email: string; password: string; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
+  register: (userData: { name: string; email: string; password: string; phone?: string; address?: string; locationConsent?: boolean }) => Promise<{ success: boolean; error?: string }>;
   addUser: (user: User, password: string) => void;
   updateUser: (id: string, updates: Partial<User>, newPassword?: string) => void;
   deleteUser: (id: string) => void;
@@ -172,15 +172,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const login = useCallback(async (email: string, password: string): Promise<boolean> => {
+  const login = useCallback(async (email: string, password: string, locationConsent = false): Promise<boolean> => {
     try {
       setLoading(true);
-
-      // Détecter automatiquement la localisation et l'IP
-      const [locationData, ipAddress] = await Promise.all([
-        getUserLocation(),
-        getIPAddress()
-      ]);
 
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -199,6 +193,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
+      const { locationData, ipAddress } = await collectLocationData(locationConsent);
+
       // Fetch profile directly here instead of relying on auth state change
       const profile = await getUserProfile(data.user.id, data.user.email);
 
@@ -206,12 +202,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(profile);
         await loadUsers();
 
-        // Update last login time + IP + location (détection automatique)
+        // Update last login time, with optional consented IP and location data.
         const updateData: any = { 
           last_login: new Date().toISOString()
         };
 
-        // Ajouter les informations de localisation automatiques
+        // Ajouter les informations de localisation uniquement avec consentement.
         if (locationData) {
           updateData.last_login_ip = ipAddress;
           updateData.last_login_location = `${locationData.city}, ${locationData.region}, ${locationData.country}`;
@@ -224,7 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .update(updateData)
           .eq('id', data.user.id)
           .then(() => {
-            console.log('✓ Localisation détectée automatiquement:', locationData);
+            console.log('Login metadata updated');
           });
 
         // Enregistrer la session avec localisation
@@ -268,7 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const register = useCallback(async (userData: { name: string; email: string; password: string; phone?: string; address?: string }) => {
+  const register = useCallback(async (userData: { name: string; email: string; password: string; phone?: string; address?: string; locationConsent?: boolean }) => {
     try {
       // 1. Create auth user in Supabase (auto-confirmed if email verification disabled)
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -292,11 +288,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { success: false, error: 'Failed to create user' };
       }
 
-      // 2. Detect location automatically
-      const [locationData, ipAddress] = await Promise.all([
-        getUserLocation(),
-        getIPAddress()
-      ]);
+      // 2. Collect location only when the registrant has opted in.
+      const { locationData, ipAddress } = await collectLocationData(Boolean(userData.locationConsent));
 
       // 3. Create profile with client role + location info
       const { error: profileError } = await supabase

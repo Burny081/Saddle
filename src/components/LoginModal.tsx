@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Mail, Lock, LogIn, AlertCircle, UserPlus, User, Phone, MapPin, CheckCircle, Loader2 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Label } from '@/app/components/ui/label';
+import { Checkbox } from '@/app/components/ui/checkbox';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -24,6 +25,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [gettingLocation, setGettingLocation] = useState(false);
+  const [locationConsent, setLocationConsent] = useState(false);
   const { login, register } = useAuth();
   const { t } = useLanguage();
 
@@ -36,6 +38,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setAddress('');
     setError('');
     setSuccess('');
+    setLocationConsent(false);
   };
 
   const switchMode = () => {
@@ -43,14 +46,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     resetForm();
   };
 
-  // Get user location automatically when switching to registration mode
-  useEffect(() => {
-    if (!isLoginMode && !address && 'geolocation' in navigator) {
-      getLocationAutomatically();
-    }
-  }, [isLoginMode]);
-
-  const getLocationAutomatically = async () => {
+  const getLocationFromBrowser = async () => {
     setGettingLocation(true);
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
@@ -92,7 +88,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     setLoading(true);
 
     try {
-      const loginSuccess = await login(email, password);
+      const loginSuccess = await login(email, password, locationConsent);
       if (loginSuccess) {
         resetForm();
         onClose();
@@ -132,7 +128,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     }
 
     try {
-      const result = await register({ name, email, password, phone, address });
+      const result = await register({ name, email, password, phone, address, locationConsent });
       if (result.success) {
         setSuccess(t('auth.signupSuccess'));
         resetForm();
@@ -284,11 +280,6 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         <div>
                           <Label htmlFor="address" className="text-base">
                             {t('auth.address')}
-                            {gettingLocation && (
-                              <span className="ml-2 text-xs text-blue-600 dark:text-blue-400">
-                                <Loader2 className="inline h-3 w-3 animate-spin" /> Détection en cours...
-                              </span>
-                            )}
                           </Label>
                           <div className="relative mt-2">
                             <MapPin className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
@@ -299,9 +290,22 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                               onChange={(e) => setAddress(e.target.value)}
                               className="h-12 pl-11 text-base"
                               placeholder="Yaoundé, Cameroun"
-                              disabled={gettingLocation}
                             />
                           </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            className="mt-2"
+                            onClick={getLocationFromBrowser}
+                            disabled={gettingLocation}
+                          >
+                            {gettingLocation ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MapPin className="mr-2 h-4 w-4" />}
+                            Utiliser ma position actuelle
+                          </Button>
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            Cette action demande la position de votre appareil pour préremplir l'adresse.
+                          </p>
                         </div>
                       </>
                     )}
@@ -343,6 +347,25 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </div>
                       </div>
                     )}
+
+                    <div className="rounded-lg border border-border bg-muted/40 p-4">
+                      <div className="flex items-start gap-3">
+                        <Checkbox
+                          id="location-consent"
+                          checked={locationConsent}
+                          onCheckedChange={(checked) => setLocationConsent(checked === true)}
+                          className="mt-0.5"
+                        />
+                        <div className="space-y-1.5">
+                          <Label htmlFor="location-consent" className="cursor-pointer text-sm font-medium">
+                            Partager mon IP et ma localisation approximative pour la sécurité du compte
+                          </Label>
+                          <p className="text-xs leading-relaxed text-muted-foreground">
+                            Optionnel. Avec votre accord, nous interrogeons des services tiers pour enregistrer la ville, le pays et l'adresse IP de cette connexion. Sans accord, vous pouvez toujours vous connecter ou créer un compte.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
                     <Button
                       type="submit"

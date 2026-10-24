@@ -47,6 +47,10 @@ La navigation utilise l'History API sans dépendance de routage supplémentaire.
 
 Les contacts publics canoniques sont [le +237 6 74 93 23 19](tel:+237674932319) et [bongni@saddlepoint.org](mailto:bongni@saddlepoint.org).
 
+### 🔒 Consentement de localisation
+
+L'application ne demande plus automatiquement l'adresse IP, la localisation approximative ou la position précise de l'appareil. Les formulaires de connexion et d'inscription proposent une case décochée permettant d'autoriser, pour cette action uniquement, la consultation de services tiers d'IP/localisation et l'enregistrement de ces informations de sécurité. La saisie de position précise est une action séparée et volontaire pour préremplir l'adresse. Les réponses de localisation ne sont pas stockées dans `localStorage`.
+
 ### 🗄️ **Backend - Supabase Architecture**
 
 ```sql

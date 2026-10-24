@@ -1,5 +1,5 @@
 /**
- * Service de détection automatique de localisation par IP
+ * Service de détection volontaire de localisation par IP
  * ⚡ 100% CÔTÉ CLIENT - Aucun backend requis
  * 
  * Utilise des API publiques gratuites :
@@ -19,6 +19,16 @@ export interface IPLocationData {
   latitude: number;
   longitude: number;
   isp?: string;
+}
+
+export interface LocationDataServices {
+  getLocation: () => Promise<IPLocationData | null>;
+  getIpAddress: () => Promise<string>;
+}
+
+export interface CollectedLocationData {
+  locationData: IPLocationData | null;
+  ipAddress: string | null;
 }
 
 /**
@@ -67,8 +77,7 @@ async function getLocationFromIP(ip: string): Promise<IPLocationData | null> {
 }
 
 /**
- * Détecte automatiquement la localisation complète de l'utilisateur
- * FONCTION PRINCIPALE À UTILISER
+ * Détecte la localisation complète de l'utilisateur après consentement explicite.
  */
 export async function detectUserLocation(): Promise<IPLocationData | null> {
   try {
@@ -79,19 +88,8 @@ export async function detectUserLocation(): Promise<IPLocationData | null> {
       return null;
     }
 
-    // 2. Récupérer la localisation via l'IP
-    const location = await getLocationFromIP(ip);
-    
-    if (location) {
-      // 3. Sauvegarder dans le localStorage pour cache (durée: 24h)
-      const cachedData = {
-        ...location,
-        cached_at: Date.now()
-      };
-      localStorage.setItem('user_location_cache', JSON.stringify(cachedData));
-    }
-
-    return location;
+    // 2. Récupérer la localisation via l'IP. Ne pas la mettre en cache côté client.
+    return await getLocationFromIP(ip);
   } catch (error) {
     console.error('Erreur détection localisation:', error);
     return null;
@@ -99,31 +97,35 @@ export async function detectUserLocation(): Promise<IPLocationData | null> {
 }
 
 /**
- * Récupère la localisation depuis le cache (si < 24h)
- * Sinon, détecte à nouveau
+ * Récupère la localisation sans lecture ou écriture dans le stockage local.
  */
 export async function getUserLocation(): Promise<IPLocationData | null> {
-  try {
-    // Vérifier le cache
-    const cached = localStorage.getItem('user_location_cache');
-    
-    if (cached) {
-      const data = JSON.parse(cached);
-      const age = Date.now() - data.cached_at;
-      
-      // Si le cache a moins de 24h, l'utiliser
-      if (age < 24 * 60 * 60 * 1000) {
-        const { cached_at, ...location } = data;
-        return location;
-      }
-    }
+  return detectUserLocation();
+}
 
-    // Sinon, détecter à nouveau
-    return await detectUserLocation();
-  } catch (error) {
-    console.error('Erreur récupération localisation:', error);
-    return null;
+/**
+ * Collecte l'IP et la localisation uniquement après un consentement explicite.
+ */
+export async function collectLocationData(
+  consent: boolean,
+  services: LocationDataServices = {
+    getLocation: getUserLocation,
+    getIpAddress: getIPAddress,
+  },
+): Promise<CollectedLocationData> {
+  if (!consent) {
+    return { locationData: null, ipAddress: null };
   }
+
+  const [locationData, ipAddress] = await Promise.all([
+    services.getLocation(),
+    services.getIpAddress(),
+  ]);
+
+  return {
+    locationData,
+    ipAddress: ipAddress === 'Unknown' ? null : ipAddress,
+  };
 }
 
 /**
@@ -157,8 +159,8 @@ export async function getIPAddress(): Promise<string> {
 }
 
 /**
- * Efface le cache de localisation (forcer une nouvelle détection)
+ * Conservé pour compatibilité : la localisation n'est plus mise en cache côté client.
  */
 export function clearLocationCache(): void {
-  localStorage.removeItem('user_location_cache');
+  // No-op: location data is intentionally not stored in localStorage.
 }

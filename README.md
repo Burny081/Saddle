@@ -32,7 +32,7 @@
 - **Permissions Granulaires** par module et action
 - **Multi-Store Access** avec contrôle fin des accès
 - **Session Management** sécurisé
-- **Géolocalisation IP automatique** (client-side, 24h cache)
+- **Géolocalisation IP optionnelle** : consentement explicite requis, sans cache local
 - **Inscription instantanée** sans vérification email
 
 ---
@@ -83,6 +83,10 @@
 - **Modules connectés** : `/app/<vue>` avec prise en charge des boutons précédent/suivant du navigateur
 - **Téléphone** : [+237 6 74 93 23 19](tel:+237674932319)
 - **Email** : [bongni@saddlepoint.org](mailto:bongni@saddlepoint.org)
+
+### 🔒 Confidentialité de localisation
+
+La connexion et l'inscription fonctionnent sans collecte de position ou d'adresse IP. L'utilisateur peut choisir de partager sa localisation approximative et son IP pour la sécurité du compte ; cette option est décochée par défaut. La position précise de l'appareil n'est demandée qu'après un clic explicite pour préremplir l'adresse, et aucune donnée de localisation n'est mise en cache dans le navigateur.
 
 ---
 
