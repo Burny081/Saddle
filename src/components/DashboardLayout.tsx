@@ -32,11 +32,11 @@ export function DashboardLayout({ children, currentView, onViewChange }: Dashboa
   }, [currentView]);
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-[#f7f8fa] dark:bg-slate-950">
       {/* Overlay - always show when sidebar is open */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-20 bg-slate-950/35 backdrop-blur-[1px]"
           onClick={() => setSidebarOpen(false)}
         />
       )}

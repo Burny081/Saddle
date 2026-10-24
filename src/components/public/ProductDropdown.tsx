@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import * as LucideIcons from 'lucide-react';
+import { useDropdownIntent } from './useDropdownIntent';
 
 // Static navigation data for products mega menu
 const navProducts = [
@@ -51,7 +52,7 @@ interface ProductDropdownProps {
 
 export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = false }: ProductDropdownProps) {
     const { language } = useLanguage();
-    const [isOpen, setIsOpen] = useState(false);
+    const { isOpen, setIsOpen, open, scheduleClose, cancelClose, close } = useDropdownIntent(trigger);
     const [searchTerm, setSearchTerm] = useState('');
 
     const text = {
@@ -175,12 +176,17 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
     return (
         <div
             className="relative group h-full flex items-center"
-            onMouseEnter={() => trigger === 'hover' && setIsOpen(true)}
-            onMouseLeave={() => trigger === 'hover' && setIsOpen(false)}
+            onPointerEnter={open}
+            onPointerLeave={scheduleClose}
+            onFocus={cancelClose}
+            onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && close()}
+            onKeyDown={(event) => event.key === 'Escape' && close()}
         >
             <button
                 onClick={() => trigger === 'click' && setIsOpen(!isOpen)}
-                className="flex items-center gap-1 text-slate-600 hover:text-blue-600 hover:bg-transparent font-medium transition-all duration-300 relative h-10 px-4 py-2"
+                aria-expanded={isOpen}
+                aria-haspopup="menu"
+                className="flex items-center gap-1 border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:border-[#b7212d] hover:text-[#124a93] dark:text-slate-300 dark:hover:text-blue-300"
             >
                 <span>{text.products[language]}</span>
                 <motion.div
@@ -196,13 +202,17 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
                 {isOpen && (
                     <>
                         {/* Fixed positioned overlay */}
-                        <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+                        <div className="fixed inset-0 z-40" onClick={close} />
                         <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            role="menu"
+                            aria-label={text.products[language]}
+                            onPointerEnter={cancelClose}
+                            onPointerLeave={scheduleClose}
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 6 }}
                             transition={{ duration: 0.2 }}
-                            className="fixed z-50 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden"
+                            className="fixed z-50 overflow-hidden border border-slate-200 bg-white shadow-[0_24px_55px_-32px_rgba(15,23,42,.48)] dark:border-slate-700 dark:bg-slate-900"
                             style={{
                                 top: '60px',
                                 left: 'max(1rem, min(50vw - 450px, calc(100vw - min(90vw, 900px) - 1rem)))',
