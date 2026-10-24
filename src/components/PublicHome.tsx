@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'motion/react';
 import React, { useState } from 'react';
-import { Zap, Shield, Award, Globe, CheckCircle, ArrowRight, Sun, Cpu, Battery, Moon, ShoppingCart, Menu, X, User, MapPin, Phone } from 'lucide-react';
+import { Zap, Shield, Award, Globe, CheckCircle, ArrowRight, Sun, Cpu, Battery, Moon, ShoppingCart, Menu, X, User, MapPin, Phone, Mail } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Card } from '@/app/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,6 +9,7 @@ import { CategoryDropdown } from './public/CategoryDropdown';
 import { ProductDropdown } from './public/ProductDropdown';
 import { ServiceDropdown } from './public/ServiceDropdown';
 import { useCompanyInfo } from '@/contexts/CompanyContext';
+import { COMPANY } from '@/config/constants';
 
 interface PublicHomeProps {
   onLoginClick: () => void;
@@ -64,10 +65,20 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
       <div className="hidden md:block bg-slate-900 text-white text-xs py-2">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-1.5">
+            <a
+              href="tel:+237674932319"
+              className="flex items-center gap-1.5 rounded-sm hover:text-white hover:underline"
+            >
               <Phone className="h-3 w-3" />
-              {companyInfo.phone}
-            </span>
+              {COMPANY.phone}
+            </a>
+            <a
+              href={`mailto:${COMPANY.email}`}
+              className="flex items-center gap-1.5 rounded-sm hover:text-white hover:underline"
+            >
+              <Mail className="h-3 w-3" />
+              {COMPANY.email}
+            </a>
             <span className="flex items-center gap-1.5">
               <MapPin className="h-3 w-3" />
               {companyInfo.address}
@@ -203,9 +214,18 @@ export function PublicHome({ onLoginClick, onBrowseShop, onViewPointsOfSale }: P
               <div className="p-4 space-y-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
                 {/* Company Info - Mobile */}
                 <div className="pb-3 border-b border-slate-100 dark:border-slate-800">
-                  <p className="text-xs text-slate-500 flex items-center gap-1.5 mb-1">
-                    <Phone className="h-3 w-3" /> {companyInfo.phone}
-                  </p>
+                  <a
+                    href="tel:+237674932319"
+                    className="text-xs text-slate-500 flex items-center gap-1.5 mb-1 rounded-sm hover:text-primary hover:underline"
+                  >
+                    <Phone className="h-3 w-3" /> {COMPANY.phone}
+                  </a>
+                  <a
+                    href={`mailto:${COMPANY.email}`}
+                    className="text-xs text-slate-500 flex items-center gap-1.5 mb-1 rounded-sm hover:text-primary hover:underline"
+                  >
+                    <Mail className="h-3 w-3" /> {COMPANY.email}
+                  </a>
                   <p className="text-xs text-slate-500 flex items-center gap-1.5">
                     <MapPin className="h-3 w-3" /> {companyInfo.address}
                   </p>

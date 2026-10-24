@@ -38,17 +38,28 @@ import { VisitorProvider } from '@/contexts/VisitorContext';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { StoreAccessProvider } from '@/contexts/StoreAccessContext';
 import { CompanyProvider } from '@/contexts/CompanyContext';
-import { navItems } from '@/data/navigation';
 import { Button } from '@/app/components/ui/button';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { ClientChatWidget } from '@/components/chat/ClientChatWidget';
 import { StaffClientChatWidget } from '@/components/chat/StaffClientChatWidget';
 import { VisitorAnalyticsView } from '@/components/dashboards/components/VisitorAnalyticsView';
+import {
+  canAccessView,
+  isProtectedView,
+  pathForView,
+  routeFromLocation,
+  type ShopParams,
+} from '@/app/routes';
 
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [currentView, setCurrentView] = useState('dashboard');
+  const [currentView, setCurrentView] = useState(() =>
+    routeFromLocation(window.location.pathname, window.location.search).view,
+  );
+  const [shopParams, setShopParams] = useState<ShopParams>(() =>
+    routeFromLocation(window.location.pathname, window.location.search).shopParams,
+  );
   const { isAuthenticated, user } = useAuth();
 
   // Show splash screen for 3 seconds
@@ -59,21 +70,47 @@ function AppContent() {
     return () => clearTimeout(timer);
   }, []);
 
-  // State for shop navigation parameters
-  const [shopParams, setShopParams] = useState<{ category?: string; subCategory?: string }>({});
+  const navigateToView = useCallback((view: string, nextShopParams: ShopParams = {}, replace = false) => {
+    const resolvedShopParams = view === 'shop' ? nextShopParams : {};
+    const targetPath = pathForView(view, resolvedShopParams);
+    const currentPath = `${window.location.pathname}${window.location.search}`;
+
+    if (currentPath !== targetPath) {
+      window.history[replace ? 'replaceState' : 'pushState']({}, '', targetPath);
+    }
+
+    setCurrentView(view);
+    setShopParams(resolvedShopParams);
+  }, []);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = routeFromLocation(window.location.pathname, window.location.search);
+      setCurrentView(route.view);
+      setShopParams(route.shopParams);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    if (isAuthenticated && currentView === 'home') {
+      navigateToView('dashboard', {}, true);
+    }
+  }, [currentView, isAuthenticated, navigateToView]);
 
   // Navigate back to dashboard
   const navigateToDashboard = useCallback(() => {
-    setCurrentView('dashboard');
-  }, []);
+    navigateToView('dashboard');
+  }, [navigateToView]);
 
   if (showSplash) {
     return <SplashScreen />;
   }
 
   const handleBrowseShop = (category?: string, subCategory?: string) => {
-    setShopParams({ category, subCategory });
-    setCurrentView('shop');
+    navigateToView('shop', { category, subCategory });
   };
 
   if (!isAuthenticated && currentView !== 'shop' && currentView !== 'points-of-sale') {
@@ -82,7 +119,7 @@ function AppContent() {
         <PublicHome
           onLoginClick={() => setShowLoginModal(true)}
           onBrowseShop={handleBrowseShop}
-          onViewPointsOfSale={() => setCurrentView('points-of-sale')}
+          onViewPointsOfSale={() => navigateToView('points-of-sale')}
         />
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       </>
@@ -91,14 +128,12 @@ function AppContent() {
 
   // Handle Public Views (Guest or Authenticated)
   if (currentView === 'points-of-sale') {
-    return <PointsOfSaleView onBack={() => isAuthenticated ? setCurrentView('dashboard') : setCurrentView('home')} />;
+    return <PointsOfSaleView onBack={() => navigateToView(isAuthenticated ? 'dashboard' : 'home')} />;
   }
 
   const renderView = () => {
-    const navItem = navItems.find((item) => item.id === currentView);
-
     // Strict RBAC Check
-    if (user && navItem && !navItem.roles.includes(user.role)) {
+    if (user && isProtectedView(currentView) && !canAccessView(currentView, user.role)) {
       return (
         <div className="flex h-full flex-col items-center justify-center space-y-4 text-center">
           <div className="rounded-full bg-destructive/10 p-6">
@@ -117,9 +152,9 @@ function AppContent() {
       case 'dashboard':
         // Dashboard différent selon le rôle
         if (user?.role === 'client') {
-          return <ClientDashboard onNavigate={setCurrentView} />;
+          return <ClientDashboard onNavigate={navigateToView} />;
         }
-        return <DashboardView onNavigate={setCurrentView} />;
+        return <DashboardView onNavigate={navigateToView} />;
       case 'analytics':
         return <AnalyticsDashboard />;
       case 'articles':
@@ -170,12 +205,12 @@ function AppContent() {
       case 'settings':
         return <SettingsView onBack={navigateToDashboard} />;
       default:
-        return <DashboardView onNavigate={setCurrentView} />;
+        return <DashboardView onNavigate={navigateToView} />;
     }
   };
 
   return (
-    <DashboardLayout currentView={currentView} onViewChange={setCurrentView}>
+    <DashboardLayout currentView={currentView} onViewChange={navigateToView}>
       {renderView()}
       {/* Internal team chat (for staff) */}
       <ChatWidget />

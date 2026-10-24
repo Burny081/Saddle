@@ -9,8 +9,8 @@ export const COMPANY = {
   shortName: 'SPS',
   slogan: 'Excellence en Solutions Électriques',
   address: 'Douala, Cameroun',
-  phone: '+237 600 00 00 00',
-  email: 'contact@saddlepoint.cm',
+  phone: '+237 6 74 93 23 19',
+  email: 'bongni@saddlepoint.org',
   website: 'https://saddlepoint.cm',
   // Legal & Banking Information
   rccm: 'RC/DLA/2024/B/0000',

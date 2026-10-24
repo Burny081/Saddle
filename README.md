@@ -67,7 +67,7 @@
 🔷 TypeScript: Type Safety complet
 🎨 Tailwind CSS: Utility-first, Design System
 🗂️ React Context + état des composants: Gestion d'état
-📍 Navigation par état dans `App.tsx`: SPA sans routage URL
+📍 Navigation URL: History API, liens publics et routes d'application protégées
 📋 React Hook Form: Forms optimisés
 📊 Recharts: Graphiques interactifs
 🎭 Motion: Animations fluides
@@ -75,6 +75,14 @@
 🌐 i18n: Support multi-langues
 ♿ a11y: WCAG 2.1 AA compliant
 ```
+
+### 🔗 Navigation et contact public
+- **Accueil** : `/`
+- **Catalogue** : `/shop` (filtres partageables `category` et `subCategory`)
+- **Points de vente** : `/points-of-sale`
+- **Modules connectés** : `/app/<vue>` avec prise en charge des boutons précédent/suivant du navigateur
+- **Téléphone** : [+237 6 74 93 23 19](tel:+237674932319)
+- **Email** : [bongni@saddlepoint.org](mailto:bongni@saddlepoint.org)
 
 ---
 

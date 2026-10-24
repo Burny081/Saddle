@@ -30,7 +30,7 @@
   "framework": "React 18.3.1",          // Interface client
   "typeScript": "5.6",                  // Vérification statique
   "buildTool": "Vite 6.4.1",            // Compilation et HMR
-  "routing": "état de vue dans App.tsx",// Pas encore de routage URL
+  "routing": "History API + état de vue dans App.tsx", // URLs partageables et navigation navigateur
   "stateManagement": "React Context + état local",
   "forms": "React Hook Form 7.55.0",    // Formulaires
   "animations": "Motion 12.23.24",      // Animations client
@@ -40,6 +40,12 @@
   "testing": "Vitest 4.0.17"            // Tests unitaires
 }
 ```
+
+### 🧭 Navigation URL et contact public
+
+La navigation utilise l'History API sans dépendance de routage supplémentaire. Les parcours publics sont `/`, `/shop` et `/points-of-sale`. Les modules connectés utilisent `/app/<vue>` ; les boutons précédent/suivant restaurent la vue et les filtres catalogue. Les vues protégées continuent d'appliquer les rôles existants.
+
+Les contacts publics canoniques sont [le +237 6 74 93 23 19](tel:+237674932319) et [bongni@saddlepoint.org](mailto:bongni@saddlepoint.org).
 
 ### 🗄️ **Backend - Supabase Architecture**
 

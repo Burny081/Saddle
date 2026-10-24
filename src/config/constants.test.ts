@@ -69,6 +69,11 @@ describe('constants', () => {
       expect(COMPANY.phone).toBeDefined();
       expect(COMPANY.address).toBeDefined();
     });
+
+    it('publishes the approved public contact details', () => {
+      expect(COMPANY.phone).toBe('+237 6 74 93 23 19');
+      expect(COMPANY.email).toBe('bongni@saddlepoint.org');
+    });
   });
 
   describe('VALIDATION', () => {
