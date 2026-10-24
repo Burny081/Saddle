@@ -1,6 +1,6 @@
 # 🏪 Saddle Point Service
 
-> **Plateforme de Gestion Commerciale Premium - Production Ready**
+> **Plateforme de Gestion Commerciale Premium — build local vérifié**
 
 **Saddle Point Service** est une solution complète de gestion commerciale moderne et intelligente, spécialement conçue pour révolutionner la gestion des entreprises de solutions électriques et énergétiques en Afrique. Cette plateforme offre une expérience utilisateur exceptionnelle avec des fonctionnalités avancées de BI, CRM intégré, et gestion multi-magasins.
 
@@ -66,11 +66,11 @@
 ⚛️ React 18: Concurrent Features, Suspense
 🔷 TypeScript: Type Safety complet
 🎨 Tailwind CSS: Utility-first, Design System
-🗂️ Zustand: State Management léger
-📍 React Router: Navigation SPA
+🗂️ React Context + état des composants: Gestion d'état
+📍 Navigation par état dans `App.tsx`: SPA sans routage URL
 📋 React Hook Form: Forms optimisés
 📊 Recharts: Graphiques interactifs
-🎭 Framer Motion: Animations fluides
+🎭 Motion: Animations fluides
 💎 Lucide React: 1000+ icônes SVG
 🌐 i18n: Support multi-langues
 ♿ a11y: WCAG 2.1 AA compliant
@@ -111,7 +111,7 @@ open <https://pztiflkwumhpvtfdkoli.supabase.co>
 
 # 2. SQL Editor → Coller sps.sql (2762 lignes)
 # 3. Exécuter le script complet
-# ✅ 68 tables créées avec RLS et triggers
+# Le script contient le schéma et des déclarations RLS ; valider le résultat sur l'instance Supabase cible.
 ```
 
 ### **4. ▶️ Lancement Développement**
@@ -157,7 +157,7 @@ npm run analyze
 
 ---
 
-**🚀 Version 1.0.0 - Production Ready**
+**🚀 Version 1.0.0 — candidate au déploiement après validation de l'intégration Supabase et des contrôles de production**
 - Gestion des paiements (complets, partiels)
 - Historique des transactions
 
@@ -193,7 +193,7 @@ Tous les comptes utilisent le mot de passe: `admin123`
 - **Framework**: React 18 + Vite
 - **Styling**: Tailwind CSS v4
 - **UI Components**: Radix UI
-- **Animations**: Motion (Framer Motion)
+- **Animations**: Motion (`motion`)
 - **Thèmes**: next-themes
 - **Icons**: Lucide React
 - **State Management**: React Context API

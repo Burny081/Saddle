@@ -332,102 +332,101 @@ export async function getClientById(id: string): Promise<Client | null> {
 }
 
 /**
- * Créer un client
- * Crée un utilisateur dans 'profiles' avec role='client'
+ * Créer un client et synchroniser son profil client lorsque possible.
  */
 export async function createClient(client: Omit<Client, 'created_at' | 'updated_at' | 'total_spent'>): Promise<Client> {
   const { data, error } = await supabase
-    .from('profiles')
-    .insert({ 
-      ...client, 
-      role: 'client',
-      is_active: true 
-    })
-    .select()
-    .single();
-  if (error) throw error;
-  SYNCHRONISATION: Crée dans 'clients' ET dans 'profiles' avec role='client'
- */
-export async function createClient(client: Omit<Client, 'created_at' | 'updated_at' | 'total_spent'>): Promise<Client> {
-  // 1. Créer dans la table 'clients'
-  const { data: clientData, error: clientError } = await supabase
     .from('clients')
-    .insert({ 
-      ...client, 
-      total_spent: 0,
-      is_active: true 
-    })
+    .insert({ ...client, total_spent: 0, is_active: true })
     .select()
     .single();
-  
-  if (clientError) throw clientError;
-  
-  // 2. Créer aussi dans 'profiles' avec le même ID et role='client'
+
+  if (error) throw error;
+
   try {
-    await supabase
+    const { error: profileError } = await supabase
       .from('profiles')
       .insert({
-        id: clientData.id,
+        id: data.id,
         name: client.name,
         email: client.email,
         phone: client.phone,
         address: client.address,
         role: 'client',
-   SYNCHRONISATION: Met à jour dans 'clients' ET dans 'profiles'
+        is_active: true,
+      });
+
+    if (profileError) {
+      console.warn('Profile creation failed:', profileError);
+    }
+  } catch (profileError) {
+    console.warn('Profile creation failed:', profileError);
+  }
+
+  return data;
+}
+
+/**
+ * Mettre à jour un client et synchroniser son profil client lorsque possible.
  */
 export async function updateClient(id: string, updates: Partial<Client>): Promise<Client> {
-  // 1. Mettre à jour dans 'clients'
+  const updatedAt = new Date().toISOString();
   const { data, error } = await supabase
     .from('clients')
-    .update({ ...updates, updated_at: new Date().toISOString() })
+    .update({ ...updates, updated_at: updatedAt })
     .eq('id', id)
     .select()
     .single();
-  
+
   if (error) throw error;
-  SYNCHRONISATION: Désactive dans 'clients' ET dans 'profiles'
+
+  const profileUpdates: Record<string, string> = { updated_at: updatedAt };
+  if (updates.name !== undefined) profileUpdates.name = updates.name;
+  if (updates.email !== undefined) profileUpdates.email = updates.email;
+  if (updates.phone !== undefined) profileUpdates.phone = updates.phone;
+  if (updates.address !== undefined) profileUpdates.address = updates.address;
+
+  try {
+    const { error: profileError } = await supabase
+      .from('profiles')
+      .update(profileUpdates)
+      .eq('id', id)
+      .eq('role', 'client');
+
+    if (profileError) {
+      console.warn('Profile update failed:', profileError);
+    }
+  } catch (profileError) {
+    console.warn('Profile update failed:', profileError);
+  }
+
+  return data;
+}
+
+/**
+ * Désactiver un client et son profil client lorsque possible.
  */
 export async function deleteClient(id: string): Promise<void> {
-  // 1. Désactiver dans 'clients'
-  const { error: clientError } = await supabase
+  const { error } = await supabase
     .from('clients')
     .update({ is_active: false })
     .eq('id', id);
-    
-  if (clientError) throw clientError;
-  
-  // 2. Désactiver aussi dans 'profiles'
+
+  if (error) throw error;
+
   try {
-    await supabase
+    const { error: profileError } = await supabase
       .from('profiles')
       .update({ is_active: false })
       .eq('id', id)
       .eq('role', 'client');
+
+    if (profileError) {
+      console.warn('Profile deactivation failed:', profileError);
+    }
   } catch (profileError) {
     console.warn('Profile deactivation failed:', profileError);
-  }ate().toISOString()
-      })
-      .eq('id', id)
-      .eq('role', 'client');
-  } catch (profileError) {
-    console.warn('Profile update failed:', profileError);
   }
-  
-  return data
-
-/**
- * Supprimer un client
- * Désactive l'utilisateur dans 'profiles' (ne supprime pas)
- */
-export async function deleteClient(id: string): Promise<void> {
-  // Désactiver seulement (recommandé pour préserver l'historique)
-  const { error } = await supabase
-    .from('profiles')
-    .update({ is_active: false })
-    .eq('id', id)
-    .eq('role', 'client');
-    
-  if (error) throw error;
 }
 
 /**

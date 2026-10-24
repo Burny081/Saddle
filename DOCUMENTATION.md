@@ -10,13 +10,13 @@
 - **Optimiser** la performance opérationnelle et financière
 - **Faciliter** la transition vers l'industrie 4.0
 
-### 📊 Métriques de Performance
-- **99.9%** Uptime garanti
-- **<200ms** Temps de réponse moyen
-- **68 tables** Base de données optimisée
-- **6 rôles** Système de permissions granulaires
-- **9 modules** Fonctionnalités métier complètes
-- **2 langues** Support multilingue (FR/EN)
+### 📊 État vérifié dans le dépôt
+- **Build local** : TypeScript et Vite vérifiés localement
+- **Disponibilité et temps de réponse** : à mesurer en environnement hébergé ; aucune garantie de SLA n'est affirmée ici
+- **Schéma de données** : fourni dans `sps.sql` ; le nombre et les politiques effectifs doivent être validés sur l'instance Supabase cible
+- **7 rôles** : Super Admin, Admin, Manager, Commercial, Comptable, Secrétaire et Client
+- **Modules métier** : catalogue, ventes, stock, CRM, comptabilité, multi-magasins, administration, rapports et espace client
+- **2 langues** : français et anglais
 
 ---
 
@@ -27,18 +27,17 @@
 ```typescript
 // Stack technologique complet
 {
-  "framework": "React 18.3.1",           // Concurrent Features, Suspense, Transitions
-  "typeScript": "5.6.3",                // Type safety, IntelliSense, Refactoring
-  "buildTool": "Vite 6.0.1",            // Hot reload <50ms, Tree shaking
-  "routing": "React Router 6.28.0",     // SPA Navigation, Code splitting
-  "styling": "Tailwind CSS 4.0.0",      // Utility-first, JIT compilation
-  "stateManagement": "Zustand 5.0.1",   // Lightweight, TypeScript-first
-  "forms": "React Hook Form 7.53.2",    // Performance optimisé, validation
-  "animations": "Framer Motion 11.15.0",// 60fps, GPU-accelerated
-  "charts": "Recharts 2.13.3",          // Interactive data visualization
-  "icons": "Lucide React 0.468.0",      // 1400+ SVG icons, tree-shakable
-  "ui": "Radix UI 1.1.2",               // Accessible, headless components
-  "testing": "Vitest 2.1.8"             // Fast unit/integration tests
+  "framework": "React 18.3.1",          // Interface client
+  "typeScript": "5.6",                  // Vérification statique
+  "buildTool": "Vite 6.4.1",            // Compilation et HMR
+  "routing": "état de vue dans App.tsx",// Pas encore de routage URL
+  "stateManagement": "React Context + état local",
+  "forms": "React Hook Form 7.55.0",    // Formulaires
+  "animations": "Motion 12.23.24",      // Animations client
+  "charts": "Recharts 2.15.2",          // Visualisations
+  "icons": "Lucide React 0.487.0",      // Icônes SVG
+  "ui": "Radix UI",                     // Primitives accessibles
+  "testing": "Vitest 4.0.17"            // Tests unitaires
 }
 ```
 
@@ -1148,7 +1147,7 @@ interface ExternalIntegrations {
 interface PerformanceMetrics {
   loadingTimes: {
     initialLoad: "<800ms (incluant authentification)",
-    routeTransitions: "<200ms",
+    routeTransitions: "à mesurer en environnement hébergé",
     dataFetching: "<500ms",
     searchResults: "<300ms"
   };
@@ -1334,12 +1333,12 @@ interface TestingStrategy {
 
 ```typescript
 interface CurrentVersion {
-  status: "Production Ready";
+  status: "Build local vérifié";
   features: [
     "✅ Architecture complète React + Supabase",
     "✅ 9 modules métier opérationnels", 
-    "✅ 6 rôles utilisateur avec RBAC",
-    "✅ 68 tables base de données optimisées",
+    "✅ 7 rôles utilisateur définis avec RBAC côté interface",
+    "⚠️ Schéma Supabase et politiques à valider dans l'environnement cible",
     "✅ Interface responsive mobile-first",
     "✅ Documentation technique complète",
     "✅ Tests automatisés critiques"
@@ -1389,9 +1388,9 @@ interface FutureVersions {
 
 ---
 
-## 🎊 État de Production
+## 🎊 État de préparation
 
-**Saddle Point Service** est une solution complète et moderne **100% prête pour la production**. Avec son architecture robuste **React + Supabase**, ses **68 tables** optimisées, son système d'authentification à **6 rôles**, et ses **9 modules métier** complets, elle représente l'état de l'art en matière de gestion commerciale digitale pour l'Afrique.
+**Saddle Point Service** possède une base fonctionnelle large avec React et Supabase, sept rôles et plusieurs modules métier. La préparation au déploiement dépend encore de la validation de l'environnement Supabase, des politiques effectives, de la confidentialité, des performances et des parcours critiques.
 
 ### 🚀 **Prêt pour le Lancement**
 
@@ -1408,7 +1407,7 @@ interface FutureVersions {
 ---
 
 *Documentation technique mise à jour le 22 janvier 2026*  
-*Version: 1.0.0 - Production Ready - 2762 lignes SQL*
+*Version: 1.0.0 — état du dépôt vérifié localement ; déploiement à valider séparément*
 
 ---
 
@@ -1609,14 +1608,14 @@ src/
 ## 🗄️ Base de Données
 
 ### **📊 Architecture PostgreSQL**
-- **68 tables relationnelles** avec Supabase
-- **2762 lignes SQL** prêtes pour déploiement
-- **Row Level Security (RLS)** pour sécurité maximale
+- **Schéma relationnel** fourni pour Supabase
+- **Script SQL** à appliquer et vérifier dans un environnement contrôlé
+- **Déclarations Row Level Security (RLS)** à confirmer après déploiement
 - **Triggers et fonctions** pour logique métier
 - **Index optimisés** pour performance
 
 ### **🔐 Tables Principales**
-- `users` - Utilisateurs avec 6 rôles
+- `profiles` - Utilisateurs avec 7 rôles applicatifs
 - `stores` - Gestion multi-magasins
 - `articles` / `services` - Catalogue complet
 - `sales` / `sale_items` - Transactions de vente
@@ -1628,7 +1627,7 @@ src/
 
 ## 🎊 Conclusion
 
-**Saddle Point Service** est une solution complète et moderne prête pour la production. Avec ses 68 tables, 6 rôles utilisateurs, et ses fonctionnalités avancées, elle représente l'état de l'art en matière de gestion commerciale pour l'Afrique.
+**Saddle Point Service** est une plateforme de gestion commerciale riche en fonctionnalités. Avant un lancement, valider l'infrastructure Supabase, l'observabilité, les performances, les sauvegardes, les contrôles d'accès effectifs et les parcours métiers critiques.
 
 **🗃️ Fichier SQL**: [sps.sql](sps.sql) - 2762 lignes prêtes pour Supabase  
 **🔑 Configuration**: .env.local configuré avec les credentials Supabase
@@ -1638,4 +1637,4 @@ src/
 ---
 
 *Documentation mise à jour le 22 janvier 2026*
-*Version: 1.0.0 - Production Ready*
+*Version: 1.0.0 — documentation alignée sur l'implémentation vérifiée localement*
