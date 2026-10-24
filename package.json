@@ -5,16 +5,16 @@
   "type": "module",
   "description": "Premium Commercial Management Dashboard for Saddle Point Service",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "vite --configLoader runner",
+    "build": "tsc && vite build --configLoader runner",
+    "preview": "vite preview --configLoader runner",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
-    "test": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
+    "test": "vitest --configLoader runner",
+    "test:ui": "vitest --configLoader runner --ui",
+    "test:coverage": "vitest --configLoader runner run --coverage",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
