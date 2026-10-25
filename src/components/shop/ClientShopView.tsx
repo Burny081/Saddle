@@ -11,9 +11,11 @@ import {
     ArrowLeft,
     Grid,
     List,
+    ChevronLeft,
+    ChevronRight,
     TrendingUp,
     Star,
-    Sparkles
+    PackageSearch
 } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
@@ -35,6 +37,8 @@ interface CartItem {
     image?: string;
 }
 
+export const SHOP_PAGE_SIZE = 24;
+
 
 interface ClientShopViewProps {
     initialCategory?: string;
@@ -51,6 +55,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
     const [orderPlaced, setOrderPlaced] = useState(false);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [sortBy, setSortBy] = useState<'name' | 'price-asc' | 'price-desc' | 'popular'>('popular');
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Favorites State
     const [favorites, setFavorites] = useState<string[]>([]);
@@ -135,6 +140,20 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
         return all;
     }, [articles, services, itemSearch, showFavoritesOnly, favorites, activeCategory, sortBy]);
 
+    const pageCount = Math.max(1, Math.ceil(filteredItems.length / SHOP_PAGE_SIZE));
+    const pageItems = useMemo(
+        () => filteredItems.slice((currentPage - 1) * SHOP_PAGE_SIZE, currentPage * SHOP_PAGE_SIZE),
+        [currentPage, filteredItems],
+    );
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [itemSearch, showFavoritesOnly, activeCategory, sortBy]);
+
+    useEffect(() => {
+        if (currentPage > pageCount) setCurrentPage(pageCount);
+    }, [currentPage, pageCount]);
+
 
     const addToCart = (item: (Article | Service) & { type: 'article' | 'service' }) => {
         setCart(prev => {
@@ -208,33 +227,27 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
     };
 
     return (
-        <div className="space-y-6 h-full flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-6 rounded-2xl">
-            {/* Hero Header */}
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-white shadow-2xl">
-                <div className="absolute top-0 right-0 -mt-10 -mr-10 h-40 w-40 rounded-full bg-white opacity-10"></div>
-                <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-32 w-32 rounded-full bg-white opacity-10"></div>
-                
-                <div className="relative z-10">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+        <div className="flex h-full flex-col space-y-6">
+            <header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
+                <div className="flex items-start gap-3 sm:gap-4">
                             {onBack && (
                                 <Button
-                                    variant="ghost"
-                                    size="icon"
+                                    variant="outline"
                                     onClick={onBack}
-                                    className="h-12 w-12 rounded-full bg-white/20 hover:bg-white/30 text-white border-0"
-                                    aria-label="Retour au tableau de bord"
+                                    className="h-11 shrink-0 border-slate-300 bg-white px-3 font-bold text-slate-900 hover:border-[#124a93] hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white"
+                                    aria-label="Retour"
                                 >
-                                    <ArrowLeft className="h-6 w-6" />
+                                    <ArrowLeft className="mr-2 h-4 w-4" />
+                                    Retour
                                 </Button>
                             )}
                             <div>
-                                <p className="text-blue-100 text-sm font-medium flex items-center gap-2">
-                                    <Sparkles className="h-4 w-4" />
-                                    Découvrez nos produits
+                                <p className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#b7212d]">
+                                    <PackageSearch className="h-4 w-4" />
+                                    Catalogue SaddlePoint
                                 </p>
-                                <h1 className="text-4xl font-bold mt-1 mb-1">Boutique Premium</h1>
-                                <p className="text-blue-100 text-lg">
+                                <h1 className="mb-1 mt-2 font-[var(--font-display)] text-3xl font-bold tracking-[-0.035em] text-foreground sm:text-4xl">Boutique</h1>
+                                <p className="text-sm text-muted-foreground sm:text-base">
                                     {filteredItems.length} produits disponibles
                                 </p>
                             </div>
@@ -243,23 +256,21 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                             <Button
                                 variant={showFavoritesOnly ? "secondary" : "ghost"}
                                 onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                                className={`rounded-xl ${showFavoritesOnly ? "bg-white text-red-600 hover:bg-white/90" : "bg-white/20 hover:bg-white/30 text-white border-0"}`}
+                                className={showFavoritesOnly ? "bg-red-50 text-[#b7212d] hover:bg-red-100" : "border border-border bg-card hover:bg-muted"}
                             >
                                 <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? "fill-current" : ""}`} />
                                 {showFavoritesOnly ? `Favoris (${favorites.length})` : "Mes Favoris"}
                             </Button>
-                            <div className="bg-white/20 rounded-xl p-3 backdrop-blur-sm">
-                                <ShoppingCart className="h-6 w-6 text-white" />
+                            <div className="relative border border-border bg-card p-3">
+                                <ShoppingCart className="h-6 w-6 text-[#124a93]" />
                                 {cart.length > 0 && (
-                                    <span className="absolute -mt-8 -mr-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                                    <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#b7212d] text-xs font-bold text-white">
                                         {cart.length}
                                     </span>
                                 )}
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
+            </header>
 
             {/* Filters & Search Bar */}
             <div className="flex flex-col md:flex-row gap-4">
@@ -319,7 +330,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                     ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" 
                                     : "space-y-4"
                                 }>
-                                    {filteredItems.map(item => (
+                                    {pageItems.map(item => (
                                         viewMode === 'grid' ? (
                                             // Grid View
                                             <motion.div
@@ -483,6 +494,22 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                     <h3 className="text-xl font-semibold text-slate-700 mb-2">Aucun produit trouvé</h3>
                                     <p className="text-slate-500">Essayez de modifier vos filtres ou votre recherche</p>
                                 </div>
+                            )}
+                            {filteredItems.length > SHOP_PAGE_SIZE && (
+                                <nav aria-label="Pagination du catalogue" className="mt-6 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-between">
+                                    <p className="text-sm text-muted-foreground">
+                                        {Math.min((currentPage - 1) * SHOP_PAGE_SIZE + 1, filteredItems.length)}–{Math.min(currentPage * SHOP_PAGE_SIZE, filteredItems.length)} sur {filteredItems.length}
+                                    </p>
+                                    <div className="flex items-center gap-2">
+                                        <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(page => page - 1)}>
+                                            <ChevronLeft className="mr-1 h-4 w-4" /> Précédent
+                                        </Button>
+                                        <span className="px-2 text-sm font-bold text-foreground">Page {currentPage} / {pageCount}</span>
+                                        <Button variant="outline" size="sm" disabled={currentPage === pageCount} onClick={() => setCurrentPage(page => page + 1)}>
+                                            Suivant <ChevronRight className="ml-1 h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </nav>
                             )}
                         </CardContent>
                     </Card>
