@@ -31,6 +31,12 @@ describe('ClientShopView', () => {
     expect(screen.queryByRole('option', { name: /🔥|🔤|💰|💎/ })).not.toBeInTheDocument();
   });
 
+  it('offers a category filter alongside catalogue search and sorting', () => {
+    render(<ClientShopView onBack={vi.fn()} />);
+
+    expect(screen.getByRole('combobox', { name: 'Filtrer par catégorie' })).toBeInTheDocument();
+  });
+
   it('provides a dedicated mobile action to open the cart', () => {
     render(<ClientShopView onBack={vi.fn()} />);
 

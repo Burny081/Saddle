@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ThemeProvider } from 'next-themes';
-import { AlertTriangle, ArrowLeft, LogIn } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Globe, LogIn, Mail, MapPin, Phone } from 'lucide-react';
 import { SplashScreen } from '@/components/SplashScreen';
 import { PublicHome } from '@/components/PublicHome';
 import { LoginModal } from '@/components/LoginModal';
@@ -31,7 +31,7 @@ import { StoresView } from '@/components/stores/StoresView';
 import ComptableView from '@/components/comptable/ComptableView';
 import CommercialView from '@/components/commercial/CommercialView';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import { LanguageProvider } from '@/contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { DataProvider } from '@/contexts/DataContext';
 import { ChatProvider } from '@/contexts/ChatContext';
 import { VisitorProvider } from '@/contexts/VisitorContext';
@@ -39,6 +39,7 @@ import { AlertProvider } from '@/contexts/AlertContext';
 import { StoreAccessProvider } from '@/contexts/StoreAccessContext';
 import { CompanyProvider } from '@/contexts/CompanyContext';
 import { Button } from '@/app/components/ui/button';
+import { COMPANY } from '@/config/constants';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { ClientChatWidget } from '@/components/chat/ClientChatWidget';
 import { StaffClientChatWidget } from '@/components/chat/StaffClientChatWidget';
@@ -61,6 +62,7 @@ function AppContent() {
     routeFromLocation(window.location.pathname, window.location.search).shopParams,
   );
   const { isAuthenticated, user } = useAuth();
+  const { language, setLanguage } = useLanguage();
 
   // Show splash screen for 3 seconds
   useEffect(() => {
@@ -135,6 +137,16 @@ function AppContent() {
     return (
       <>
         <div className="min-h-screen bg-[#f7f8fa] text-foreground dark:bg-slate-950">
+          <div className="border-b border-white/10 bg-slate-950 text-slate-200">
+            <div className="mx-auto flex min-h-9 max-w-7xl flex-wrap items-center justify-between gap-x-5 gap-y-1 px-4 py-1.5 text-[11px] font-medium tracking-wide sm:px-6 lg:px-8">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
+                <a href="tel:+237674932319" className="inline-flex items-center gap-1.5 transition-colors hover:text-white"><Phone className="h-3 w-3" /> {COMPANY.phone}</a>
+                <a href={`mailto:${COMPANY.email}`} className="inline-flex items-center gap-1.5 transition-colors hover:text-white"><Mail className="h-3 w-3" /> {COMPANY.email}</a>
+                <span className="inline-flex items-center gap-1.5 text-slate-400"><MapPin className="h-3 w-3" /> {COMPANY.address}</span>
+              </div>
+              <Button variant="ghost" size="sm" className="h-7 px-2 text-[11px] text-slate-300 hover:bg-white/10 hover:text-white" onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')} aria-label="Changer de langue"><Globe className="mr-1 h-3 w-3" />{language === 'fr' ? 'FR' : 'EN'}</Button>
+            </div>
+          </div>
           <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
             <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
               <button

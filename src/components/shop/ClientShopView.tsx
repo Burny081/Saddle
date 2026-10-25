@@ -243,6 +243,11 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
         return all;
     }, [articles, services, itemSearch, showFavoritesOnly, favorites, activeCategory, sortBy]);
 
+    const categories = useMemo(() => Array.from(new Set([
+        ...articles.map((article) => article.category),
+        ...services.map((service) => service.category),
+    ].filter(Boolean))).sort((a, b) => a.localeCompare(b)), [articles, services]);
+
     const pageCount = Math.max(1, Math.ceil(filteredItems.length / SHOP_PAGE_SIZE));
     const pageItems = useMemo(
         () => filteredItems.slice((currentPage - 1) * SHOP_PAGE_SIZE, currentPage * SHOP_PAGE_SIZE),
@@ -392,7 +397,16 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
                     />
                 </div>
                 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
+                    <select
+                        value={activeCategory ?? ''}
+                        onChange={(e) => setActiveCategory(e.target.value || undefined)}
+                        className="min-w-[170px] border border-border bg-card px-3 py-2.5 text-sm font-semibold text-foreground shadow-sm"
+                        aria-label="Filtrer par catégorie"
+                    >
+                        <option value="">Toutes les catégories</option>
+                        {categories.map((category) => <option key={category} value={category}>{category}</option>)}
+                    </select>
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
