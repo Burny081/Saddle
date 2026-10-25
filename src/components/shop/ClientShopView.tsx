@@ -35,6 +35,7 @@ import { ProductDetailsDialog } from './ProductDetailsDialog';
 import { LoginModal } from '@/components/LoginModal';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatCurrency } from '@/config/constants';
+import { hasFavorite, readFavorites, writeFavorites, type FavoriteReference } from '@/utils/favorites';
 
 interface CartItem {
     id: string;
@@ -163,7 +164,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
     const [currentPage, setCurrentPage] = useState(1);
 
     // Favorites State
-    const [favorites, setFavorites] = useState<string[]>([]);
+    const [favorites, setFavorites] = useState<FavoriteReference[]>([]);
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
     // Dialog State
@@ -184,21 +185,18 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
 
     // Load favorites from local storage on mount
     useEffect(() => {
-        const saved = localStorage.getItem(`favorites_${user?.id}`);
-        if (saved) {
-            setFavorites(JSON.parse(saved));
-        }
+        setFavorites(readFavorites(user?.id));
     }, [user?.id]);
 
-    const toggleFavorite = (id: string) => {
-        let newFavs;
-        if (favorites.includes(id)) {
-            newFavs = favorites.filter(favId => favId !== id);
+    const toggleFavorite = (item: (Article | Service) & { type: 'article' | 'service' }) => {
+        let nextFavorites: FavoriteReference[];
+        if (hasFavorite(favorites, item.type, item.id)) {
+            nextFavorites = favorites.filter((favorite) => !(favorite.id === item.id && (!favorite.type || favorite.type === item.type)));
         } else {
-            newFavs = [...favorites, id];
+            nextFavorites = [...favorites, { id: item.id, type: item.type }];
         }
-        setFavorites(newFavs);
-        localStorage.setItem(`favorites_${user?.id}`, JSON.stringify(newFavs));
+        setFavorites(nextFavorites);
+        writeFavorites(user?.id, nextFavorites);
     };
 
     // Filter items based on search, favorites, and category
@@ -209,7 +207,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
         let all = [...arts, ...servs];
 
         if (showFavoritesOnly) {
-            all = all.filter(item => favorites.includes(item.id));
+            all = all.filter(item => hasFavorite(favorites, item.type, item.id));
         }
 
         if (activeCategory) {
@@ -485,9 +483,9 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
                                                         size="icon"
                                                         variant="ghost"
                                                         className="absolute top-3 right-3 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm hover:bg-red-500 hover:text-white transition-all shadow-lg"
-                                                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
+                                                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item); }}
                                                     >
-                                                        <Heart className={`h-4 w-4 ${favorites.includes(item.id) ? "fill-red-500 text-red-500" : ""}`} />
+                                                        <Heart className={`h-4 w-4 ${hasFavorite(favorites, item.type, item.id) ? "fill-red-500 text-red-500" : ""}`} />
                                                     </Button>
                                                 </div>
 
@@ -543,9 +541,9 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
                                                         size="icon"
                                                         variant="ghost"
                                                         className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm hover:bg-red-500 hover:text-white"
-                                                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item.id); }}
+                                                        onClick={(e) => { e.stopPropagation(); toggleFavorite(item); }}
                                                     >
-                                                        <Heart className={`h-4 w-4 ${favorites.includes(item.id) ? "fill-red-500 text-red-500" : ""}`} />
+                                                        <Heart className={`h-4 w-4 ${hasFavorite(favorites, item.type, item.id) ? "fill-red-500 text-red-500" : ""}`} />
                                                     </Button>
                                                 </div>
                                                 <div className="flex-1 flex flex-col justify-between">
@@ -808,8 +806,8 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, sh
                     onClose={() => setSelectedItem(null)}
                     item={selectedItem}
                     onAddToCart={addToCart}
-                    isFavorite={favorites.includes(selectedItem.id)}
-                    onToggleFavorite={() => toggleFavorite(selectedItem.id)}
+                    isFavorite={hasFavorite(favorites, selectedItem.type, selectedItem.id)}
+                    onToggleFavorite={() => toggleFavorite(selectedItem)}
                 />
             )}
 
