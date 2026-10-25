@@ -24,7 +24,7 @@ const navProducts = [
     title: { en: 'Best Sellers', fr: 'Meilleures Ventes' },
     description: { en: 'Our most popular trusted solutions', fr: 'Nos solutions les plus populaires' },
     icon: 'TrendingUp',
-    image: '/images/saddlepoint-hero-engineer-v1.png',
+    image: '/images/saddlepoint-power-distribution-v1.png',
     items: [
       { id: 'transformers', name: { en: 'HV Transformers', fr: 'Transformateurs HT' } },
       { id: 'solar-kits', name: { en: 'Solar Kits', fr: 'Kits Solaires' } },

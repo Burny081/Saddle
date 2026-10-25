@@ -11,7 +11,7 @@ const categories = [
     id: 'power',
     name: { en: 'Power & Distribution', fr: 'Énergie & Distribution' },
     icon: 'Zap',
-    image: '/images/saddlepoint-industrial-control-v1.png',
+    image: '/images/saddlepoint-electrical-protection-v1.png',
     subCategories: [
       { id: 'transformers', name: { en: 'Transformers', fr: 'Transformateurs' } },
       { id: 'breakers', name: { en: 'Circuit Breakers', fr: 'Disjoncteurs' } },
@@ -22,7 +22,7 @@ const categories = [
     id: 'renewable',
     name: { en: 'Renewable Energy', fr: 'Énergies Renouvelables' },
     icon: 'Sun',
-    image: '/images/saddlepoint-solar-team-v1.png',
+    image: '/images/saddlepoint-solar-consultation-v1.png',
     subCategories: [
       { id: 'solar', name: { en: 'Solar Panels', fr: 'Panneaux Solaires' } },
       { id: 'inverters', name: { en: 'Inverters', fr: 'Onduleurs' } },
@@ -33,7 +33,7 @@ const categories = [
     id: 'security',
     name: { en: 'Security', fr: 'Sécurité' },
     icon: 'Shield',
-    image: '/images/saddlepoint-hero-engineer-v1.png',
+    image: '/images/saddlepoint-client-consultation-v1.png',
     subCategories: [
       { id: 'cameras', name: { en: 'CCTV Cameras', fr: 'Caméras Vidéosurveillance' } },
       { id: 'alarms', name: { en: 'Alarm Systems', fr: 'Systèmes d\'Alarme' } },
@@ -44,7 +44,7 @@ const categories = [
     id: 'automation',
     name: { en: 'Automation', fr: 'Automatisme' },
     icon: 'Cpu',
-    image: '/images/saddlepoint-client-consultation-v1.png',
+    image: '/images/saddlepoint-automation-control-v1.png',
     subCategories: [
       { id: 'plc', name: { en: 'PLCs', fr: 'Automates Programmables' } },
       { id: 'hmi', name: { en: 'HMIs', fr: 'IHM' } },

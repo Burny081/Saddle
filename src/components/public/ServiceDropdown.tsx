@@ -24,7 +24,7 @@ const navServices = [
     title: { en: 'Maintenance', fr: 'Maintenance' },
     description: { en: '24/7 support and preventive care', fr: 'Support 24/7 et maintenance préventive' },
     icon: 'Activity',
-    image: '/images/saddlepoint-industrial-control-v1.png',
+    image: '/images/saddlepoint-maintenance-team-v1.png',
     items: [
       { id: 'contracts', name: { en: 'Service Contracts', fr: 'Contrats de Service' } },
       { id: 'emergency', name: { en: 'Emergency Repairs', fr: 'Réparations d\'Urgence' } },
@@ -36,7 +36,7 @@ const navServices = [
     title: { en: 'Consulting', fr: 'Conseil' },
     description: { en: 'Expert guidance for your projects', fr: 'Accompagnement expert pour vos projets' },
     icon: 'Lightbulb',
-    image: '/images/saddlepoint-client-consultation-v1.png',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'energy-consulting', name: { en: 'Energy Consulting', fr: 'Conseil Énergétique' } },
       { id: 'project-management', name: { en: 'Project Management', fr: 'Gestion de Projet' } },
