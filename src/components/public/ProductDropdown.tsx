@@ -12,7 +12,7 @@ const navProducts = [
     title: { en: 'New Arrivals', fr: 'Nouveautés' },
     description: { en: 'The latest tech in power management', fr: 'Les dernières technologies de gestion d\'énergie' },
     icon: 'Sparkles',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'smart-breakers', name: { en: 'Smart Breakers', fr: 'Disjoncteurs Intelligents' } },
       { id: 'iot-sensors', name: { en: 'IoT Power Sensors', fr: 'Capteurs IoT' } },
@@ -24,7 +24,7 @@ const navProducts = [
     title: { en: 'Best Sellers', fr: 'Meilleures Ventes' },
     description: { en: 'Our most popular trusted solutions', fr: 'Nos solutions les plus populaires' },
     icon: 'TrendingUp',
-    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'transformers', name: { en: 'HV Transformers', fr: 'Transformateurs HT' } },
       { id: 'solar-kits', name: { en: 'Solar Kits', fr: 'Kits Solaires' } },
@@ -36,7 +36,7 @@ const navProducts = [
     title: { en: 'Promotions', fr: 'Promotions' },
     description: { en: 'Limited time offers and discounts', fr: 'Offres limitées et réductions' },
     icon: 'Percent',
-    image: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'clearance', name: { en: 'Clearance', fr: 'Déstockage' } },
       { id: 'bundles', name: { en: 'Project Bundles', fr: 'Packs Projet' } },

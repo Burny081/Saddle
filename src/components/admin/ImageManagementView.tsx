@@ -12,7 +12,7 @@ export default function ImageManagementView() {
   const [images, setImages] = useState<GalleryImage[]>([
     {
       id: '1',
-      url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
+      url: '/images/saddlepoint-cameroon-workspace-v1.png',
       name: 'casque-audio.jpg',
       size: 245678,
       uploadedAt: new Date(2024, 0, 15),
@@ -21,7 +21,7 @@ export default function ImageManagementView() {
     },
     {
       id: '2',
-      url: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500',
+      url: '/images/saddlepoint-cameroon-workspace-v1.png',
       name: 'lunettes-soleil.jpg',
       size: 189234,
       uploadedAt: new Date(2024, 0, 20),
@@ -30,7 +30,7 @@ export default function ImageManagementView() {
     },
     {
       id: '3',
-      url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
+      url: '/images/saddlepoint-cameroon-workspace-v1.png',
       name: 'montre-connectee.jpg',
       size: 312456,
       uploadedAt: new Date(2024, 0, 25),
@@ -39,7 +39,7 @@ export default function ImageManagementView() {
     },
     {
       id: '4',
-      url: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500',
+      url: '/images/saddlepoint-cameroon-workspace-v1.png',
       name: 'sneakers.jpg',
       size: 278901,
       uploadedAt: new Date(2024, 1, 1),

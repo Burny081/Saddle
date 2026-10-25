@@ -12,7 +12,7 @@ const navServices = [
     title: { en: 'Installation', fr: 'Installation' },
     description: { en: 'Professional setup by certified experts', fr: 'Configuration par des experts certifiés' },
     icon: 'Wrench',
-    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'industrial', name: { en: 'Industrial Setup', fr: 'Installation Industrielle' } },
       { id: 'residential', name: { en: 'Home Systems', fr: 'Systèmes Résidentiels' } },
@@ -24,7 +24,7 @@ const navServices = [
     title: { en: 'Maintenance', fr: 'Maintenance' },
     description: { en: '24/7 support and preventive care', fr: 'Support 24/7 et maintenance préventive' },
     icon: 'Activity',
-    image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'contracts', name: { en: 'Service Contracts', fr: 'Contrats de Service' } },
       { id: 'emergency', name: { en: 'Emergency Repairs', fr: 'Réparations d\'Urgence' } },
@@ -36,7 +36,7 @@ const navServices = [
     title: { en: 'Consulting', fr: 'Conseil' },
     description: { en: 'Expert guidance for your projects', fr: 'Accompagnement expert pour vos projets' },
     icon: 'Lightbulb',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     items: [
       { id: 'energy-consulting', name: { en: 'Energy Consulting', fr: 'Conseil Énergétique' } },
       { id: 'project-management', name: { en: 'Project Management', fr: 'Gestion de Projet' } },

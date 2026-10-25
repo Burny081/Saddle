@@ -11,7 +11,7 @@ const categories = [
     id: 'power',
     name: { en: 'Power & Distribution', fr: 'Énergie & Distribution' },
     icon: 'Zap',
-    image: 'https://images.unsplash.com/photo-1487875961445-47a00398c267?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     subCategories: [
       { id: 'transformers', name: { en: 'Transformers', fr: 'Transformateurs' } },
       { id: 'breakers', name: { en: 'Circuit Breakers', fr: 'Disjoncteurs' } },
@@ -22,7 +22,7 @@ const categories = [
     id: 'renewable',
     name: { en: 'Renewable Energy', fr: 'Énergies Renouvelables' },
     icon: 'Sun',
-    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     subCategories: [
       { id: 'solar', name: { en: 'Solar Panels', fr: 'Panneaux Solaires' } },
       { id: 'inverters', name: { en: 'Inverters', fr: 'Onduleurs' } },
@@ -33,7 +33,7 @@ const categories = [
     id: 'security',
     name: { en: 'Security', fr: 'Sécurité' },
     icon: 'Shield',
-    image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     subCategories: [
       { id: 'cameras', name: { en: 'CCTV Cameras', fr: 'Caméras Vidéosurveillance' } },
       { id: 'alarms', name: { en: 'Alarm Systems', fr: 'Systèmes d\'Alarme' } },
@@ -44,7 +44,7 @@ const categories = [
     id: 'automation',
     name: { en: 'Automation', fr: 'Automatisme' },
     icon: 'Cpu',
-    image: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?auto=format&fit=crop&q=80&w=1200',
+    image: '/images/saddlepoint-cameroon-workspace-v1.png',
     subCategories: [
       { id: 'plc', name: { en: 'PLCs', fr: 'Automates Programmables' } },
       { id: 'hmi', name: { en: 'HMIs', fr: 'IHM' } },

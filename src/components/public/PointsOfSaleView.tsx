@@ -49,7 +49,7 @@ export function PointsOfSaleView({ onBack }: PointsOfSaleViewProps) {
                         foundedYear: s.founded_year || new Date().getFullYear(),
                         services: [],
                         features: [],
-                        image: s.image || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200',
+                        image: s.image || '/images/saddlepoint-cameroon-workspace-v1.png',
                         isHeadquarters: s.is_headquarters,
                         isActive: s.is_active,
                         coordinates: s.latitude && s.longitude ? { lat: s.latitude, lng: s.longitude } : undefined,
@@ -88,7 +88,7 @@ export function PointsOfSaleView({ onBack }: PointsOfSaleViewProps) {
             <div className="relative h-[400px] w-full overflow-hidden bg-slate-900">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-slate-900/80 z-10" />
                 <img
-                    src="https://images.unsplash.com/photo-1577412647305-991150c7d163?auto=format&fit=crop&q=80&w=2000"
+                    src="/images/saddlepoint-cameroon-workspace-v1.png"
                     alt="Map Background"
                     className="absolute inset-0 w-full h-full object-cover opacity-30"
                 />
