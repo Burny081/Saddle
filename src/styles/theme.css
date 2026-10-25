@@ -292,3 +292,20 @@
     @apply bg-card border border-border rounded-lg p-6 border-l-4 border-l-info;
   }
 }
+
+/* Keeps the remaining authenticated legacy views visually aligned while their
+   data-heavy workflows retain their existing component contracts. */
+[data-workspace="authenticated"] [class*="bg-gradient-to-br"],
+[data-workspace="authenticated"] [class*="bg-gradient-to-r"] {
+  background-image: none !important;
+  background-color: var(--primary) !important;
+}
+
+[data-workspace="authenticated"] [class*="bg-clip-text"][class*="text-transparent"] {
+  background-image: none !important;
+  color: var(--primary) !important;
+}
+
+[data-workspace="authenticated"] [class*="border-none"] {
+  border-color: var(--border) !important;
+}
