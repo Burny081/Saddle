@@ -674,3 +674,20 @@ export const mockVisitors: Visitor[] = [
     device: 'Desktop'
   }
 ];
+
+// Keep demo/catalogue imagery local and brand-consistent. Product records may
+// still contain their historic remote source for migration purposes, but the
+// UI always receives the Cameroon SaddlePoint editorial asset.
+const saddlePointEditorialImage = '/images/saddlepoint-cameroon-workspace-v1.png';
+const replaceRemoteDemoImages = <T extends { image?: string }>(items: T[]) => {
+  items.forEach((item) => {
+    if (item.image?.includes('images.unsplash.com')) item.image = saddlePointEditorialImage;
+  });
+};
+
+replaceRemoteDemoImages(mockPointsOfSale);
+replaceRemoteDemoImages(mockArticles);
+replaceRemoteDemoImages(mockServices);
+replaceRemoteDemoImages(categories);
+replaceRemoteDemoImages(navProducts);
+replaceRemoteDemoImages(navServices);
