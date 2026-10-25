@@ -20,6 +20,14 @@ import {
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
+import {
+    Drawer,
+    DrawerContent,
+    DrawerDescription,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from '@/app/components/ui/drawer';
 import { useData } from '@/contexts/DataContext';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Article, Service } from '@/types/compatibility';
@@ -44,9 +52,105 @@ interface ClientShopViewProps {
     initialCategory?: string;
     initialSubCategory?: string;
     onBack?: () => void;
+    onLoginRequired?: () => void;
 }
 
-export function ClientShopView({ initialCategory, initialSubCategory, onBack }: ClientShopViewProps) {
+interface CartPanelProps {
+    cart: CartItem[];
+    orderPlaced: boolean;
+    totalAmount: number;
+    onQuantityChange: (index: number, delta: number) => void;
+    onRemove: (index: number) => void;
+    onCheckout: () => void;
+}
+
+function CartPanel({ cart, orderPlaced, totalAmount, onQuantityChange, onRemove, onCheckout }: CartPanelProps) {
+    return (
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border bg-slate-950 px-5 py-4 text-white">
+                <div>
+                    <p className="flex items-center gap-2 text-lg font-bold">
+                        <ShoppingCart className="h-5 w-5" /> Mon panier
+                    </p>
+                    <p className="mt-1 text-xs text-slate-300">Vos articles restent disponibles ici.</p>
+                </div>
+                {cart.length > 0 && (
+                    <span className="border border-white/25 bg-white/10 px-2.5 py-1 text-sm font-bold">
+                        {cart.reduce((total, item) => total + item.quantity, 0)}
+                    </span>
+                )}
+            </div>
+            {orderPlaced ? (
+                <div className="flex flex-1 flex-col items-center justify-center p-6 text-center">
+                    <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
+                        <CheckCircle2 className="h-8 w-8" />
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground">Commande confirmée</h3>
+                    <p className="mt-2 max-w-xs text-sm leading-6 text-muted-foreground">Nous traiterons votre demande dans les plus brefs délais.</p>
+                </div>
+            ) : (
+                <>
+                    <div className="min-h-[14rem] flex-1 space-y-3 overflow-y-auto p-4">
+                        <AnimatePresence initial={false}>
+                            {cart.length === 0 ? (
+                                <div className="flex h-full flex-col items-center justify-center py-10 text-center">
+                                    <div className="mb-4 border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800">
+                                        <ShoppingCart className="h-10 w-10 text-slate-300" />
+                                    </div>
+                                    <h3 className="font-semibold text-foreground">Panier vide</h3>
+                                    <p className="mt-1 text-sm text-muted-foreground">Ajoutez des produits pour commencer.</p>
+                                </div>
+                            ) : (
+                                cart.map((item, index) => (
+                                    <motion.div
+                                        key={`${item.type}-${item.id}`}
+                                        initial={{ opacity: 0, x: 12 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -12 }}
+                                        className="flex gap-3 border border-border bg-card p-3 shadow-sm"
+                                    >
+                                        {item.image && <img src={item.image} alt="" className="h-16 w-16 shrink-0 object-cover" />}
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-sm font-bold text-foreground">{item.name}</p>
+                                            <p className="mt-1 text-xs text-muted-foreground">{formatCurrency(item.price)} × {item.quantity}</p>
+                                            <div className="mt-3 flex items-center gap-2">
+                                                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onQuantityChange(index, -1)} aria-label={`Retirer une unité de ${item.name}`}>−</Button>
+                                                <span className="min-w-6 text-center text-sm font-bold">{item.quantity}</span>
+                                                <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => onQuantityChange(index, 1)} aria-label={`Ajouter une unité de ${item.name}`}>+</Button>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col items-end justify-between gap-2">
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-[#b7212d] hover:bg-red-50 hover:text-[#941b25]" onClick={() => onRemove(index)} aria-label={`Supprimer ${item.name}`}>
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                            <span className="text-sm font-bold text-[#124a93]">{formatCurrency(item.price * item.quantity)}</span>
+                                        </div>
+                                    </motion.div>
+                                ))
+                            )}
+                        </AnimatePresence>
+                    </div>
+                    {cart.length > 0 && (
+                        <div className="space-y-4 border-t border-border bg-muted/35 p-5">
+                            <div className="flex items-end justify-between gap-4">
+                                <div>
+                                    <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">Total estimé</p>
+                                    <p className="mt-1 text-xl font-bold text-foreground">{formatCurrency(totalAmount)}</p>
+                                </div>
+                                <span className="text-xs font-semibold text-emerald-700">Livraison à confirmer</span>
+                            </div>
+                            <Button className="h-12 w-full bg-[#124a93] font-bold text-white hover:bg-[#0b3978]" onClick={onCheckout}>
+                                <Receipt className="mr-2 h-5 w-5" /> Valider la commande
+                            </Button>
+                        </div>
+                    )}
+                </>
+            )}
+        </div>
+    );
+}
+
+export function ClientShopView({ initialCategory, initialSubCategory, onBack, onLoginRequired }: ClientShopViewProps) {
     const { user } = useAuth();
     const { articles, services, addSale } = useData();
 
@@ -191,12 +295,17 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
     const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
     const [showLogin, setShowLogin] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
     const handleCheckout = () => {
         if (cart.length === 0) return;
 
         if (!user) {
-            setShowLogin(true);
+            if (onLoginRequired) {
+                onLoginRequired();
+            } else {
+                setShowLogin(true);
+            }
             return;
         }
 
@@ -227,7 +336,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
     };
 
     return (
-        <div className="flex h-full flex-col space-y-6">
+        <div className="flex h-full flex-col space-y-6 pb-24 lg:pb-0">
             <header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex items-start gap-3 sm:gap-4">
                             {onBack && (
@@ -261,7 +370,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                 <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? "fill-current" : ""}`} />
                                 {showFavoritesOnly ? `Favoris (${favorites.length})` : "Mes Favoris"}
                             </Button>
-                            <div className="relative border border-border bg-card p-3">
+                            <div className="relative hidden border border-border bg-card p-3 lg:block" aria-label="Résumé du panier">
                                 <ShoppingCart className="h-6 w-6 text-[#124a93]" />
                                 {cart.length > 0 && (
                                     <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#b7212d] text-xs font-bold text-white">
@@ -516,7 +625,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                 </div>
 
                 {/* Right Col: Cart */}
-                <aside className="flex h-full flex-col space-y-6 lg:sticky lg:top-6">
+                <aside className="hidden h-full flex-col space-y-6 lg:sticky lg:top-6 lg:flex">
                     <Card className="flex max-h-[calc(100vh-8rem)] min-h-[28rem] flex-1 flex-col overflow-hidden">
                         <CardHeader className="border-b border-border bg-slate-950 text-white">
                             <CardTitle className="flex items-center justify-between">
@@ -537,7 +646,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                         <CheckCircle2 className="h-12 w-12 text-white" />
                                     </div>
                                     <h3 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-2">
-                                        Commande Confirmée ! 🎉
+                                        Commande confirmée
                                     </h3>
                                     <p className="text-slate-600 dark:text-slate-400 mb-4">
                                         Nous traiterons votre commande dans les plus brefs délais.
@@ -666,6 +775,29 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                         </CardContent>
                     </Card>
                 </aside>
+            </div>
+
+            <div className="fixed inset-x-0 bottom-0 z-30 px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] lg:hidden">
+                <Drawer open={isCartOpen} onOpenChange={setIsCartOpen}>
+                    <DrawerTrigger aria-label="Ouvrir le panier" className="mx-auto flex h-14 w-full max-w-md items-center justify-between bg-[#124a93] px-5 text-base font-bold text-white shadow-[0_14px_30px_-12px_rgba(18,74,147,.72)] transition-colors hover:bg-[#0b3978]">
+                            <span className="flex items-center gap-2"><ShoppingCart className="h-5 w-5" /> Voir le panier</span>
+                            <span className="border-l border-white/25 pl-4">{cart.length ? `${cart.reduce((total, item) => total + item.quantity, 0)} · ${formatCurrency(totalAmount)}` : 'Vide'}</span>
+                    </DrawerTrigger>
+                    <DrawerContent className="max-h-[86vh] rounded-t-2xl">
+                        <DrawerHeader className="sr-only">
+                            <DrawerTitle>Votre panier</DrawerTitle>
+                            <DrawerDescription>Articles ajoutés à votre commande.</DrawerDescription>
+                        </DrawerHeader>
+                        <CartPanel
+                            cart={cart}
+                            orderPlaced={orderPlaced}
+                            totalAmount={totalAmount}
+                            onQuantityChange={updateQuantity}
+                            onRemove={removeFromCart}
+                            onCheckout={handleCheckout}
+                        />
+                    </DrawerContent>
+                </Drawer>
             </div>
 
             {/* Details Dialog */}

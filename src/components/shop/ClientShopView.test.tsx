@@ -24,4 +24,10 @@ describe('ClientShopView', () => {
     expect(screen.getByRole('option', { name: 'Plus populaires' })).toBeInTheDocument();
     expect(screen.queryByRole('option', { name: /🔥|🔤|💰|💎/ })).not.toBeInTheDocument();
   });
+
+  it('provides a dedicated mobile action to open the cart', () => {
+    render(<ClientShopView onBack={vi.fn()} />);
+
+    expect(screen.getByRole('button', { name: 'Ouvrir le panier' })).toBeInTheDocument();
+  });
 });

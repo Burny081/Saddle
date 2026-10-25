@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ThemeProvider } from 'next-themes';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, LogIn } from 'lucide-react';
 import { SplashScreen } from '@/components/SplashScreen';
 import { PublicHome } from '@/components/PublicHome';
 import { LoginModal } from '@/components/LoginModal';
@@ -129,6 +129,48 @@ function AppContent() {
   // Handle Public Views (Guest or Authenticated)
   if (currentView === 'points-of-sale') {
     return <PointsOfSaleView onBack={() => navigateToView(isAuthenticated ? 'dashboard' : 'home')} />;
+  }
+
+  if (!isAuthenticated && currentView === 'shop') {
+    return (
+      <>
+        <div className="min-h-screen bg-[#f7f8fa] text-foreground dark:bg-slate-950">
+          <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95">
+            <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+              <button
+                type="button"
+                onClick={() => navigateToView('home')}
+                className="flex min-w-0 items-center gap-3 text-left"
+                aria-label="Retour à l'accueil SaddlePoint"
+              >
+                <img src="/logo.png" alt="" className="h-9 w-9 shrink-0 object-contain" />
+                <span className="min-w-0">
+                  <strong className="company-name block truncate text-xs text-slate-950 dark:text-white">Saddle Point Service</strong>
+                  <span className="block truncate text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Catalogue professionnel</span>
+                </span>
+              </button>
+              <nav aria-label="Navigation de la boutique" className="flex items-center gap-2">
+                <Button variant="outline" onClick={() => navigateToView('home')} className="h-10 border-slate-300 bg-white px-3 font-bold text-slate-900 hover:border-[#124a93] hover:bg-blue-50 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Accueil
+                </Button>
+                <Button onClick={() => setShowLoginModal(true)} className="h-10 bg-[#b7212d] px-3 font-bold text-white hover:bg-[#941b25] sm:px-4">
+                  <LogIn className="mr-2 h-4 w-4" /> Connexion
+                </Button>
+              </nav>
+            </div>
+          </header>
+          <main className="mx-auto max-w-7xl px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:py-8 lg:pb-8">
+            <ClientShopView
+              initialCategory={shopParams.category}
+              initialSubCategory={shopParams.subCategory}
+              onBack={() => navigateToView('home')}
+              onLoginRequired={() => setShowLoginModal(true)}
+            />
+          </main>
+        </div>
+        <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
+      </>
+    );
   }
 
   const renderView = () => {

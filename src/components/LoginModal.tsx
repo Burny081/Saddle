@@ -130,8 +130,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     try {
       const result = await register({ name, email, password, phone, address, locationConsent });
       if (result.success) {
-        setSuccess(t('auth.signupSuccess'));
         resetForm();
+        setSuccess(t('auth.signupSuccess'));
         // Switch to login mode after 2 seconds
         setTimeout(() => {
           setIsLoginMode(true);
@@ -166,36 +166,57 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md my-8"
+              className="relative my-8 w-full max-w-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="overflow-hidden rounded-3xl bg-card shadow-2xl max-h-[90vh] flex flex-col">
-                {/* Header with gradient */}
-                <div className="relative bg-gradient-to-br from-primary to-primary/80 p-8 text-primary-foreground">
+              <div className="flex max-h-[90vh] flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[0_28px_80px_-30px_rgba(15,23,42,.55)]">
+                <div className="relative border-b border-white/10 bg-slate-950 px-6 py-6 text-white sm:px-8">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute right-4 top-4 text-white hover:bg-white/20"
+                    className="absolute right-4 top-4 text-white hover:bg-white/15"
                     onClick={onClose}
                     aria-label={t('auth.closeModal')}
                   >
                     <X className="h-5 w-5" />
                   </Button>
 
-                  <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-3xl bg-white p-4 shadow-xl">
+                  <div className="mb-5 flex h-14 w-14 items-center justify-center border border-white/15 bg-white p-2.5 shadow-lg">
                     <img src="/logo.png" alt="SPS" className="h-full w-full object-contain" />
                   </div>
 
-                  <h2 className="text-3xl font-bold">
+                  <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-red-200">Espace client SaddlePoint</p>
+                  <h2 className="mt-2 text-2xl font-bold tracking-[-0.025em] sm:text-3xl">
                     {isLoginMode ? t('auth.login') : t('auth.registration')}
                   </h2>
-                  <p className="mt-2 text-blue-100">
+                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-300">
                     {isLoginMode ? t('auth.welcome') : t('auth.createAccount')}
                   </p>
                 </div>
 
+                <div className="grid grid-cols-2 gap-1 border-b border-border bg-muted/40 p-2" role="tablist" aria-label="Mode d'authentification">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={isLoginMode}
+                    onClick={() => !isLoginMode && switchMode()}
+                    className={`h-10 px-3 text-sm font-bold transition-colors ${isLoginMode ? 'bg-white text-[#124a93] shadow-sm dark:bg-slate-900 dark:text-white' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    Se connecter
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={!isLoginMode}
+                    onClick={() => isLoginMode && switchMode()}
+                    className={`h-10 px-3 text-sm font-bold transition-colors ${!isLoginMode ? 'bg-white text-[#124a93] shadow-sm dark:bg-slate-900 dark:text-white' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    Créer un compte
+                  </button>
+                </div>
+
                 {/* Form */}
-                <form onSubmit={isLoginMode ? handleLogin : handleRegister} className="p-8 overflow-y-auto flex-1">
+                <form onSubmit={isLoginMode ? handleLogin : handleRegister} className="flex-1 overflow-y-auto p-6 sm:p-8">
                   {error && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -222,7 +243,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     {/* Registration Fields */}
                     {!isLoginMode && (
                       <div>
-                        <Label htmlFor="name" className="text-base">
+                          <Label htmlFor="name" className="text-sm font-bold">
                           {t('auth.name')} <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative mt-2">
@@ -241,7 +262,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     )}
 
                     <div>
-                      <Label htmlFor="email" className="text-base">
+                          <Label htmlFor="email" className="text-sm font-bold">
                         {t('auth.email')} <span className="text-red-500">*</span>
                       </Label>
                       <div className="relative mt-2">
@@ -261,7 +282,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     {!isLoginMode && (
                       <>
                         <div>
-                          <Label htmlFor="phone" className="text-base">
+                          <Label htmlFor="phone" className="text-sm font-bold">
                             {t('auth.phone')}
                           </Label>
                           <div className="relative mt-2">
@@ -278,7 +299,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                         </div>
 
                         <div>
-                          <Label htmlFor="address" className="text-base">
+                          <Label htmlFor="address" className="text-sm font-bold">
                             {t('auth.address')}
                           </Label>
                           <div className="relative mt-2">
@@ -311,7 +332,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     )}
 
                     <div>
-                      <Label htmlFor="password" className="text-base">
+                          <Label htmlFor="password" className="text-sm font-bold">
                         {t('auth.password')} <span className="text-red-500">*</span>
                       </Label>
                       <div className="relative mt-2">
@@ -330,7 +351,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                     {!isLoginMode && (
                       <div>
-                        <Label htmlFor="confirmPassword" className="text-base">
+                          <Label htmlFor="confirmPassword" className="text-sm font-bold">
                           {t('auth.confirmPassword')} <span className="text-red-500">*</span>
                         </Label>
                         <div className="relative mt-2">
@@ -369,7 +390,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
                     <Button
                       type="submit"
-                      className="h-12 w-full bg-primary text-primary-foreground text-base font-semibold hover:bg-primary/90 transition-colors duration-200 cursor-pointer"
+                      className="h-12 w-full bg-[#124a93] text-base font-bold text-white transition-colors hover:bg-[#0b3978]"
                       disabled={loading}
                     >
                       {loading ? (
@@ -386,21 +407,10 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                     </Button>
                   </div>
 
-                  {/* Switch mode */}
-                  <div className="mt-6 text-center">
-                    <button
-                      type="button"
-                      onClick={switchMode}
-                      className="text-sm text-primary hover:text-primary/80 font-medium cursor-pointer transition-colors duration-200"
-                    >
-                      {isLoginMode ? t('auth.noAccount') : t('auth.alreadyHaveAccount')}
-                    </button>
-                  </div>
-
                   {/* Help text */}
                   {isLoginMode && (
-                    <div className="mt-6 rounded-lg bg-muted p-4">
-                      <p className="text-sm text-muted-foreground text-center">
+                    <div className="mt-6 border-l-2 border-[#b7212d] bg-muted/55 p-4">
+                      <p className="text-center text-sm text-muted-foreground">
                         {t('auth.contactAdmin')}
                       </p>
                     </div>

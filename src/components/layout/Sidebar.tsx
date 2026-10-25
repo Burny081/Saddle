@@ -68,18 +68,20 @@ export function Sidebar({ currentView, onViewChange, open }: SidebarProps) {
             </nav>
 
             {/* Sidebar Footer / Logout */}
-            <div className="p-6 pb-8">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    className="h-12 w-full justify-start gap-3 rounded-md px-4 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
-                    onClick={handleLogout}
-                    aria-label={t('nav.logout')}
-                >
-                    <LogOut className="h-5 w-5" />
-                    <span className="font-medium">{t('nav.logout')}</span>
-                </Button>
-            </div>
+            {user && (
+                <div className="p-6 pb-8">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        className="h-12 w-full justify-start gap-3 rounded-md px-4 text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                        onClick={handleLogout}
+                        aria-label={t('nav.logout')}
+                    >
+                        <LogOut className="h-5 w-5" />
+                        <span className="font-medium">{t('nav.logout')}</span>
+                    </Button>
+                </div>
+            )}
         </motion.aside>
     );
 }
