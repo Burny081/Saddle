@@ -29,6 +29,8 @@ import { ArticleFormDialog } from './ArticleFormDialog';
 import { CategoryManager, useCategories, getCategoryById } from './CategoryManager';
 import type { Article } from '@/types/compatibility';
 import { formatCurrency } from '@/config/constants';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
+import { DataState } from '@/components/app-shell/DataState';
 
 interface ArticlesViewProps {
   initialCreate?: boolean;
@@ -102,9 +104,7 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
           {onBack && (
             <Button
               variant="ghost"
@@ -116,27 +116,14 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
               <ArrowLeft className="h-5 w-5" />
             </Button>
           )}
-          <div>
-            <h1 className="text-3xl font-bold">{t('articles.title')}</h1>
-            <p className="mt-1 text-muted-foreground">
-              {t('articles.subtitle')}
-            </p>
+          <div className="flex-1">
+            <AppPageHeader title={t('articles.title')} description={t('articles.subtitle')} actions={canEdit ? <Button onClick={handleOpenCreate} className="bg-[#b7212d] text-white hover:bg-[#941b25]"><Plus className="mr-2 h-4 w-4" />{t('articles.newArticle')}</Button> : undefined} />
           </div>
-        </div>
-        {canEdit && (
-          <Button
-            onClick={handleOpenCreate}
-            className="bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 text-white"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {t('articles.newArticle')}
-          </Button>
-        )}
       </div>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-none shadow-lg">
+        <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -150,7 +137,7 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-lg">
+        <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -164,7 +151,7 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-lg">
+        <Card>
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -180,7 +167,7 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
       </div>
 
       {/* Filters */}
-      <Card className="border-none shadow-lg">
+      <Card>
         <CardContent className="pt-6">
           <div className="flex flex-col gap-4 sm:flex-row">
             <div className="relative flex-1">
@@ -233,7 +220,7 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
           >
-            <Card className="group overflow-hidden border-none shadow-lg transition-all hover:shadow-2xl">
+            <Card className="group overflow-hidden transition-shadow hover:shadow-md">
               <div className="relative h-48 overflow-hidden">
                 <img
                   src={article.image}
@@ -340,13 +327,7 @@ export function ArticlesView({ initialCreate = false, onBack }: ArticlesViewProp
       </div>
 
       {filteredArticles.length === 0 && (
-        <Card className="border-none p-12 text-center shadow-lg">
-          <Package className="mx-auto mb-4 h-16 w-16 text-slate-300" />
-          <h3 className="mb-2 text-xl font-semibold">{t('articles.noArticlesFound')}</h3>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('articles.noArticlesFoundHint')}
-          </p>
-        </Card>
+        <Card><DataState kind="empty" title={t('articles.noArticlesFound')} description={t('articles.noArticlesFoundHint')} /></Card>
       )}
 
       {/* Form Dialog */}
