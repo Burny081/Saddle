@@ -4,105 +4,52 @@ export function SplashScreen() {
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-primary via-primary/80 to-primary/60">
-      {/* Subtle ambient background - only 8 particles, no infinite loop in reduced motion */}
-      <div className="absolute inset-0 overflow-hidden">
-        {!prefersReducedMotion && [...Array(8)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute h-2 w-2 rounded-full bg-white/10"
-            initial={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1000),
-              y: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-            }}
-            animate={{
-              y: [null, Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800)],
-              opacity: [0, 0.6, 0],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 2,
-              repeat: Infinity,
-              ease: 'linear',
-            }}
-          />
-        ))}
-      </div>
+    <main className="fixed inset-0 z-50 grid place-items-center overflow-hidden bg-[#fcfcfb] px-6 text-slate-950 dark:bg-slate-950 dark:text-white">
+      <div className="absolute inset-x-0 top-0 h-1 bg-[#b7212d]" />
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border border-[#124a93]/10" />
+      <div className="pointer-events-none absolute -right-4 -top-4 h-48 w-48 rounded-full border border-[#124a93]/10" />
 
-      {/* Logo and brand */}
-      <motion.div
-        className="relative z-10 text-center"
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+      <motion.section
+        className="w-full max-w-sm"
+        initial={prefersReducedMotion ? false : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.32, ease: 'easeOut' }}
+        aria-label="Chargement de SaddlePoint"
       >
-        {/* Electric Icon */}
-        <motion.div
-          className="mb-8 flex justify-center"
-          animate={prefersReducedMotion ? {} : {
-            scale: [1, 1.05, 1],
-          }}
-          transition={{
-            duration: 2.5,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        >
-          <div className="relative">
-            <div className="relative flex h-48 w-48 items-center justify-center rounded-3xl bg-white/10 backdrop-blur-md shadow-2xl border border-white/20">
-              <img src="/logo.png" alt="Saddle Point Service" className="h-40 w-40 object-contain drop-shadow-xl" />
-            </div>
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center border border-slate-200 bg-white p-1.5 shadow-[0_12px_30px_-20px_rgba(15,23,42,.55)] dark:border-slate-700 dark:bg-slate-900">
+            <img src="/logo.png" alt="Saddle Point Service" className="h-full w-full object-contain" />
           </div>
-        </motion.div>
+          <div>
+            <p className="company-name text-sm text-slate-950 dark:text-white">SaddlePoint</p>
+            <p className="mt-1 text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#b7212d]">Electrical solutions</p>
+          </div>
+        </div>
 
-        {/* Company name */}
-        <motion.h1
-          className="mb-4 text-5xl font-bold text-white tracking-tight"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-        >
-          Saddle Point Service
-        </motion.h1>
-
-        {/* Slogan */}
-        <motion.p
-          className="text-xl font-medium text-blue-100 uppercase tracking-widest"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-        >
-          Excellence en Solutions Électriques
-        </motion.p>
-
-        {/* Loading animation */}
-        <motion.div
-          className="mt-12 flex justify-center space-x-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
-        >
-          {[0, 1, 2].map((i) => (
+        <div className="mt-10">
+          <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Préparation de votre espace</p>
+          <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">Chargement sécurisé des outils SaddlePoint.</p>
+          <div
+            className="mt-5 h-1.5 w-full overflow-hidden bg-slate-200 dark:bg-slate-800"
+            role="progressbar"
+            aria-label="Préparation de votre espace"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuetext="Chargement en cours"
+          >
             <motion.div
-              key={i}
-              className="h-3 w-3 rounded-full bg-white"
-              animate={{
-                y: [0, -15, 0],
-                opacity: [0.5, 1, 0.5],
-              }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                delay: i * 0.2,
-                ease: 'easeInOut',
-              }}
+              className="h-full bg-[#124a93]"
+              initial={{ width: '10%' }}
+              animate={prefersReducedMotion ? { width: '68%' } : { width: ['10%', '72%', '92%'] }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 1.6, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
             />
-          ))}
-        </motion.div>
-      </motion.div>
-
-      {/* Premium glow effect */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-white/10" />
-    </div>
+          </div>
+          <div className="mt-2 flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">
+            <span>Cameroon</span>
+            <span>Secure start</span>
+          </div>
+        </div>
+      </motion.section>
+    </main>
   );
 }
-
