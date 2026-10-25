@@ -288,16 +288,16 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
-                        className="px-4 py-3 border-2 rounded-xl bg-white shadow-sm font-medium min-w-[160px]"
+                        className="min-w-[170px] border border-border bg-card px-3 py-2.5 text-sm font-semibold text-foreground shadow-sm"
                         aria-label="Trier par"
                     >
-                        <option value="popular">🔥 Plus populaires</option>
-                        <option value="name">🔤 Nom (A-Z)</option>
-                        <option value="price-asc">💰 Prix croissant</option>
-                        <option value="price-desc">💎 Prix décroissant</option>
+                        <option value="popular">Plus populaires</option>
+                        <option value="name">Nom (A–Z)</option>
+                        <option value="price-asc">Prix croissant</option>
+                        <option value="price-desc">Prix décroissant</option>
                     </select>
 
-                    <div className="flex gap-1 bg-white border-2 rounded-xl p-1 shadow-sm">
+                    <div className="flex gap-1 border border-border bg-card p-1 shadow-sm">
                         <Button
                             variant={viewMode === 'grid' ? 'default' : 'ghost'}
                             size="icon"
@@ -320,14 +320,14 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 overflow-hidden">
+            <div className="grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start">
                 {/* Left Col: Item Selection */}
-                <div className="lg:col-span-2 space-y-4 flex flex-col h-full overflow-hidden">
-                    <Card className="flex-1 flex flex-col overflow-hidden border-0 shadow-xl rounded-2xl">
+                <div className="flex h-full flex-col space-y-4 overflow-hidden">
+                    <Card className="flex min-h-[34rem] flex-1 flex-col overflow-hidden">
                         <CardContent className="flex-1 overflow-y-auto p-6">
                             {filteredItems.length > 0 ? (
                                 <div className={viewMode === 'grid' 
-                                    ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" 
+                                    ? "grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3"
                                     : "space-y-4"
                                 }>
                                     {pageItems.map(item => (
@@ -337,15 +337,15 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                                 initial={{ opacity: 0, scale: 0.95 }}
                                                 animate={{ opacity: 1, scale: 1 }}
                                                 key={`${item.type}-${item.id}`}
-                                                className="group relative flex flex-col rounded-2xl border-2 bg-white shadow-lg transition-all hover:shadow-2xl hover:-translate-y-2 overflow-hidden"
+                                                className="group relative flex flex-col overflow-hidden border border-border bg-card shadow-sm transition-shadow hover:shadow-md"
                                             >
                                                 {/* New Badge */}
-                                                <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                                                <div className="absolute left-3 top-3 z-10 flex items-center gap-1 bg-[#124a93] px-2.5 py-1 text-[11px] font-bold text-white shadow-sm">
                                                     <Star className="h-3 w-3 fill-white" />
                                                     Nouveau
                                                 </div>
 
-                                                <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+                                                <div className="relative aspect-square overflow-hidden bg-slate-100 dark:bg-slate-800">
                                                     <img
                                                         src={item.image}
                                                         alt={item.name}
@@ -390,7 +390,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                                                     ? 'bg-purple-100 text-purple-700' 
                                                                     : 'bg-blue-100 text-blue-700'
                                                             }`}>
-                                                                {item.type === 'service' ? '🎯 Service' : '📦 Produit'}
+                                                                {item.type === 'service' ? 'Service' : 'Produit'}
                                                             </span>
                                                             <div className="flex items-center text-yellow-500">
                                                                 <Star className="h-3 w-3 fill-current" />
@@ -406,7 +406,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                                         </div>
                                                         <Button
                                                             size="sm"
-                                                            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md"
+                                                            className="bg-[#124a93] text-white hover:bg-[#0b3978]"
                                                             onClick={() => addToCart(item)}
                                                         >
                                                             <ShoppingCart className="h-4 w-4 mr-1" />
@@ -516,15 +516,15 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                 </div>
 
                 {/* Right Col: Cart */}
-                <div className="space-y-6 flex flex-col h-full">
-                    <Card className="flex-1 border-0 shadow-2xl flex flex-col bg-gradient-to-br from-white to-blue-50 dark:from-slate-900 dark:to-slate-800 rounded-2xl overflow-hidden">
-                        <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-t-2xl border-0 shadow-lg">
+                <aside className="flex h-full flex-col space-y-6 lg:sticky lg:top-6">
+                    <Card className="flex max-h-[calc(100vh-8rem)] min-h-[28rem] flex-1 flex-col overflow-hidden">
+                        <CardHeader className="border-b border-border bg-slate-950 text-white">
                             <CardTitle className="flex items-center justify-between">
                                 <span className="flex items-center gap-2 text-xl">
                                     <ShoppingCart className="h-6 w-6" /> Mon Panier
                                 </span>
                                 {cart.length > 0 && (
-                                    <span className="bg-white text-blue-600 px-3 py-1 rounded-full text-sm font-bold">
+                                    <span className="bg-white px-2.5 py-1 text-sm font-bold text-[#124a93]">
                                         {cart.length} {cart.length === 1 ? 'article' : 'articles'}
                                     </span>
                                 )}
@@ -557,7 +557,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                                                     animate={{ opacity: 1 }}
                                                     className="flex flex-col items-center justify-center h-full text-slate-400 py-10"
                                                 >
-                                                    <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-full p-8 mb-4">
+                                                    <div className="mb-4 border border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-800">
                                                         <ShoppingCart className="h-12 w-12 text-slate-300" />
                                                     </div>
                                                     <h3 className="font-semibold text-slate-700 mb-1">Panier vide</h3>
@@ -665,7 +665,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack }: 
                             )}
                         </CardContent>
                     </Card>
-                </div>
+                </aside>
             </div>
 
             {/* Details Dialog */}

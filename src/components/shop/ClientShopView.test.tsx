@@ -17,4 +17,11 @@ describe('ClientShopView', () => {
 
     expect(screen.getByRole('button', { name: 'Retour' })).toBeInTheDocument();
   });
+
+  it('uses professional text-only sort labels', () => {
+    render(<ClientShopView onBack={vi.fn()} />);
+
+    expect(screen.getByRole('option', { name: 'Plus populaires' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /🔥|🔤|💰|💎/ })).not.toBeInTheDocument();
+  });
 });
