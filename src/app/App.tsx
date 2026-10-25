@@ -164,6 +164,7 @@ function AppContent() {
               initialCategory={shopParams.category}
               initialSubCategory={shopParams.subCategory}
               onBack={() => navigateToView('home')}
+              showBackButton={false}
               onLoginRequired={() => setShowLoginModal(true)}
             />
           </main>

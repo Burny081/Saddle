@@ -52,6 +52,7 @@ interface ClientShopViewProps {
     initialCategory?: string;
     initialSubCategory?: string;
     onBack?: () => void;
+    showBackButton?: boolean;
     onLoginRequired?: () => void;
 }
 
@@ -150,7 +151,7 @@ function CartPanel({ cart, orderPlaced, totalAmount, onQuantityChange, onRemove,
     );
 }
 
-export function ClientShopView({ initialCategory, initialSubCategory, onBack, onLoginRequired }: ClientShopViewProps) {
+export function ClientShopView({ initialCategory, initialSubCategory, onBack, showBackButton = true, onLoginRequired }: ClientShopViewProps) {
     const { user } = useAuth();
     const { articles, services, addSale } = useData();
 
@@ -339,7 +340,7 @@ export function ClientShopView({ initialCategory, initialSubCategory, onBack, on
         <div className="flex h-full flex-col space-y-6 pb-24 lg:pb-0">
             <header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex items-start gap-3 sm:gap-4">
-                            {onBack && (
+                            {onBack && showBackButton && (
                                 <Button
                                     variant="outline"
                                     onClick={onBack}

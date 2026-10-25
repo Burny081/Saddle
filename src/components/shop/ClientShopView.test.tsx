@@ -18,6 +18,12 @@ describe('ClientShopView', () => {
     expect(screen.getByRole('button', { name: 'Retour' })).toBeInTheDocument();
   });
 
+  it('hides the duplicate return action when the public header already links home', () => {
+    render(<ClientShopView onBack={vi.fn()} showBackButton={false} />);
+
+    expect(screen.queryByRole('button', { name: 'Retour' })).not.toBeInTheDocument();
+  });
+
   it('uses professional text-only sort labels', () => {
     render(<ClientShopView onBack={vi.fn()} />);
 
