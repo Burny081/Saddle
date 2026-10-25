@@ -5,7 +5,7 @@ export interface CatalogueProduct {
   slug: string;
   marque: string;
   gammeMarque: string;
-  categorie: 'Protection et sécurité électrique';
+  categorie: string;
   sousCategorie: string;
   usage: CatalogueUsage;
   descriptionCourte: string;
