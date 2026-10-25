@@ -30,6 +30,8 @@ import { ServiceFormDialog } from './ServiceFormDialog';
 import { CategoryManager, useCategories, getCategoryById } from './CategoryManager';
 import type { Service } from '@/types/compatibility';
 import { formatCurrency } from '@/config/constants';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
+import { DataState } from '@/components/app-shell/DataState';
 
 interface ServicesViewProps {
   onBack?: () => void;
@@ -100,7 +102,7 @@ export function ServicesView({ onBack }: ServicesViewProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-start gap-4">
         <div className="flex items-center gap-4">
           {onBack && (
             <Button
@@ -113,22 +115,8 @@ export function ServicesView({ onBack }: ServicesViewProps) {
               <ArrowLeft className="h-5 w-5" />
             </Button>
           )}
-          <div>
-            <h1 className="text-3xl font-bold">{t('services.title')}</h1>
-            <p className="mt-1 text-muted-foreground">
-              {t('services.subtitle')}
-            </p>
-          </div>
+          <div className="flex-1"><AppPageHeader title={t('services.title')} description={t('services.subtitle')} actions={canEdit ? <Button onClick={handleOpenCreate}><Plus className="mr-2 h-4 w-4" />{t('services.newService')}</Button> : undefined} /></div>
         </div>
-        {canEdit && (
-          <Button
-            onClick={handleOpenCreate}
-            className="bg-gradient-to-r from-red-600 to-blue-600 hover:from-red-700 hover:to-blue-700 text-white"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {t('services.newService')}
-          </Button>
-        )}
       </div>
 
       {/* Stats */}
@@ -314,13 +302,7 @@ export function ServicesView({ onBack }: ServicesViewProps) {
       </div>
 
       {filteredServices.length === 0 && (
-        <Card className="border-none p-12 text-center shadow-lg">
-          <Briefcase className="mx-auto mb-4 h-16 w-16 text-slate-300" />
-          <h3 className="mb-2 text-xl font-semibold">{t('services.noServicesFound')}</h3>
-          <p className="text-slate-600 dark:text-slate-400">
-            {t('services.noServicesFoundHint')}
-          </p>
-        </Card>
+        <Card><DataState kind="empty" title={t('services.noServicesFound')} description={t('services.noServicesFoundHint')} /></Card>
       )}
 
       {/* Form Dialog */}
