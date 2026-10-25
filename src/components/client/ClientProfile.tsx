@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/ca
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Badge } from '@/app/components/ui/badge';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
 
 export default function ClientProfile() {
   const { user } = useAuth();
@@ -82,31 +83,25 @@ export default function ClientProfile() {
   if (!user) return null;
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Mon Profil</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Gérez vos informations personnelles</p>
-        </div>
-        {!isEditing ? (
-          <Button onClick={() => setIsEditing(true)} className="bg-blue-600 hover:bg-blue-700">
+      <AppPageHeader eyebrow="Espace client" title="Mon profil" description="Gérez vos coordonnées et les informations de votre compte." actions={!isEditing ? (
+          <Button onClick={() => setIsEditing(true)} className="min-h-11">
             <Edit className="h-4 w-4 mr-2" />
             Modifier
           </Button>
         ) : (
           <div className="flex gap-2">
-            <Button onClick={handleSave} disabled={loading} className="bg-green-600 hover:bg-green-700">
+            <Button onClick={handleSave} disabled={loading} className="min-h-11">
               <Save className="h-4 w-4 mr-2" />
               Enregistrer
             </Button>
-            <Button onClick={() => setIsEditing(false)} variant="outline" className="dark:border-slate-600 dark:text-gray-300">
+            <Button onClick={() => setIsEditing(false)} variant="outline" className="min-h-11">
               <X className="h-4 w-4 mr-2" />
               Annuler
             </Button>
           </div>
-        )}
-      </div>
+        )} />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Informations Personnelles */}

@@ -14,6 +14,8 @@ import {
 import { Card, CardContent } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
+import { DataState } from '@/components/app-shell/DataState';
 
 interface Quote {
   id: string;
@@ -164,35 +166,18 @@ export default function ClientQuotesView() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <div className="p-4 sm:p-6"><DataState kind="loading" title="Chargement de vos devis" description="Nous préparons votre historique de devis." /></div>
     );
   }
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Mes Devis</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {quotes.length} {quotes.length > 1 ? 'devis' : 'devis'}
-          </p>
-        </div>
-      </div>
+      <AppPageHeader eyebrow="Espace client" title="Mes devis" description={`${quotes.length} devis disponible${quotes.length > 1 ? 's' : ''}, avec leur date de validité et leur statut.`} />
 
       {/* Empty State */}
       {quotes.length === 0 && (
-        <div className="text-center py-20">
-          <FileText className="h-24 w-24 text-gray-300 dark:text-gray-600 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-            Aucun devis
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Vous n'avez pas encore de devis. Contactez-nous pour obtenir une estimation personnalisée !
-          </p>
-        </div>
+        <DataState kind="empty" title="Aucun devis" description="Vous n’avez pas encore de devis. Contactez-nous pour obtenir une estimation personnalisée." />
       )}
 
       {/* Quotes List */}

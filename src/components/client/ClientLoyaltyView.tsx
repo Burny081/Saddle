@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Badge } from '@/app/components/ui/badge';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
+import { DataState } from '@/components/app-shell/DataState';
 
 interface LoyaltyData {
   available_points: number;
@@ -78,9 +80,7 @@ export default function ClientLoyaltyView() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <div className="p-4 sm:p-6"><DataState kind="loading" title="Chargement de votre fidélité" description="Nous calculons vos points et avantages." /></div>
     );
   }
 
@@ -90,12 +90,9 @@ export default function ClientLoyaltyView() {
   const progressPercent = tier.nextTier ? Math.min((totalPoints / tier.nextTier) * 100, 100) : 100;
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Programme Fidélité</h1>
-        <p className="text-gray-600 dark:text-gray-400">Gagnez des points à chaque achat et profitez d'avantages exclusifs</p>
-      </div>
+      <AppPageHeader eyebrow="Espace client" title="Programme fidélité" description="Gagnez des points à chaque achat et profitez d’avantages exclusifs." />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Points Card */}
