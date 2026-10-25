@@ -25,6 +25,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
+import { DataState } from '@/components/app-shell/DataState';
 
 interface OrderStats {
   total: number;
@@ -194,16 +196,15 @@ export default function ClientDashboard({ onNavigate }: ClientDashboardProps) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
+      <DataState kind="loading" title="Préparation de votre espace client" description="Vos commandes et avantages sont en cours de chargement." />
     );
   }
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 min-h-screen transition-colors duration-300">
+    <div className="space-y-6">
+      <AppPageHeader eyebrow="Espace client" title={`Bonjour, ${user?.name?.split(' ')[0] || ''}`} description="Suivez vos commandes, devis et avantages fidélité." />
       {/* Hero Section - Bienvenue */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-800 p-8 text-white shadow-2xl transition-colors duration-300">
+      <div className="relative overflow-hidden border border-slate-200 bg-slate-950 p-6 text-white shadow-[0_20px_50px_-32px_rgba(15,23,42,.62)] sm:p-8 dark:border-slate-800">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 h-40 w-40 rounded-full bg-white opacity-10"></div>
         <div className="absolute bottom-0 left-0 -mb-10 -ml-10 h-32 w-32 rounded-full bg-white opacity-10"></div>
         
@@ -214,9 +215,9 @@ export default function ClientDashboard({ onNavigate }: ClientDashboardProps) {
                 <Sparkles className="h-4 w-4" />
                 Bienvenue sur votre espace client
               </p>
-              <h1 className="text-4xl font-bold mt-2 mb-1">
+              <h2 className="mb-1 mt-2 text-3xl font-bold sm:text-4xl">
                 Bonjour, {user?.name?.split(' ')[0]} ! 👋
-              </h1>
+              </h2>
               <p className="text-blue-100 dark:text-blue-200 text-lg">
                 Découvrez vos commandes et profitez de vos avantages fidélité
               </p>
@@ -250,7 +251,7 @@ export default function ClientDashboard({ onNavigate }: ClientDashboardProps) {
 
       {/* Stats rapides */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <Card className="bg-white dark:bg-slate-900 transition-shadow hover:shadow-md">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -268,7 +269,7 @@ export default function ClientDashboard({ onNavigate }: ClientDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <Card className="bg-white dark:bg-slate-900 transition-shadow hover:shadow-md">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -286,7 +287,7 @@ export default function ClientDashboard({ onNavigate }: ClientDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <Card className="bg-white dark:bg-slate-900 transition-shadow hover:shadow-md">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>
@@ -304,7 +305,7 @@ export default function ClientDashboard({ onNavigate }: ClientDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-white dark:bg-slate-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <Card className="bg-white dark:bg-slate-900 transition-shadow hover:shadow-md">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between">
               <div>

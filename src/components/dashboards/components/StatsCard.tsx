@@ -20,17 +20,15 @@ export function StatCard({ title, value, change, changeType, icon: Icon, gradien
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: delay }}
-            whileHover={{ y: -5 }}
+            whileHover={{ y: -2 }}
         >
-            <Card className="relative overflow-hidden border-none shadow-xl glass-card group">
-                {/* Animated Gradient Background */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-[0.08] transition-opacity duration-300 group-hover:opacity-15`} />
+            <Card className="relative overflow-hidden group">
 
                 <CardHeader className="relative flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                         {title}
                     </CardTitle>
-                    <div className={`rounded-xl bg-gradient-to-br ${gradient} p-2.5 text-white shadow-lg ring-1 ring-white/10 group-hover:scale-110 transition-transform duration-300`}>
+                    <div className={`rounded-md bg-gradient-to-br ${gradient} p-2.5 text-white shadow-sm`}>
                         <Icon className="h-5 w-5" />
                     </div>
                 </CardHeader>

@@ -13,6 +13,7 @@ import { SalesChart } from './components/SalesChart';
 import { RecentSales } from './components/RecentSales';
 import { QuickActions } from './components/QuickActions';
 import { formatCurrency } from '@/config/constants';
+import { AppPageHeader } from '@/components/app-shell/AppPageHeader';
 
 const container = {
   hidden: { opacity: 0 },
@@ -84,14 +85,8 @@ export function DashboardView({ onNavigate }: DashboardViewProps) {
       animate="show"
       className="space-y-8"
     >
-      {/* Welcome Section */}
-      <motion.div variants={{ hidden: { opacity: 0, y: -20 }, show: { opacity: 1, y: 0 } }}>
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
-          {t('dashboard.welcome')}, {user?.name}!
-        </h1>
-        <p className="text-muted-foreground mt-1 text-lg">
-          Here is what's happening with your business today.
-        </p>
+      <motion.div variants={{ hidden: { opacity: 0, y: -12 }, show: { opacity: 1, y: 0 } }}>
+        <AppPageHeader eyebrow="Pilotage des opérations" title={`${t('dashboard.welcome')}, ${user?.name || ''}`} description="Suivez les indicateurs clés et les activités récentes de votre entreprise." />
       </motion.div>
 
       {/* Stats Grid */}

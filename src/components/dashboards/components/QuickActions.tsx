@@ -32,7 +32,7 @@ export function QuickActions({ onNavigate }: QuickActionsProps) {
 
     return (
         <>
-            <Card className="border-none shadow-xl glass-card h-full">
+            <Card className="h-full">
                 <CardHeader>
                     <CardTitle className="text-lg">{t('dashboard.quickActions')}</CardTitle>
                 </CardHeader>
@@ -46,10 +46,10 @@ export function QuickActions({ onNavigate }: QuickActionsProps) {
                             >
                                 <Button
                                     variant="outline"
-                                    className="w-full h-auto flex-col gap-3 py-6 border-border/50 hover:bg-muted/50 hover:border-primary/30 transition-all"
+                                    className="h-auto w-full flex-col gap-3 border-border py-5 hover:border-primary/40 hover:bg-primary/[0.035] transition-colors"
                                     onClick={action.action}
                                 >
-                                    <div className={`p-3 rounded-full ${action.bg} ${action.color}`}>
+                                    <div className={`rounded-md p-3 ${action.bg} ${action.color}`}>
                                         <action.icon className="h-5 w-5" />
                                     </div>
                                     <span className="font-medium text-xs">{action.label}</span>
