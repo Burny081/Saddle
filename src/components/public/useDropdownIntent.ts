@@ -6,6 +6,7 @@ type DropdownTrigger = 'hover' | 'click';
 export function useDropdownIntent(trigger: DropdownTrigger) {
   const [isOpen, setIsOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   const cancelClose = () => {
     if (closeTimer.current) {
@@ -32,5 +33,16 @@ export function useDropdownIntent(trigger: DropdownTrigger) {
 
   useEffect(() => () => cancelClose(), []);
 
-  return { isOpen, setIsOpen, open, scheduleClose, cancelClose, close };
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const dismissOutside = (event: PointerEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) close();
+    };
+
+    document.addEventListener('pointerdown', dismissOutside);
+    return () => document.removeEventListener('pointerdown', dismissOutside);
+  }, [isOpen]);
+
+  return { isOpen, setIsOpen, wrapperRef, open, scheduleClose, cancelClose, close };
 }

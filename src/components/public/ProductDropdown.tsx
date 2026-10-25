@@ -52,7 +52,7 @@ interface ProductDropdownProps {
 
 export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = false }: ProductDropdownProps) {
     const { language } = useLanguage();
-    const { isOpen, setIsOpen, open, scheduleClose, cancelClose, close } = useDropdownIntent(trigger);
+    const { isOpen, setIsOpen, wrapperRef, open, scheduleClose, cancelClose, close } = useDropdownIntent(trigger);
     const [searchTerm, setSearchTerm] = useState('');
 
     const text = {
@@ -175,6 +175,7 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
 
     return (
         <div
+            ref={wrapperRef}
             className="relative group h-full flex items-center"
             onPointerEnter={open}
             onPointerLeave={scheduleClose}
@@ -201,8 +202,6 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Fixed positioned overlay */}
-                        <div className="fixed inset-0 z-40" onClick={close} />
                         <motion.div
                             role="menu"
                             aria-label={text.products[language]}

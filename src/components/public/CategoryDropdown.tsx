@@ -61,7 +61,7 @@ interface CategoryDropdownProps {
 
 export function CategoryDropdown({ onNavigate, trigger = 'hover', isMobile = false }: CategoryDropdownProps) {
     const { language } = useLanguage();
-    const { isOpen, setIsOpen, open, scheduleClose, cancelClose, close } = useDropdownIntent(trigger);
+    const { isOpen, setIsOpen, wrapperRef, open, scheduleClose, cancelClose, close } = useDropdownIntent(trigger);
     const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
     const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
     const [searchTerm, setSearchTerm] = useState('');
@@ -234,6 +234,7 @@ export function CategoryDropdown({ onNavigate, trigger = 'hover', isMobile = fal
 
     return (
         <div
+            ref={wrapperRef}
             className="relative group h-full flex items-center"
             onPointerEnter={open}
             onPointerLeave={scheduleClose}
@@ -260,8 +261,6 @@ export function CategoryDropdown({ onNavigate, trigger = 'hover', isMobile = fal
             <AnimatePresence>
                 {isOpen && (
                     <>
-                        {/* Fixed positioned overlay */}
-                        <div className="fixed inset-0 z-40" onClick={close} />
                         <motion.div
                             role="menu"
                             aria-label={text.categories[language]}
