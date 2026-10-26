@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ClientFavoritesView from './ClientFavoritesView';
+import { catalogueProducts } from '@/data/catalogue';
 import { readFavorites } from '@/utils/favorites';
 
 vi.mock('@/contexts/AuthContext', () => ({
@@ -39,7 +40,9 @@ describe('ClientFavoritesView', () => {
   });
 
   it('shows a saved SaddlePoint catalogue product alongside customer favourites', async () => {
-    localStorage.setItem('favorites_client-1', JSON.stringify(['article:catalogue-energie-et-distribution-electrique-transformateur-sec-basse-tension']));
+    const catalogueProduct = catalogueProducts.find((product) => product.nom === 'Transformateur sec basse tension');
+    expect(catalogueProduct).toBeDefined();
+    localStorage.setItem('favorites_client-1', JSON.stringify([`article:${catalogueProduct!.id}`]));
 
     render(<ClientFavoritesView />);
 
