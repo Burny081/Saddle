@@ -8,13 +8,13 @@ import { DataState } from '@/components/app-shell/DataState';
 import { StatusBadge } from '@/components/app-shell/StatusBadge';
 import { useAuth } from '@/contexts/AuthContext';
 import { useData } from '@/contexts/DataContext';
-import { formatCurrency } from '@/config/constants';
+import { catalogueProducts } from '@/data/catalogue';
 import { hasFavorite, readFavorites, writeFavorites, type FavoriteReference, type FavoriteType } from '@/utils/favorites';
 
 interface FavoriteItem {
   id: string;
   name: string;
-  price: number;
+  price?: number;
   type: FavoriteType;
   category?: string;
   description?: string;
@@ -32,6 +32,7 @@ export default function ClientFavoritesView() {
   useEffect(() => setFavoriteRefs(readFavorites(user?.id)), [user?.id]);
 
   const favorites = useMemo<FavoriteItem[]>(() => [
+    ...catalogueProducts.filter((item) => hasFavorite(favoriteRefs, 'article', item.id)).map((item) => ({ id: item.id, name: item.nom, category: item.categorie, description: item.descriptionCourte, image: item.image, type: 'article' as const })),
     ...articles.filter((item) => hasFavorite(favoriteRefs, 'article', item.id)).map((item) => ({ ...item, type: 'article' as const })),
     ...services.filter((item) => hasFavorite(favoriteRefs, 'service', item.id)).map((item) => ({ ...item, type: 'service' as const })),
   ], [articles, services, favoriteRefs]);
@@ -85,9 +86,9 @@ function ItemMeta({ item }: { item: FavoriteItem }) {
 }
 
 function FavoriteCard({ item, onRemove, onAddToCart }: { item: FavoriteItem; onRemove: (type: FavoriteType, id: string) => void; onAddToCart: (item: FavoriteItem) => void }) {
-  return <article className="flex flex-col bg-card"><ItemImage item={item} /><div className="flex flex-1 flex-col p-5"><ItemMeta item={item} /><h2 className="mt-4 text-lg font-bold text-foreground">{item.name}</h2>{item.category && <p className="mt-1 text-sm text-muted-foreground">{item.category}</p>}<p className="mt-4 text-xl font-bold text-[#124a93]">{formatCurrency(item.price)}</p><div className="mt-5 flex gap-2"><Button className="h-11 flex-1 bg-[#124a93] text-white hover:bg-[#0b3978]" disabled={item.type === 'article' && item.stock === 0} onClick={() => onAddToCart(item)}><ShoppingCart className="mr-2 h-4 w-4" /> Ajouter</Button><Button variant="outline" size="icon" className="h-11 w-11 border-red-200 text-[#b7212d] hover:bg-red-50 hover:text-[#941b25]" onClick={() => onRemove(item.type, item.id)} aria-label={`Retirer ${item.name} des favoris`}><Trash2 className="h-4 w-4" /></Button></div></div></article>;
+  return <article className="flex flex-col bg-card"><ItemImage item={item} /><div className="flex flex-1 flex-col p-5"><ItemMeta item={item} /><h2 className="mt-4 text-lg font-bold text-foreground">{item.name}</h2>{item.category && <p className="mt-1 text-sm text-muted-foreground">{item.category}</p>}<p className="mt-4 text-sm font-semibold text-[#124a93]">Prix sur devis</p><div className="mt-5 flex gap-2"><Button className="h-11 flex-1 bg-[#124a93] text-white hover:bg-[#0b3978]" disabled={item.type === 'article' && item.stock === 0} onClick={() => onAddToCart(item)}><ShoppingCart className="mr-2 h-4 w-4" /> Ajouter</Button><Button variant="outline" size="icon" className="h-11 w-11 border-red-200 text-[#b7212d] hover:bg-red-50 hover:text-[#941b25]" onClick={() => onRemove(item.type, item.id)} aria-label={`Retirer ${item.name} des favoris`}><Trash2 className="h-4 w-4" /></Button></div></div></article>;
 }
 
 function FavoriteRow({ item, onRemove, onAddToCart }: { item: FavoriteItem; onRemove: (type: FavoriteType, id: string) => void; onAddToCart: (item: FavoriteItem) => void }) {
-  return <article className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5"><ItemImage item={item} size="row" /><div className="min-w-0 flex-1"><ItemMeta item={item} /><h2 className="mt-3 text-lg font-bold text-foreground">{item.name}</h2>{item.description && <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">{item.description}</p>}</div><div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end"><p className="text-lg font-bold text-[#124a93]">{formatCurrency(item.price)}</p><div className="flex gap-2"><Button className="h-10 bg-[#124a93] text-white hover:bg-[#0b3978]" disabled={item.type === 'article' && item.stock === 0} onClick={() => onAddToCart(item)}><ShoppingCart className="mr-2 h-4 w-4" />Ajouter</Button><Button variant="outline" size="icon" className="h-10 w-10 border-red-200 text-[#b7212d] hover:bg-red-50 hover:text-[#941b25]" onClick={() => onRemove(item.type, item.id)} aria-label={`Retirer ${item.name} des favoris`}><Trash2 className="h-4 w-4" /></Button></div></div></article>;
+  return <article className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:p-5"><ItemImage item={item} size="row" /><div className="min-w-0 flex-1"><ItemMeta item={item} /><h2 className="mt-3 text-lg font-bold text-foreground">{item.name}</h2>{item.description && <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">{item.description}</p>}</div><div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end"><p className="text-sm font-bold text-[#124a93]">Prix sur devis</p><div className="flex gap-2"><Button className="h-10 bg-[#124a93] text-white hover:bg-[#0b3978]" disabled={item.type === 'article' && item.stock === 0} onClick={() => onAddToCart(item)}><ShoppingCart className="mr-2 h-4 w-4" />Ajouter</Button><Button variant="outline" size="icon" className="h-10 w-10 border-red-200 text-[#b7212d] hover:bg-red-50 hover:text-[#941b25]" onClick={() => onRemove(item.type, item.id)} aria-label={`Retirer ${item.name} des favoris`}><Trash2 className="h-4 w-4" /></Button></div></div></article>;
 }

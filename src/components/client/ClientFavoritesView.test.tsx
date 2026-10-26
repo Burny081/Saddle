@@ -37,4 +37,12 @@ describe('ClientFavoritesView', () => {
   it('reads a typed favourite from the active customer storage', () => {
     expect(readFavorites('client-1')).toEqual([{ type: 'article', id: 'breaker-01' }]);
   });
+
+  it('shows a saved SaddlePoint catalogue product alongside customer favourites', async () => {
+    localStorage.setItem('favorites_client-1', JSON.stringify(['article:catalogue-energie-et-distribution-electrique-transformateur-sec-basse-tension']));
+
+    render(<ClientFavoritesView />);
+
+    expect(await screen.findByRole('heading', { name: 'Transformateur sec basse tension' })).toBeInTheDocument();
+  });
 });
