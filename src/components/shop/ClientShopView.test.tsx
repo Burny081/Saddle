@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { ClientShopView, SHOP_PAGE_SIZE } from './ClientShopView';
+import { catalogueProducts } from '@/data/catalogue';
 
 vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
 vi.mock('@/contexts/DataContext', () => ({ useData: () => ({ articles: [], services: [], addSale: vi.fn() }) }));
@@ -10,6 +11,10 @@ vi.mock('./ProductDetailsDialog', () => ({ ProductDetailsDialog: () => null }));
 describe('ClientShopView', () => {
   it('caps a catalogue page at 24 items', () => {
     expect(SHOP_PAGE_SIZE).toBe(24);
+  });
+
+  it('keeps catalogue pagination bounded for the scaled source', () => {
+    expect(Math.ceil(catalogueProducts.length / SHOP_PAGE_SIZE)).toBeGreaterThan(60);
   });
 
   it('shows a labelled return action when a back handler is provided', () => {
