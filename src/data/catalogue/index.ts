@@ -7,6 +7,7 @@ import { moteursPompageCatalog } from './moteursPompage';
 import { outilsEpiCatalog } from './outilsEpi';
 import { protectionElectriqueCatalog, type CatalogueProduct } from './protectionElectrique';
 import { reseauxSecuriteCatalog } from './reseauxSecurite';
+import { expandCatalogueProducts } from './scaleCatalogue';
 import { solaireSecoursCatalog } from './solaireSecours';
 
 export interface CatalogueShopProduct extends CatalogueProduct {
@@ -14,18 +15,18 @@ export interface CatalogueShopProduct extends CatalogueProduct {
   image: string;
 }
 
-const catalogueSource = [
-  energieDistributionCatalog,
-  protectionElectriqueCatalog,
-  cablesConnectiqueCatalog,
-  automatismeControleCatalog,
-  moteursPompageCatalog,
-  solaireSecoursCatalog,
-  eclairageCatalog,
-  installationBatimentCatalog,
-  reseauxSecuriteCatalog,
-  outilsEpiCatalog,
-].flat();
+const catalogueSource = expandCatalogueProducts([
+  ...energieDistributionCatalog,
+  ...protectionElectriqueCatalog,
+  ...cablesConnectiqueCatalog,
+  ...automatismeControleCatalog,
+  ...moteursPompageCatalog,
+  ...solaireSecoursCatalog,
+  ...eclairageCatalog,
+  ...installationBatimentCatalog,
+  ...reseauxSecuriteCatalog,
+  ...outilsEpiCatalog,
+]);
 
 export const catalogueProducts: CatalogueShopProduct[] = catalogueSource.map((product) => ({
   ...product,
