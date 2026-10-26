@@ -12,7 +12,9 @@ import { solaireSecoursCatalog } from './solaireSecours';
 
 export interface CatalogueShopProduct extends CatalogueProduct {
   id: string;
-  image: string;
+  mediaKey: string;
+  image?: string;
+  images?: string[];
 }
 
 const catalogueSource = expandCatalogueProducts([
@@ -28,15 +30,15 @@ const catalogueSource = expandCatalogueProducts([
   ...outilsEpiCatalog,
 ]);
 
-export const catalogueProducts: CatalogueShopProduct[] = catalogueSource.map((product) => ({
-  ...product,
-  id: `catalogue-${product.categorie}-${product.slug}`
+export const catalogueProducts: CatalogueShopProduct[] = catalogueSource.map((product) => {
+  const id = `catalogue-${product.categorie}-${product.slug}`
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-'),
-  image: '/images/saddlepoint-cameroon-workspace-v1.png',
-}));
+    .replace(/[^a-z0-9]+/g, '-');
+
+  return { ...product, id, mediaKey: id };
+});
 
 export const catalogueCategories = Array.from(
   new Set(catalogueProducts.map((product) => product.categorie)),

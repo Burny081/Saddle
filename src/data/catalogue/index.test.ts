@@ -9,5 +9,7 @@ test('combines every SaddlePoint catalogue category into a scalable, filterable 
   expect(new Set(catalogueProducts.map((product) => product.id)).size).toBe(catalogueProducts.length);
   expect(new Set(catalogueProducts.map((product) => product.slug)).size).toBe(catalogueProducts.length);
   expect(catalogueProducts.every((product) => product.marque.trim().length > 0)).toBe(true);
+  expect(new Set(catalogueProducts.map((product) => product.mediaKey)).size).toBe(catalogueProducts.length);
+  expect(catalogueProducts.every((product) => product.image === undefined && product.images === undefined)).toBe(true);
   expect(JSON.stringify(catalogueProducts).toLocaleLowerCase('fr')).not.toMatch(/prix|price|promotion|remise|fcfa|xaf|€/);
 });
