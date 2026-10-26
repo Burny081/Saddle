@@ -33,14 +33,10 @@ export function addStandardHeaderSync(doc: jsPDF, _documentType: DocumentType, d
     doc.setDrawColor(37, 99, 235);
     doc.setLineWidth(2);
     doc.line(0, 60, pageWidth, 60);
-    // Nom société (Ethnocentric, rouge, très grand, centré)
+    // Nom société (police intégrée jsPDF, rouge, très grand, centré)
     doc.setTextColor(220, 38, 38);
     doc.setFontSize(32);
-    try {
-        doc.setFont('Ethnocentric', 'normal');
-    } catch {
-        doc.setFont('helvetica', 'bold');
-    }
+    doc.setFont('helvetica', 'bold');
     doc.text(company.name, pageWidth / 2, 35, { align: 'center' });
     // Slogan (bleu, centré)
     doc.setFontSize(11);
@@ -68,14 +64,10 @@ export async function addStandardHeader(doc: jsPDF, _documentType: DocumentType,
     doc.setDrawColor(37, 99, 235);
     doc.setLineWidth(2);
     doc.line(0, 60, pageWidth, 60);
-    // Nom société (Ethnocentric, rouge, très grand, centré)
+    // Nom société (police intégrée jsPDF, rouge, très grand, centré)
     doc.setTextColor(220, 38, 38);
     doc.setFontSize(32);
-    try {
-        doc.setFont('Ethnocentric', 'normal');
-    } catch {
-        doc.setFont('helvetica', 'bold');
-    }
+    doc.setFont('helvetica', 'bold');
     doc.text(company.name, pageWidth / 2, 35, { align: 'center' });
     // Slogan (bleu, centré)
     doc.setFontSize(11);
@@ -105,14 +97,10 @@ export function addStandardFooterSync(doc: jsPDF, pageNumber?: number, totalPage
     doc.setDrawColor(37, 99, 235);
     doc.setLineWidth(2);
     doc.line(0, footerY, pageWidth, footerY);
-    // Nom société (Ethnocentric, rouge, centré, taille 20)
+    // Nom société (police intégrée jsPDF, rouge, centrée, taille 20)
     doc.setTextColor(220, 38, 38);
     doc.setFontSize(20);
-    try {
-        doc.setFont('Ethnocentric', 'normal');
-    } catch {
-        doc.setFont('helvetica', 'bold');
-    }
+    doc.setFont('helvetica', 'bold');
     doc.text(company.name, pageWidth / 2, footerY + 18, { align: 'center' });
     // Coordonnées (bleu, centré)
     doc.setFontSize(9);
@@ -142,14 +130,10 @@ export async function addStandardFooter(doc: jsPDF, pageNumber?: number, totalPa
     doc.setDrawColor(37, 99, 235);
     doc.setLineWidth(2);
     doc.line(0, footerY, pageWidth, footerY);
-    // Nom société (Ethnocentric, rouge, centré, taille 20)
+    // Nom société (police intégrée jsPDF, rouge, centrée, taille 20)
     doc.setTextColor(220, 38, 38);
     doc.setFontSize(20);
-    try {
-        doc.setFont('Ethnocentric', 'normal');
-    } catch {
-        doc.setFont('helvetica', 'bold');
-    }
+    doc.setFont('helvetica', 'bold');
     doc.text(company.name, pageWidth / 2, footerY + 18, { align: 'center' });
     // Coordonnées (bleu, centré)
     doc.setFontSize(9);

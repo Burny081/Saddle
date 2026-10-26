@@ -1,8 +1,7 @@
-import { ChevronDown, ChevronRight, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, X, Zap, Sun, Shield, Cpu, type LucideIcon } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import * as LucideIcons from 'lucide-react';
 import { useDropdownIntent } from './useDropdownIntent';
 
 // Static categories for navigation
@@ -52,6 +51,8 @@ const categories = [
     ]
   },
 ];
+
+const categoryIcons: Record<string, LucideIcon> = { Zap, Sun, Shield, Cpu };
 
 interface CategoryDropdownProps {
     onNavigate: (page: string, category?: string, subCategory?: string) => void;
@@ -108,8 +109,7 @@ export function CategoryDropdown({ onNavigate, trigger = 'hover', isMobile = fal
     };
 
     const getIcon = (iconName: string) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const Icon = (LucideIcons as any)[iconName];
+        const Icon = categoryIcons[iconName];
         return Icon ? <Icon className="w-5 h-5" /> : null;
     };
 

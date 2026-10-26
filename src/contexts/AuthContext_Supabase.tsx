@@ -4,9 +4,7 @@ import type { Profile } from '@/types/database';
 
 export type UserRole = 'superadmin' | 'admin' | 'commercial' | 'secretaire' | 'manager' | 'comptable' | 'client';
 
-export interface User extends Profile {
-  // Extends the Profile interface from database.ts
-}
+export type User = Profile;
 
 interface AuthContextType {
   user: User | null;

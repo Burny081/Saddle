@@ -94,29 +94,31 @@ export function calculateDiscount(
       break;
     
     case 'bogo':
-      // Buy One Get One: find eligible items
-      const eligibleItems = items.filter(item => {
-        if (promo.applicableProducts?.length) {
-          return promo.applicableProducts.includes(item.id);
+      {
+        // Buy One Get One: find eligible items
+        const eligibleItems = items.filter(item => {
+          if (promo.applicableProducts?.length) {
+            return promo.applicableProducts.includes(item.id);
+          }
+          if (promo.applicableCategories?.length && item.category) {
+            return promo.applicableCategories.includes(item.category);
+          }
+          return true;
+        });
+
+        // Sort by price descending
+        eligibleItems.sort((a, b) => b.price - a.price);
+
+        // Apply BOGO discount (50% off the cheaper items)
+        let bogoDiscount = 0;
+        for (let i = 0; i < eligibleItems.length; i += 2) {
+          if (i + 1 < eligibleItems.length) {
+            const cheaperPrice = Math.min(eligibleItems[i].price, eligibleItems[i + 1].price);
+            bogoDiscount += cheaperPrice * Math.min(eligibleItems[i + 1].quantity, eligibleItems[i].quantity);
+          }
         }
-        if (promo.applicableCategories?.length && item.category) {
-          return promo.applicableCategories.includes(item.category);
-        }
-        return true;
-      });
-      
-      // Sort by price descending
-      eligibleItems.sort((a, b) => b.price - a.price);
-      
-      // Apply BOGO discount (50% off the cheaper items)
-      let bogoDiscount = 0;
-      for (let i = 0; i < eligibleItems.length; i += 2) {
-        if (i + 1 < eligibleItems.length) {
-          const cheaperPrice = Math.min(eligibleItems[i].price, eligibleItems[i + 1].price);
-          bogoDiscount += cheaperPrice * Math.min(eligibleItems[i + 1].quantity, eligibleItems[i].quantity);
-        }
+        discount = bogoDiscount;
       }
-      discount = bogoDiscount;
       break;
     
     case 'free_shipping':

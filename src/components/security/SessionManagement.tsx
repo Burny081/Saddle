@@ -3,7 +3,6 @@ import { Shield, Monitor, Smartphone, Globe, Clock, X, CheckCircle, AlertTriangl
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import { Badge } from '@/app/components/ui/badge';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface UserSession {
   id: string;
@@ -19,7 +18,6 @@ interface UserSession {
 }
 
 export default function SessionManagement() {
-  const { } = useAuth();
   const [sessions, setSessions] = useState<UserSession[]>([]);
 
   useEffect(() => {

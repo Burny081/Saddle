@@ -27,16 +27,10 @@ export function ClientChatWidget() {
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Only show for client role
-    if (!user || user.role !== 'client') {
-        console.log('ClientChatWidget: Not showing for user:', user?.name, 'role:', user?.role);
-        return null;
-    }
-
-    console.log('ClientChatWidget: Showing for client user:', user.name, 'role:', user.role);
-
     // Load messages on mount
     useEffect(() => {
+        if (!user || user.role !== 'client') return;
+
         const loadMessages = () => {
             const allMessages = getFromStorage<ClientMessage[]>(STORAGE_KEY, []);
             const clientMessages = allMessages.filter(m => m.clientId === user.id);
@@ -53,7 +47,7 @@ export function ClientChatWidget() {
         // Poll for new messages
         const interval = setInterval(loadMessages, 3000);
         return () => clearInterval(interval);
-    }, [user.id]);
+    }, [user]);
 
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
@@ -63,6 +57,7 @@ export function ClientChatWidget() {
     }, [messages, isOpen]);
 
     const toggleChat = useCallback(() => {
+        if (!user) return;
         setIsOpen(prev => {
             if (!prev) {
                 // Mark as read when opening
@@ -71,11 +66,11 @@ export function ClientChatWidget() {
             }
             return !prev;
         });
-    }, [user.id]);
+    }, [user]);
 
     const handleSend = useCallback((e: React.FormEvent) => {
         e.preventDefault();
-        if (inputRef.current && inputRef.current.value.trim()) {
+        if (user && inputRef.current && inputRef.current.value.trim()) {
             const newMessage: ClientMessage = {
                 id: generateId(),
                 senderId: user.id,
@@ -96,6 +91,9 @@ export function ClientChatWidget() {
             inputRef.current.value = '';
         }
     }, [user]);
+
+    // Hooks must run before the role-based render guard.
+    if (!user || user.role !== 'client') return null;
 
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 pointer-events-none">

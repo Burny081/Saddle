@@ -13,14 +13,6 @@ export function ChatWidget() {
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Only show for non-client roles
-    if (!user || user.role === 'client') {
-        console.log('ChatWidget: Not showing for user:', user?.name, 'role:', user?.role);
-        return null;
-    }
-
-    console.log('ChatWidget: Showing for staff user:', user.name, 'role:', user.role);
-
     // Auto-scroll to bottom when new messages arrive
     useEffect(() => {
         if (scrollRef.current) {
@@ -35,6 +27,9 @@ export function ChatWidget() {
             inputRef.current.value = '';
         }
     }, [sendMessage]);
+
+    // Hooks must run before the role-based render guard.
+    if (!user || user.role === 'client') return null;
 
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 pointer-events-none">

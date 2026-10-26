@@ -160,8 +160,10 @@ export function AccountingView({ onBack }: AccountingViewProps) {
                 startDate = new Date(now.getFullYear(), now.getMonth(), 1);
                 break;
             case 'quarter':
-                const quarter = Math.floor(now.getMonth() / 3);
-                startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                {
+                    const quarter = Math.floor(now.getMonth() / 3);
+                    startDate = new Date(now.getFullYear(), quarter * 3, 1);
+                }
                 break;
             case 'year':
                 startDate = new Date(now.getFullYear(), 0, 1);

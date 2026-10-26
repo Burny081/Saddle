@@ -1,35 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { lazy, Suspense, useState, useEffect, useCallback } from 'react';
 import { ThemeProvider } from 'next-themes';
 import { AlertTriangle, ArrowLeft, Globe, LogIn, Mail, MapPin, Phone } from 'lucide-react';
 import { SplashScreen } from '@/components/SplashScreen';
 import { PublicHome } from '@/components/PublicHome';
 import { LoginModal } from '@/components/LoginModal';
-import { PointsOfSaleView } from '@/components/public/PointsOfSaleView';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { DashboardView } from '@/components/dashboards/DashboardView';
-import { AnalyticsDashboard } from '@/components/dashboards/AnalyticsDashboard';
-import ClientDashboard from '@/components/dashboards/ClientDashboard';
-import ClientProfile from '@/components/client/ClientProfile';
-import ClientLoyaltyView from '@/components/client/ClientLoyaltyView';
-import ClientQuotesView from '@/components/client/ClientQuotesView';
-import ClientFavoritesView from '@/components/client/ClientFavoritesView';
-import { ArticlesView } from '@/components/catalog/ArticlesView';
-import { ServicesView } from '@/components/catalog/ServicesView';
-import { EnhancedStockView } from '@/components/stock/EnhancedStockView';
-import { SalesView } from '@/components/sales/SalesView';
-import { ClientsView } from '@/components/catalog/ClientsView';
-import { UsersView } from '@/components/admin/UsersView';
-import ImageManagementView from '@/components/admin/ImageManagementView';
-import PromotionsView from '@/components/promotions/PromotionsView';
-import SecurityView from '@/components/security/SecurityView';
-import { ReportsView } from '@/components/reports/ReportsView';
-import { SettingsView } from '@/components/settings/SettingsView';
-import { ClientShopView } from '@/components/shop/ClientShopView';
-import { OrdersView } from '@/components/shop/OrdersView';
-import { SuppliersView } from '@/components/suppliers/SuppliersView';
-import { StoresView } from '@/components/stores/StoresView';
-import ComptableView from '@/components/comptable/ComptableView';
-import CommercialView from '@/components/commercial/CommercialView';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { LanguageProvider, useLanguage } from '@/contexts/LanguageContext';
 import { DataProvider } from '@/contexts/DataContext';
@@ -40,10 +16,6 @@ import { StoreAccessProvider } from '@/contexts/StoreAccessContext';
 import { CompanyProvider } from '@/contexts/CompanyContext';
 import { Button } from '@/app/components/ui/button';
 import { COMPANY } from '@/config/constants';
-import { ChatWidget } from '@/components/chat/ChatWidget';
-import { ClientChatWidget } from '@/components/chat/ClientChatWidget';
-import { StaffClientChatWidget } from '@/components/chat/StaffClientChatWidget';
-import { VisitorAnalyticsView } from '@/components/dashboards/components/VisitorAnalyticsView';
 import {
   canAccessView,
   isProtectedView,
@@ -51,6 +23,39 @@ import {
   routeFromLocation,
   type ShopParams,
 } from '@/app/routes';
+
+const PointsOfSaleView = lazy(() => import('@/components/public/PointsOfSaleView').then((module) => ({ default: module.PointsOfSaleView })));
+const AnalyticsDashboard = lazy(() => import('@/components/dashboards/AnalyticsDashboard').then((module) => ({ default: module.AnalyticsDashboard })));
+const ClientDashboard = lazy(() => import('@/components/dashboards/ClientDashboard'));
+const ClientProfile = lazy(() => import('@/components/client/ClientProfile'));
+const ClientLoyaltyView = lazy(() => import('@/components/client/ClientLoyaltyView'));
+const ClientQuotesView = lazy(() => import('@/components/client/ClientQuotesView'));
+const ClientFavoritesView = lazy(() => import('@/components/client/ClientFavoritesView'));
+const ArticlesView = lazy(() => import('@/components/catalog/ArticlesView').then((module) => ({ default: module.ArticlesView })));
+const ServicesView = lazy(() => import('@/components/catalog/ServicesView').then((module) => ({ default: module.ServicesView })));
+const EnhancedStockView = lazy(() => import('@/components/stock/EnhancedStockView').then((module) => ({ default: module.EnhancedStockView })));
+const SalesView = lazy(() => import('@/components/sales/SalesView').then((module) => ({ default: module.SalesView })));
+const ClientsView = lazy(() => import('@/components/catalog/ClientsView').then((module) => ({ default: module.ClientsView })));
+const UsersView = lazy(() => import('@/components/admin/UsersView').then((module) => ({ default: module.UsersView })));
+const ImageManagementView = lazy(() => import('@/components/admin/ImageManagementView'));
+const PromotionsView = lazy(() => import('@/components/promotions/PromotionsView'));
+const SecurityView = lazy(() => import('@/components/security/SecurityView'));
+const ReportsView = lazy(() => import('@/components/reports/ReportsView').then((module) => ({ default: module.ReportsView })));
+const SettingsView = lazy(() => import('@/components/settings/SettingsView').then((module) => ({ default: module.SettingsView })));
+const ClientShopView = lazy(() => import('@/components/shop/ClientShopView').then((module) => ({ default: module.ClientShopView })));
+const OrdersView = lazy(() => import('@/components/shop/OrdersView').then((module) => ({ default: module.OrdersView })));
+const SuppliersView = lazy(() => import('@/components/suppliers/SuppliersView').then((module) => ({ default: module.SuppliersView })));
+const StoresView = lazy(() => import('@/components/stores/StoresView').then((module) => ({ default: module.StoresView })));
+const ComptableView = lazy(() => import('@/components/comptable/ComptableView'));
+const CommercialView = lazy(() => import('@/components/commercial/CommercialView'));
+const VisitorAnalyticsView = lazy(() => import('@/components/dashboards/components/VisitorAnalyticsView').then((module) => ({ default: module.VisitorAnalyticsView })));
+const ChatWidget = lazy(() => import('@/components/chat/ChatWidget').then((module) => ({ default: module.ChatWidget })));
+const ClientChatWidget = lazy(() => import('@/components/chat/ClientChatWidget').then((module) => ({ default: module.ClientChatWidget })));
+const StaffClientChatWidget = lazy(() => import('@/components/chat/StaffClientChatWidget').then((module) => ({ default: module.StaffClientChatWidget })));
+
+function PageLoadingFallback() {
+  return <div className="flex min-h-64 items-center justify-center text-sm font-medium text-muted-foreground">Chargement de l’espace SaddlePoint…</div>;
+}
 
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true);
@@ -130,7 +135,7 @@ function AppContent() {
 
   // Handle Public Views (Guest or Authenticated)
   if (currentView === 'points-of-sale') {
-    return <PointsOfSaleView onBack={() => navigateToView(isAuthenticated ? 'dashboard' : 'home')} />;
+    return <Suspense fallback={<PageLoadingFallback />}><PointsOfSaleView onBack={() => navigateToView(isAuthenticated ? 'dashboard' : 'home')} /></Suspense>;
   }
 
   if (!isAuthenticated && currentView === 'shop') {
@@ -172,13 +177,13 @@ function AppContent() {
             </div>
           </header>
           <main className="mx-auto max-w-7xl px-4 py-6 pb-28 sm:px-6 lg:px-8 lg:py-8 lg:pb-8">
-            <ClientShopView
+            <Suspense fallback={<PageLoadingFallback />}><ClientShopView
               initialCategory={shopParams.category}
               initialSubCategory={shopParams.subCategory}
               onBack={() => navigateToView('home')}
               showBackButton={false}
               onLoginRequired={() => setShowLoginModal(true)}
-            />
+            /></Suspense>
           </main>
         </div>
         <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
@@ -266,13 +271,13 @@ function AppContent() {
 
   return (
     <DashboardLayout currentView={currentView} onViewChange={navigateToView}>
-      {renderView()}
+      <Suspense fallback={<PageLoadingFallback />}>{renderView()}</Suspense>
       {/* Internal team chat (for staff) */}
-      <ChatWidget />
+      <Suspense fallback={null}><ChatWidget /></Suspense>
       {/* Client support chat (for clients to send messages) */}
-      <ClientChatWidget />
+      <Suspense fallback={null}><ClientChatWidget /></Suspense>
       {/* Staff view to respond to client messages (authorized staff only) */}
-      <StaffClientChatWidget />
+      <Suspense fallback={null}><StaffClientChatWidget /></Suspense>
     </DashboardLayout>
   );
 }

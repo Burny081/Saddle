@@ -36,16 +36,10 @@ export function StaffClientChatWidget() {
     const inputRef = useRef<HTMLInputElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Only show for staff roles (not client)
-    if (!user || user.role === 'client') {
-        console.log('StaffClientChatWidget: Not showing for user:', user?.name, 'role:', user?.role);
-        return null;
-    }
-
-    console.log('StaffClientChatWidget: Showing for staff user:', user.name, 'role:', user.role);
-
     // Load and organize messages by client
     useEffect(() => {
+        if (!user || user.role === 'client') return;
+
         const loadConversations = () => {
             const allMessages = getFromStorage<ClientMessage[]>(STORAGE_KEY, []);
             const lastReadTimes = getFromStorage<Record<string, number>>(`${STORAGE_KEY}_staffRead_${user.id}`, {});
@@ -93,7 +87,7 @@ export function StaffClientChatWidget() {
         loadConversations();
         const interval = setInterval(loadConversations, 3000);
         return () => clearInterval(interval);
-    }, [user.id]);
+    }, [user]);
 
     // Auto-scroll when messages change
     useEffect(() => {
@@ -112,17 +106,18 @@ export function StaffClientChatWidget() {
     }, []);
 
     const selectClient = useCallback((clientId: string) => {
+        if (!user) return;
         setSelectedClientId(clientId);
 
         // Mark as read
         const lastReadTimes = getFromStorage<Record<string, number>>(`${STORAGE_KEY}_staffRead_${user.id}`, {});
         lastReadTimes[clientId] = Date.now();
         setToStorage(`${STORAGE_KEY}_staffRead_${user.id}`, lastReadTimes);
-    }, [user.id]);
+    }, [user]);
 
     const handleSend = useCallback((e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedClientId || !inputRef.current || !inputRef.current.value.trim()) return;
+        if (!user || !selectedClientId || !inputRef.current || !inputRef.current.value.trim()) return;
 
         const newMessage: ClientMessage = {
             id: generateId(),
@@ -145,6 +140,9 @@ export function StaffClientChatWidget() {
     const selectedConversation = useMemo(() => {
         return conversations.find(c => c.clientId === selectedClientId);
     }, [conversations, selectedClientId]);
+
+    // Hooks must run before the role-based render guard.
+    if (!user || user.role === 'client') return null;
 
     return (
         <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-4 pointer-events-none">

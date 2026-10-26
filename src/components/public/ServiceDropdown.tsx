@@ -1,8 +1,7 @@
-import { ChevronDown, ArrowRight, Search, X, ExternalLink } from 'lucide-react';
+import { ChevronDown, ArrowRight, Search, X, ExternalLink, Wrench, Activity, Lightbulb, type LucideIcon } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import * as LucideIcons from 'lucide-react';
 import { useDropdownIntent } from './useDropdownIntent';
 
 // Static navigation data for services mega menu
@@ -45,6 +44,8 @@ const navServices = [
   }
 ];
 
+const serviceIcons: Record<string, LucideIcon> = { Wrench, Activity, Lightbulb };
+
 interface ServiceDropdownProps {
     onNavigate: (page: string, params?: any) => void;
     trigger?: 'hover' | 'click';
@@ -78,8 +79,7 @@ export function ServiceDropdown({ onNavigate, trigger = 'hover', isMobile = fals
     }, [searchTerm, language]);
 
     const getIcon = (iconName: string) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const Icon = (LucideIcons as any)[iconName];
+        const Icon = serviceIcons[iconName];
         return Icon ? <Icon className="w-5 h-5" /> : null;
     };
 

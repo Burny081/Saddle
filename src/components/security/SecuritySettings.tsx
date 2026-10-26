@@ -4,10 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/app
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Badge } from '@/app/components/ui/badge';
-import { useAuth } from '@/contexts/AuthContext';
 
 export default function SecuritySettings() {
-  const { } = useAuth();
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [showQRCode, setShowQRCode] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');

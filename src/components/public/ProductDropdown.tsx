@@ -1,8 +1,7 @@
-import { ChevronDown, ChevronRight, ArrowRight, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, ArrowRight, Search, X, Sparkles, TrendingUp, Percent, type LucideIcon } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import * as LucideIcons from 'lucide-react';
 import { useDropdownIntent } from './useDropdownIntent';
 
 // Static navigation data for products mega menu
@@ -44,6 +43,8 @@ const navProducts = [
   }
 ];
 
+const productIcons: Record<string, LucideIcon> = { Sparkles, TrendingUp, Percent };
+
 interface ProductDropdownProps {
     onNavigate: (page: string, params?: any) => void;
     trigger?: 'hover' | 'click';
@@ -76,8 +77,7 @@ export function ProductDropdown({ onNavigate, trigger = 'hover', isMobile = fals
     }, [searchTerm, language]);
 
     const getIcon = (iconName: string) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const Icon = (LucideIcons as any)[iconName];
+        const Icon = productIcons[iconName];
         return Icon ? <Icon className="w-5 h-5" /> : null;
     };
 
