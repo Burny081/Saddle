@@ -18,6 +18,7 @@ import { Input } from '@/app/components/ui/input';
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -187,7 +188,6 @@ export function ClientShopView({
   const [sortBy, setSortBy] = useState<'popular' | 'name'>('popular');
   const [currentPage, setCurrentPage] = useState(1);
   const [selected, setSelected] = useState<CatalogueShopProduct | null>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   useEffect(() => setFavorites(readFavorites(user?.id)), [user?.id]);
@@ -195,14 +195,6 @@ export function ClientShopView({
     setCategory(initialCategory ?? '');
     setSubCategory(initialSubCategory ?? '');
   }, [initialCategory, initialSubCategory]);
-  useEffect(() => {
-    if (!window.matchMedia) return;
-    const media = window.matchMedia('(min-width: 1024px)');
-    const update = () => setIsDesktop(media.matches);
-    update();
-    media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
-  }, []);
   const subCategories = useMemo(
     () =>
       Array.from(
@@ -350,6 +342,9 @@ export function ClientShopView({
             <DrawerContent className="ml-auto flex h-full w-full max-w-md flex-col rounded-none">
               <DrawerHeader className="sr-only">
                 <DrawerTitle>Ma demande de devis</DrawerTitle>
+                <DrawerDescription>
+                  Produits sélectionnés pour votre demande de devis.
+                </DrawerDescription>
               </DrawerHeader>
               <QuoteCart
                 cart={cart}
@@ -534,16 +529,19 @@ export function ClientShopView({
       </div>
       {selected && (
         <Drawer
-          direction={isDesktop ? 'right' : 'bottom'}
+          direction="bottom"
           open={Boolean(selected)}
           onOpenChange={(open) => !open && setSelected(null)}
         >
           <DrawerContent
             data-testid="product-details-drawer"
-            className="ml-auto h-full w-full max-w-none overflow-y-auto rounded-none lg:w-[min(90vw,56rem)]"
+            className="h-[92vh] max-h-[92vh] w-full overflow-y-auto rounded-t-xl"
           >
             <DrawerHeader className="sr-only">
               <DrawerTitle>{selected.nom}</DrawerTitle>
+              <DrawerDescription>
+                Détails, caractéristiques et configuration technique du produit.
+              </DrawerDescription>
             </DrawerHeader>
             <CatalogueProductDetails
               product={selected}

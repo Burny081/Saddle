@@ -29,8 +29,8 @@ export function CatalogueProductDetails({
   const [configuration, setConfiguration] = useState<SelectedProductConfiguration>({});
 
   return (
-    <article className="space-y-6 p-5 pt-0 sm:p-6 sm:pt-0 lg:grid lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)] lg:gap-x-8 lg:space-y-0">
-      <header className="border-b border-border pb-5 lg:col-span-2">
+    <article className="mx-auto max-w-5xl space-y-6 p-5 pt-0 sm:p-6 sm:pt-0">
+      <header className="border-b border-border pb-5">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#b7212d]">
@@ -62,7 +62,7 @@ export function CatalogueProductDetails({
         <h1 className="mt-4 text-3xl font-bold leading-tight text-foreground">{product.nom}</h1>
       </header>
 
-      <section aria-label="Galerie produit" className="lg:row-span-5 lg:pt-6">
+      <section aria-label="Galerie produit">
         {activeImage ? (
           <>
             <img
