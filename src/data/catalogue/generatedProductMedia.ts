@@ -2,6 +2,40 @@
  * Only records with completed, product-specific image sets are listed here.
  * Missing entries deliberately remain image-free until their own four images exist.
  */
+const protectionMediaKeys = [
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-contacteur-puissance-triphase',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-contacteur-modulaire-silencieux',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-de-puissance-motorisable',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-moteur-reglable',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-dispositif-differentiel-residuel-industriel',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-dispositif-differentiel-residuel-type-a',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-dispositif-differentiel-residuel-type-ac',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-fusible-am-protection-moteur',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-fusible-cylindrique-gg',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-interrupteur-differentiel-bipolaire',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-interrupteur-differentiel-selectif',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-interrupteur-differentiel-tetrapolaire',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-parafoudre-monophase-tableau',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-parafoudre-triphase-tableau',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-porte-fusible-modulaire',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-protection-surtension-ligne-donnees',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-relais-protection-phase',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-relais-protection-tension',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-relais-differentiel-avec-tore',
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-relais-thermique-reglable',
+] as const;
+
+const imageSet = (mediaKey: string): string[] => [
+  `/catalogue-media/${mediaKey}/01-hero.png`,
+  `/catalogue-media/${mediaKey}/02-angle.png`,
+  `/catalogue-media/${mediaKey}/03-detail.png`,
+  `/catalogue-media/${mediaKey}/04-context.png`,
+];
+
+const latestProtectionMedia = Object.fromEntries(
+  protectionMediaKeys.map((mediaKey) => [mediaKey, imageSet(mediaKey)]),
+);
+
 export const generatedProductMedia: Record<string, string[]> = {
   'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-sec-basse-tension': [
     '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-sec-basse-tension/01-hero.png',
@@ -81,4 +115,167 @@ export const generatedProductMedia: Record<string, string[]> = {
     '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-unipolaire/03-detail.png',
     '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-unipolaire/04-context.png',
   ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-de-commande': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-de-commande/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-de-commande/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-de-commande/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-de-commande/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-inox': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-inox/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-inox/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-inox/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-inox/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-electrique-industrielle': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-electrique-industrielle/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-electrique-industrielle/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-electrique-industrielle/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-armoire-electrique-industrielle/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-boitier-de-commande': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-boitier-de-commande/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-boitier-de-commande/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-boitier-de-commande/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-boitier-de-commande/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-canalisation-prefabriquee': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-canalisation-prefabriquee/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-canalisation-prefabriquee/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-canalisation-prefabriquee/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-canalisation-prefabriquee/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-arrivee-reseau': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-arrivee-reseau/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-arrivee-reseau/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-arrivee-reseau/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-arrivee-reseau/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-moyenne-tension': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-moyenne-tension/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-moyenne-tension/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-moyenne-tension/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-moyenne-tension/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-protection-transformateur': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-protection-transformateur/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-protection-transformateur/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-protection-transformateur/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-cellule-protection-transformateur/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-de-distribution': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-de-distribution/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-de-distribution/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-de-distribution/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-de-distribution/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-etanche': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-etanche/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-etanche/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-etanche/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-coffret-etanche/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-commutateur-de-source': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-commutateur-de-source/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-commutateur-de-source/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-commutateur-de-source/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-commutateur-de-source/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-disjoncteur-divisionnaire': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-disjoncteur-divisionnaire/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-disjoncteur-divisionnaire/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-disjoncteur-divisionnaire/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-disjoncteur-divisionnaire/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-automatique-de-source': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-automatique-de-source/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-automatique-de-source/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-automatique-de-source/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-automatique-de-source/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-manuel-de-source': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-manuel-de-source/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-manuel-de-source/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-manuel-de-source/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-inverseur-manuel-de-source/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-jeu-de-barres-cuivre': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-jeu-de-barres-cuivre/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-jeu-de-barres-cuivre/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-jeu-de-barres-cuivre/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-jeu-de-barres-cuivre/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-peigne-modulaire': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-peigne-modulaire/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-peigne-modulaire/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-peigne-modulaire/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-peigne-modulaire/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-support-de-barre': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-support-de-barre/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-support-de-barre/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-support-de-barre/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-support-de-barre/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-de-puissance': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-de-puissance/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-de-puissance/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-de-puissance/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-de-puissance/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-distribution-industriel': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-distribution-industriel/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-distribution-industriel/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-distribution-industriel/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-distribution-industriel/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-general-basse-tension': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-general-basse-tension/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-general-basse-tension/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-general-basse-tension/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-tableau-general-basse-tension/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-de-courant': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-de-courant/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-de-courant/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-de-courant/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-de-courant/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-d-isolement': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-d-isolement/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-d-isolement/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-d-isolement/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-d-isolement/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-batterie-de-condensateurs': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-batterie-de-condensateurs/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-batterie-de-condensateurs/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-batterie-de-condensateurs/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-batterie-de-condensateurs/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-regulateur-de-condensateurs': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-regulateur-de-condensateurs/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-regulateur-de-condensateurs/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-regulateur-de-condensateurs/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-regulateur-de-condensateurs/04-context.png',
+  ],
+  'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-contacteur-pour-condensateur': [
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-contacteur-pour-condensateur/01-hero.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-contacteur-pour-condensateur/02-angle.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-contacteur-pour-condensateur/03-detail.png',
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-contacteur-pour-condensateur/04-context.png',
+  ],
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-bipolaire': [
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-bipolaire/01-hero.png',
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-bipolaire/02-angle.png',
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-bipolaire/03-detail.png',
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-bipolaire/04-context.png',
+  ],
+  'catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-tripolaire': [
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-tripolaire/01-hero.png',
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-tripolaire/02-angle.png',
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-tripolaire/03-detail.png',
+    '/catalogue-media/catalogue-protection-et-securite-electrique-protection-et-securite-electrique-disjoncteur-modulaire-tripolaire/04-context.png',
+  ],
+  ...latestProtectionMedia,
 };
