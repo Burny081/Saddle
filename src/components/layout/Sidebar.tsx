@@ -5,6 +5,7 @@ import { Button } from '@/app/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { navItems } from '@/data/navigation';
+import { getNavigationGroups } from './navigationGroups';
 
 interface SidebarProps {
     currentView: string;
@@ -16,8 +17,12 @@ export function Sidebar({ currentView, onViewChange, open }: SidebarProps) {
     const { user, logout } = useAuth();
     const { t } = useLanguage();
 
-    const filteredNavItems = useMemo(() =>
-        navItems.filter((item) => user ? item.roles.includes(user.role) : false),
+    const navigationGroups = useMemo(() => user && user.role !== 'client'
+        ? getNavigationGroups(navItems, user.role)
+        : [], [user]);
+
+    const clientNavItems = useMemo(() =>
+        user?.role === 'client' ? navItems.filter((item) => item.roles.includes(user.role)) : [],
         [user]
     );
 
@@ -47,8 +52,11 @@ export function Sidebar({ currentView, onViewChange, open }: SidebarProps) {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 space-y-1 overflow-y-auto px-4 py-8">
-                {filteredNavItems.map((item) => {
+            <nav className="flex-1 space-y-5 overflow-y-auto px-4 py-8" aria-label="Navigation principale">
+                {(user?.role === 'client' ? [{ id: 'client', label: '', items: clientNavItems }] : navigationGroups).map((group) => (
+                    <div key={group.id} className="space-y-1">
+                    {group.label && <p className="px-4 pb-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-muted-foreground">{group.label}</p>}
+                    {group.items.map((item) => {
                     const isActive = currentView === item.id;
                     return (
                         <button
@@ -64,7 +72,9 @@ export function Sidebar({ currentView, onViewChange, open }: SidebarProps) {
                             <span className="relative z-10">{t(item.label)}</span>
                         </button>
                     );
-                })}
+                    })}
+                    </div>
+                ))}
             </nav>
 
             {/* Sidebar Footer / Logout */}

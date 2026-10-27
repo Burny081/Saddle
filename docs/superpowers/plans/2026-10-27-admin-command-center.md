@@ -61,7 +61,7 @@ test('builds factual operations metrics without invented changes', () => {
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `npm test -- src/components/admin/adminCommandCenterData.test.ts --run`  
+Run: `npm test -- src/components/admin/adminCommandCenterData.test.ts --run`
 Expected: FAIL because `adminCommandCenterData` does not exist.
 
 - [ ] **Step 3: Implement the selector module**
@@ -90,7 +90,7 @@ export function buildAdminCommandCenterData({ articles, sales, clients }: Input)
 
 - [ ] **Step 4: Run the selector test to verify it passes**
 
-Run: `npm test -- src/components/admin/adminCommandCenterData.test.ts --run`  
+Run: `npm test -- src/components/admin/adminCommandCenterData.test.ts --run`
 Expected: PASS with one test.
 
 - [ ] **Step 5: Commit**
@@ -128,7 +128,7 @@ test('shows operations metrics and navigates from an urgent stock action', async
 
 - [ ] **Step 2: Run the component test to verify it fails**
 
-Run: `npm test -- src/components/admin/AdminCommandCenter.test.tsx --run`  
+Run: `npm test -- src/components/admin/AdminCommandCenter.test.tsx --run`
 Expected: FAIL because `AdminCommandCenter` does not exist.
 
 - [ ] **Step 3: Implement the screen with factual states**
@@ -167,7 +167,7 @@ case 'dashboard':
 
 - [ ] **Step 5: Run focused tests**
 
-Run: `npm test -- src/components/admin/AdminCommandCenter.test.tsx src/components/admin/adminCommandCenterData.test.ts --run`  
+Run: `npm test -- src/components/admin/AdminCommandCenter.test.tsx src/components/admin/adminCommandCenterData.test.ts --run`
 Expected: PASS with no accessibility-console warnings.
 
 - [ ] **Step 6: Commit**
@@ -205,7 +205,7 @@ test('groups only the navigation items an admin can access', () => {
 
 - [ ] **Step 2: Run the grouping test to verify it fails**
 
-Run: `npm test -- src/components/layout/navigationGroups.test.ts --run`  
+Run: `npm test -- src/components/layout/navigationGroups.test.ts --run`
 Expected: FAIL because `navigationGroups` does not exist.
 
 - [ ] **Step 3: Implement deterministic grouping**
@@ -231,7 +231,7 @@ Replace the flat `filteredNavItems.map` block with `groups.map`. Group headings 
 
 - [ ] **Step 5: Run focused tests**
 
-Run: `npm test -- src/components/layout/navigationGroups.test.ts src/components/layout/Sidebar.test.tsx --run`  
+Run: `npm test -- src/components/layout/navigationGroups.test.ts src/components/layout/Sidebar.test.tsx --run`
 Expected: PASS.
 
 - [ ] **Step 6: Commit**
@@ -267,7 +267,7 @@ test('routes an admin to the command center but keeps a manager on the operation
 
 - [ ] **Step 2: Run the test to verify it fails before the final routing implementation, if not already covered**
 
-Run: `npm test -- src/app/App.test.tsx --run`  
+Run: `npm test -- src/app/App.test.tsx --run`
 Expected: FAIL before the Task 2 route change, then PASS afterward.
 
 - [ ] **Step 3: Verify all required checks**

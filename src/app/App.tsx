@@ -23,9 +23,11 @@ import {
   routeFromLocation,
   type ShopParams,
 } from '@/app/routes';
+import { getDashboardRoleView } from '@/app/dashboardRoleView';
 
 const PointsOfSaleView = lazy(() => import('@/components/public/PointsOfSaleView').then((module) => ({ default: module.PointsOfSaleView })));
 const AnalyticsDashboard = lazy(() => import('@/components/dashboards/AnalyticsDashboard').then((module) => ({ default: module.AnalyticsDashboard })));
+const AdminCommandCenter = lazy(() => import('@/components/admin/AdminCommandCenter').then((module) => ({ default: module.AdminCommandCenter })));
 const ClientDashboard = lazy(() => import('@/components/dashboards/ClientDashboard'));
 const ClientProfile = lazy(() => import('@/components/client/ClientProfile'));
 const ClientLoyaltyView = lazy(() => import('@/components/client/ClientLoyaltyView'));
@@ -209,11 +211,14 @@ function AppContent() {
 
     switch (currentView) {
       case 'dashboard':
-        // Dashboard différent selon le rôle
-        if (user?.role === 'client') {
-          return <ClientDashboard onNavigate={navigateToView} />;
+        switch (getDashboardRoleView(user?.role)) {
+          case 'admin-command-center':
+            return <AdminCommandCenter onNavigate={navigateToView} />;
+          case 'client-dashboard':
+            return <ClientDashboard onNavigate={navigateToView} />;
+          default:
+            return <DashboardView onNavigate={navigateToView} />;
         }
-        return <DashboardView onNavigate={navigateToView} />;
       case 'analytics':
         return <AnalyticsDashboard />;
       case 'articles':
