@@ -38,7 +38,7 @@ test('shows a complete catalogue product detail with a selectable image gallery'
   ).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Variantes disponibles' })).toBeInTheDocument();
   expect(screen.getByText(new RegExp(product.usage))).toBeInTheDocument();
-  expect(screen.getByTestId('quote-request-cta')).toHaveClass('sticky');
+  expect(screen.getByTestId('quote-request-cta')).not.toHaveClass('sticky');
   expect(screen.getByTestId('product-gallery')).toHaveClass('max-w-2xl');
   expect(screen.getAllByRole('button', { name: /Voir l’image/i })).toHaveLength(
     product.images.length
@@ -49,4 +49,22 @@ test('shows a complete catalogue product detail with a selectable image gallery'
     'src',
     product.images[1]
   );
+});
+
+test('keeps product information visible when a product has no generated images yet', () => {
+  const product = catalogueProducts[0];
+
+  render(
+    <CatalogueProductDetails
+      product={product}
+      isFavorite={false}
+      onToggleFavorite={vi.fn()}
+      onAddToQuote={vi.fn()}
+      onClose={vi.fn()}
+    />
+  );
+
+  expect(screen.getByTestId('product-images-pending')).toHaveClass('py-4');
+  expect(screen.getByRole('heading', { name: 'Description' })).toBeVisible();
+  expect(screen.getByRole('heading', { name: 'Caractéristiques techniques' })).toBeVisible();
 });

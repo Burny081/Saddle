@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Heart, ImageOff, Layers3, PackageCheck, Plus, X } from 'lucide-react';
+import { CheckCircle2, Heart, Layers3, PackageCheck, Plus, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import type { CatalogueShopProduct } from '@/data/catalogue';
 import {
@@ -90,13 +90,13 @@ export function CatalogueProductDetails({
             </div>
           </>
         ) : (
-          <div className="flex aspect-[4/3] flex-col items-center justify-center border border-dashed border-border bg-slate-50 px-8 text-center text-muted-foreground">
-            <ImageOff className="h-10 w-10 text-[#124a93]" />
-            <p className="mt-4 font-bold text-foreground">Visuels produit en préparation</p>
-            <p className="mt-2 text-sm leading-6">
-              Cette fiche n’utilise pas d’image générique ou d’image d’un autre produit.
-            </p>
-          </div>
+          <p
+            data-testid="product-images-pending"
+            className="border-l-2 border-[#124a93] bg-[#124a93]/5 px-4 py-4 text-sm leading-6 text-muted-foreground"
+          >
+            Visuels produit en préparation. Cette fiche ne montre pas d’image générique ou d’un
+            autre article.
+          </p>
         )}
       </section>
 
@@ -208,7 +208,7 @@ export function CatalogueProductDetails({
 
       <div
         data-testid="quote-request-cta"
-        className="sticky bottom-0 -mx-5 border-t border-border bg-background/95 p-4 backdrop-blur sm:-mx-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none"
+        className="-mx-5 border-t border-border bg-background p-4 sm:-mx-6"
       >
         <div className="grid grid-cols-2 gap-3">
           <Button variant="outline" className="h-12 font-bold" onClick={onClose}>
