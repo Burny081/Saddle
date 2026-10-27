@@ -71,6 +71,10 @@ Keep the existing ledger and extend its `movement_type` domain to record explici
 
 Each movement records exactly one location impact, before/after physical quantities, actor, reference type/id and timestamp. It cannot be updated or deleted through application roles.
 
+### `user_store_assignments`
+
+Add `can_transfer_stock boolean not null default false`. Managers must have both a persisted assignment for the relevant location and this explicit permission before they can create, dispatch, receive or cancel a transfer. Administrators and superadministrators remain globally authorised through their persisted profile role.
+
 ## Transactional operations
 
 ### Create draft transfer
