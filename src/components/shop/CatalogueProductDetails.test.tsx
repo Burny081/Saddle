@@ -52,7 +52,8 @@ test('shows a complete catalogue product detail with a selectable image gallery'
 });
 
 test('keeps product information visible when a product has no generated images yet', () => {
-  const product = catalogueProducts[0];
+  const product = catalogueProducts.find((catalogueProduct) => !catalogueProduct.image);
+  if (!product) throw new Error('Expected a catalogue product without generated media');
 
   render(
     <CatalogueProductDetails

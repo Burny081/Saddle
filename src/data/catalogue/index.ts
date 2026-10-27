@@ -2,6 +2,7 @@ import { automatismeControleCatalog } from './automatismeControle';
 import { cablesConnectiqueCatalog } from './cablesConnectique';
 import { eclairageCatalog } from './eclairage';
 import { energieDistributionCatalog } from './energieDistribution';
+import { generatedProductMedia } from './generatedProductMedia';
 import { installationBatimentCatalog } from './installationBatiment';
 import { moteursPompageCatalog } from './moteursPompage';
 import { outilsEpiCatalog } from './outilsEpi';
@@ -37,7 +38,14 @@ export const catalogueProducts: CatalogueShopProduct[] = catalogueSource.map((pr
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9]+/g, '-');
 
-  return { ...product, id, mediaKey: id };
+  const images = generatedProductMedia[id];
+
+  return {
+    ...product,
+    id,
+    mediaKey: id,
+    ...(images ? { image: images[0], images } : {}),
+  };
 });
 
 export const catalogueCategories = Array.from(

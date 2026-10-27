@@ -10,6 +10,13 @@ test('combines every SaddlePoint catalogue category into a scalable, filterable 
   expect(new Set(catalogueProducts.map((product) => product.slug)).size).toBe(catalogueProducts.length);
   expect(catalogueProducts.every((product) => product.marque.trim().length > 0)).toBe(true);
   expect(new Set(catalogueProducts.map((product) => product.mediaKey)).size).toBe(catalogueProducts.length);
-  expect(catalogueProducts.every((product) => product.image === undefined && product.images === undefined)).toBe(true);
+  const generatedProduct = catalogueProducts.find(
+    (product) => product.mediaKey === 'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-sec-basse-tension',
+  );
+  expect(generatedProduct?.image).toBe(
+    '/catalogue-media/catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-sec-basse-tension/01-hero.png',
+  );
+  expect(generatedProduct?.images).toHaveLength(4);
+  expect(new Set(generatedProduct?.images).size).toBe(4);
   expect(JSON.stringify(catalogueProducts).toLocaleLowerCase('fr')).not.toMatch(/prix|price|promotion|remise|fcfa|xaf|€/);
 });
