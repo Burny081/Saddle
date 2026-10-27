@@ -65,4 +65,10 @@ describe('ClientShopView', () => {
 
     expect(container.querySelector('aside')).not.toBeInTheDocument();
   });
+
+  it('marks the product results as the scoped motion target', () => {
+    render(<ClientShopView onBack={vi.fn()} />);
+
+    expect(screen.getByTestId('shop-results')).toBeInTheDocument();
+  });
 });

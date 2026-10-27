@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useGSAP } from '@gsap/react';
+import { gsap } from 'gsap';
 import {
   ArrowLeft,
   ChevronLeft,
@@ -36,8 +38,10 @@ import {
 import { filterCatalogueProducts } from './shopCatalogue';
 import { CatalogueProductDetails } from './CatalogueProductDetails';
 import { createQuoteRequestMailto } from '@/utils/quoteRequest';
+import type { SelectedProductConfiguration } from '@/data/catalogue/productConfiguration';
 
 export const SHOP_PAGE_SIZE = 24;
+gsap.registerPlugin(useGSAP);
 
 interface ClientShopViewProps {
   initialCategory?: string;
@@ -47,6 +51,7 @@ interface ClientShopViewProps {
 }
 interface CartItem extends CatalogueShopProduct {
   quantity: number;
+  configuration: SelectedProductConfiguration;
 }
 
 function ProductVisual({
@@ -107,6 +112,11 @@ function QuoteCart({
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold">{item.nom}</p>
                 <p className="mt-1 text-xs text-muted-foreground">{item.marque}</p>
+                {Object.values(item.configuration).filter(Boolean).length > 0 && (
+                  <p className="mt-1 text-xs text-[#124a93]">
+                    {Object.values(item.configuration).filter(Boolean).join(' · ')}
+                  </p>
+                )}
                 <div className="mt-3 flex items-center gap-2">
                   <Button
                     variant="outline"
@@ -165,6 +175,7 @@ export function ClientShopView({
   onBack,
   showBackButton = true,
 }: ClientShopViewProps) {
+  const shopRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<FavoriteReference[]>([]);
@@ -231,14 +242,17 @@ export function ClientShopView({
     setFavorites(saved);
     writeFavorites(user?.id, saved);
   };
-  const addToCart = (product: CatalogueShopProduct) =>
+  const addToCart = (
+    product: CatalogueShopProduct,
+    configuration: SelectedProductConfiguration = {}
+  ) =>
     setCart((items) => {
       const found = items.find((item) => item.id === product.id);
       return found
         ? items.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            item.id === product.id ? { ...item, quantity: item.quantity + 1, configuration } : item
           )
-        : [...items, { ...product, quantity: 1 }];
+        : [...items, { ...product, quantity: 1, configuration }];
     });
   const changeQuantity = (id: string, change: number) =>
     setCart((items) =>
@@ -261,8 +275,23 @@ export function ClientShopView({
     setCart([]);
     setIsCartOpen(false);
   };
+  useGSAP(
+    () => {
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+      gsap.fromTo(
+        '[data-shop-card]',
+        { autoAlpha: 0, y: 10 },
+        { autoAlpha: 1, y: 0, duration: 0.28, stagger: 0.025, ease: 'power2.out' }
+      );
+    },
+    {
+      scope: shopRef,
+      dependencies: [currentPage, category, subCategory, brand, query, showFavoritesOnly, sortBy],
+      revertOnUpdate: true,
+    }
+  );
   return (
-    <div className="space-y-6 pb-24 lg:pb-8">
+    <div ref={shopRef} className="space-y-6 pb-24 lg:pb-8">
       <header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex items-start gap-3 sm:gap-4">
           {onBack && showBackButton && (
@@ -403,11 +432,12 @@ export function ClientShopView({
               </p>
             </div>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div data-testid="shop-results" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {pageItems.map((product) => (
                 <article
                   key={product.id}
-                  className="group flex flex-col overflow-hidden border border-border bg-card"
+                  data-shop-card
+                  className="group flex flex-col overflow-hidden border border-border bg-card transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-lg motion-reduce:transform-none"
                 >
                   <button
                     className="relative aspect-[4/3] overflow-hidden text-left"
@@ -503,8 +533,8 @@ export function ClientShopView({
               product={selected}
               isFavorite={hasFavorite(favorites, 'article', selected.id)}
               onToggleFavorite={() => toggleFavorite(selected)}
-              onAddToQuote={() => {
-                addToCart(selected);
+              onAddToQuote={(configuration) => {
+                addToCart(selected, configuration);
                 setSelected(null);
               }}
             />
