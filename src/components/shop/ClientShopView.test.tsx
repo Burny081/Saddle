@@ -4,7 +4,9 @@ import { ClientShopView, SHOP_PAGE_SIZE } from './ClientShopView';
 import { catalogueProducts } from '@/data/catalogue';
 
 vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
-vi.mock('@/contexts/DataContext', () => ({ useData: () => ({ articles: [], services: [], addSale: vi.fn() }) }));
+vi.mock('@/contexts/DataContext', () => ({
+  useData: () => ({ articles: [], services: [], addSale: vi.fn() }),
+}));
 vi.mock('@/components/LoginModal', () => ({ LoginModal: () => null }));
 vi.mock('./ProductDetailsDialog', () => ({ ProductDetailsDialog: () => null }));
 
@@ -40,6 +42,16 @@ describe('ClientShopView', () => {
     render(<ClientShopView onBack={vi.fn()} />);
 
     expect(screen.getByRole('combobox', { name: 'Filtrer par catégorie' })).toBeInTheDocument();
+  });
+
+  it('places catalogue search above the filter controls', () => {
+    render(<ClientShopView onBack={vi.fn()} />);
+
+    const search = screen.getByRole('textbox', { name: 'Rechercher un produit' });
+    const filters = screen.getByTestId('shop-filters');
+
+    expect(filters).not.toContainElement(search);
+    expect(search.compareDocumentPosition(filters) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 
   it('provides a dedicated mobile action to open the cart', () => {

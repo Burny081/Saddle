@@ -1,51 +1,526 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Minus, PackageSearch, Plus, Search, ShoppingCart, Trash2 } from 'lucide-react';
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Heart,
+  Minus,
+  PackageSearch,
+  Plus,
+  Search,
+  ShoppingCart,
+  Trash2,
+} from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/app/components/ui/drawer';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/app/components/ui/drawer';
 import { useAuth } from '@/contexts/AuthContext';
-import { catalogueBrands, catalogueCategories, catalogueProducts, type CatalogueShopProduct } from '@/data/catalogue';
-import { hasFavorite, readFavorites, writeFavorites, type FavoriteReference } from '@/utils/favorites';
+import {
+  catalogueBrands,
+  catalogueCategories,
+  catalogueProducts,
+  type CatalogueShopProduct,
+} from '@/data/catalogue';
+import {
+  hasFavorite,
+  readFavorites,
+  writeFavorites,
+  type FavoriteReference,
+} from '@/utils/favorites';
 import { filterCatalogueProducts } from './shopCatalogue';
 import { CatalogueProductDetails } from './CatalogueProductDetails';
 import { createQuoteRequestMailto } from '@/utils/quoteRequest';
 
 export const SHOP_PAGE_SIZE = 24;
 
-interface ClientShopViewProps { initialCategory?: string; initialSubCategory?: string; onBack?: () => void; showBackButton?: boolean; }
-interface CartItem extends CatalogueShopProduct { quantity: number; }
-
-function ProductVisual({ product, className = '' }: { product: CatalogueShopProduct; className?: string }) {
-  if (product.image) return <img src={product.image} alt={product.altImage} className={className} />;
-  return <div className={`flex flex-col items-center justify-center bg-slate-100 px-5 text-center text-slate-500 ${className}`}><PackageSearch className="h-9 w-9 text-[#124a93]" /><span className="mt-3 text-xs font-bold uppercase tracking-wider">Visuel produit en préparation</span><span className="mt-1 line-clamp-2 text-xs">{product.nom}</span></div>;
+interface ClientShopViewProps {
+  initialCategory?: string;
+  initialSubCategory?: string;
+  onBack?: () => void;
+  showBackButton?: boolean;
+}
+interface CartItem extends CatalogueShopProduct {
+  quantity: number;
 }
 
-function QuoteCart({ cart, onChangeQuantity, onRemove, onRequest }: { cart: CartItem[]; onChangeQuantity: (id: string, change: number) => void; onRemove: (id: string) => void; onRequest: () => void; }) {
+function ProductVisual({
+  product,
+  className = '',
+}: {
+  product: CatalogueShopProduct;
+  className?: string;
+}) {
+  if (product.image)
+    return <img src={product.image} alt={product.altImage} className={className} />;
+  return (
+    <div
+      className={`flex flex-col items-center justify-center bg-slate-100 px-5 text-center text-slate-500 ${className}`}
+    >
+      <PackageSearch className="h-9 w-9 text-[#124a93]" />
+      <span className="mt-3 text-xs font-bold uppercase tracking-wider">
+        Visuel produit en préparation
+      </span>
+      <span className="mt-1 line-clamp-2 text-xs">{product.nom}</span>
+    </div>
+  );
+}
+
+function QuoteCart({
+  cart,
+  onChangeQuantity,
+  onRemove,
+  onRequest,
+}: {
+  cart: CartItem[];
+  onChangeQuantity: (id: string, change: number) => void;
+  onRemove: (id: string) => void;
+  onRequest: () => void;
+}) {
   const count = cart.reduce((total, item) => total + item.quantity, 0);
-  return <div className="flex min-h-0 flex-1 flex-col">
-    <div className="border-b border-border bg-slate-950 px-5 py-4 text-white"><p className="flex items-center gap-2 text-lg font-bold"><ShoppingCart className="h-5 w-5" /> Ma demande</p><p className="mt-1 text-xs text-slate-300">Sélectionnez les produits à chiffrer.</p></div>
-    <div className="min-h-[16rem] flex-1 space-y-3 overflow-y-auto p-4">{cart.length === 0 ? <div className="flex h-full flex-col items-center justify-center text-center"><ShoppingCart className="mb-4 h-10 w-10 text-slate-300" /><h2 className="font-bold">Aucun produit sélectionné</h2><p className="mt-1 text-sm text-muted-foreground">Ajoutez des produits pour préparer votre demande.</p></div> : cart.map((item) => <article key={item.id} className="flex gap-3 border border-border bg-card p-3"><img src={item.image} alt="" className="h-16 w-16 object-cover" /><div className="min-w-0 flex-1"><p className="truncate text-sm font-bold">{item.nom}</p><p className="mt-1 text-xs text-muted-foreground">{item.marque}</p><div className="mt-3 flex items-center gap-2"><Button variant="outline" size="icon" className="h-8 w-8" aria-label={`Retirer une unité de ${item.nom}`} onClick={() => onChangeQuantity(item.id, -1)}><Minus className="h-3.5 w-3.5" /></Button><span className="w-6 text-center text-sm font-bold">{item.quantity}</span><Button variant="outline" size="icon" className="h-8 w-8" aria-label={`Ajouter une unité de ${item.nom}`} onClick={() => onChangeQuantity(item.id, 1)}><Plus className="h-3.5 w-3.5" /></Button></div></div><Button variant="ghost" size="icon" className="h-8 w-8 text-[#b7212d]" aria-label={`Supprimer ${item.nom}`} onClick={() => onRemove(item.id)}><Trash2 className="h-4 w-4" /></Button></article>)}</div>
-    {cart.length > 0 && <div className="border-t border-border bg-muted/30 p-5"><p className="mb-4 text-sm text-muted-foreground">{count} {count > 1 ? 'produits sélectionnés' : 'produit sélectionné'} · prix sur devis.</p><Button className="h-12 w-full bg-[#124a93] font-bold text-white hover:bg-[#0b3978]" onClick={onRequest}>Demander un devis</Button></div>}
-  </div>;
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="border-b border-border bg-slate-950 px-5 py-4 text-white">
+        <p className="flex items-center gap-2 text-lg font-bold">
+          <ShoppingCart className="h-5 w-5" /> Ma demande
+        </p>
+        <p className="mt-1 text-xs text-slate-300">Sélectionnez les produits à chiffrer.</p>
+      </div>
+      <div className="min-h-[16rem] flex-1 space-y-3 overflow-y-auto p-4">
+        {cart.length === 0 ? (
+          <div className="flex h-full flex-col items-center justify-center text-center">
+            <ShoppingCart className="mb-4 h-10 w-10 text-slate-300" />
+            <h2 className="font-bold">Aucun produit sélectionné</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Ajoutez des produits pour préparer votre demande.
+            </p>
+          </div>
+        ) : (
+          cart.map((item) => (
+            <article key={item.id} className="flex gap-3 border border-border bg-card p-3">
+              <img src={item.image} alt="" className="h-16 w-16 object-cover" />
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold">{item.nom}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{item.marque}</p>
+                <div className="mt-3 flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label={`Retirer une unité de ${item.nom}`}
+                    onClick={() => onChangeQuantity(item.id, -1)}
+                  >
+                    <Minus className="h-3.5 w-3.5" />
+                  </Button>
+                  <span className="w-6 text-center text-sm font-bold">{item.quantity}</span>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label={`Ajouter une unité de ${item.nom}`}
+                    onClick={() => onChangeQuantity(item.id, 1)}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-[#b7212d]"
+                aria-label={`Supprimer ${item.nom}`}
+                onClick={() => onRemove(item.id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </article>
+          ))
+        )}
+      </div>
+      {cart.length > 0 && (
+        <div className="border-t border-border bg-muted/30 p-5">
+          <p className="mb-4 text-sm text-muted-foreground">
+            {count} {count > 1 ? 'produits sélectionnés' : 'produit sélectionné'} · prix sur devis.
+          </p>
+          <Button
+            className="h-12 w-full bg-[#124a93] font-bold text-white hover:bg-[#0b3978]"
+            onClick={onRequest}
+          >
+            Demander un devis
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export function ClientShopView({ initialCategory, initialSubCategory, onBack, showBackButton = true }: ClientShopViewProps) {
+export function ClientShopView({
+  initialCategory,
+  initialSubCategory,
+  onBack,
+  showBackButton = true,
+}: ClientShopViewProps) {
   const { user } = useAuth();
-  const [cart, setCart] = useState<CartItem[]>([]); const [favorites, setFavorites] = useState<FavoriteReference[]>([]); const [query, setQuery] = useState(''); const [category, setCategory] = useState(initialCategory ?? ''); const [subCategory, setSubCategory] = useState(initialSubCategory ?? ''); const [brand, setBrand] = useState(''); const [showFavoritesOnly, setShowFavoritesOnly] = useState(false); const [sortBy, setSortBy] = useState<'popular' | 'name'>('popular'); const [currentPage, setCurrentPage] = useState(1); const [selected, setSelected] = useState<CatalogueShopProduct | null>(null); const [isCartOpen, setIsCartOpen] = useState(false); const [requestSent, setRequestSent] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [favorites, setFavorites] = useState<FavoriteReference[]>([]);
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState(initialCategory ?? '');
+  const [subCategory, setSubCategory] = useState(initialSubCategory ?? '');
+  const [brand, setBrand] = useState('');
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<'popular' | 'name'>('popular');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selected, setSelected] = useState<CatalogueShopProduct | null>(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [requestSent, setRequestSent] = useState(false);
   useEffect(() => setFavorites(readFavorites(user?.id)), [user?.id]);
-  useEffect(() => { setCategory(initialCategory ?? ''); setSubCategory(initialSubCategory ?? ''); }, [initialCategory, initialSubCategory]);
-  const subCategories = useMemo(() => Array.from(new Set(catalogueProducts.filter((item) => !category || item.categorie === category).map((item) => item.sousCategorie))).sort((a, b) => a.localeCompare(b, 'fr')), [category]);
-  const products = useMemo(() => { const filtered = filterCatalogueProducts(catalogueProducts, { category: category || undefined, brand: brand || undefined, query }); const visible = filtered.filter((product) => (!subCategory || product.sousCategorie === subCategory) && (!showFavoritesOnly || hasFavorite(favorites, 'article', product.id))); return sortBy === 'name' ? [...visible].sort((a, b) => a.nom.localeCompare(b.nom, 'fr')) : visible; }, [brand, category, favorites, query, showFavoritesOnly, sortBy, subCategory]);
-  const pageCount = Math.max(1, Math.ceil(products.length / SHOP_PAGE_SIZE)); const pageItems = products.slice((currentPage - 1) * SHOP_PAGE_SIZE, currentPage * SHOP_PAGE_SIZE);
-  useEffect(() => setCurrentPage(1), [brand, category, subCategory, query, showFavoritesOnly, sortBy]); useEffect(() => { if (currentPage > pageCount) setCurrentPage(pageCount); }, [currentPage, pageCount]);
-  const toggleFavorite = (product: CatalogueShopProduct) => { const saved = hasFavorite(favorites, 'article', product.id) ? favorites.filter((favorite) => !(favorite.id === product.id && (!favorite.type || favorite.type === 'article'))) : [...favorites, { id: product.id, type: 'article' as const }]; setFavorites(saved); writeFavorites(user?.id, saved); };
-  const addToCart = (product: CatalogueShopProduct) => setCart((items) => { const found = items.find((item) => item.id === product.id); return found ? items.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item) : [...items, { ...product, quantity: 1 }]; });
-  const changeQuantity = (id: string, change: number) => setCart((items) => items.flatMap((item) => item.id !== id ? item : item.quantity + change > 0 ? { ...item, quantity: item.quantity + change } : []));
-  const requestQuote = () => { if (!cart.length) return; window.location.assign(createQuoteRequestMailto(cart.map(({ nom, marque, quantity }) => ({ name: nom, brand: marque, quantity })))); setRequestSent(true); setCart([]); setIsCartOpen(false); };
-  return <div className="space-y-6 pb-24 lg:pb-8"><header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between"><div className="flex items-start gap-3 sm:gap-4">{onBack && showBackButton && <Button variant="outline" className="h-11 shrink-0 font-bold" onClick={onBack} aria-label="Retour"><ArrowLeft className="mr-2 h-4 w-4" />Retour</Button>}<div><p className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#b7212d]"><PackageSearch className="h-4 w-4" />Catalogue SaddlePoint</p><h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Solutions électriques</h1><p className="mt-1 text-sm text-muted-foreground">{products.length} produits · disponibilité sur demande</p></div></div><div className="flex items-center gap-2"><Button variant={showFavoritesOnly ? 'secondary' : 'outline'} onClick={() => setShowFavoritesOnly((value) => !value)}><Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'fill-current' : ''}`} />Mes favoris</Button><Drawer open={isCartOpen} onOpenChange={setIsCartOpen}><DrawerTrigger className="relative inline-flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm font-medium shadow-sm hover:bg-accent" aria-label="Ouvrir le panier"><ShoppingCart className="h-4 w-4" />{cart.length > 0 && <span className="ml-2 rounded-full bg-[#b7212d] px-1.5 py-0.5 text-xs text-white">{cart.reduce((total, item) => total + item.quantity, 0)}</span>}</DrawerTrigger><DrawerContent className="ml-auto flex h-full w-full max-w-md flex-col rounded-none"><DrawerHeader className="sr-only"><DrawerTitle>Ma demande de devis</DrawerTitle></DrawerHeader><QuoteCart cart={cart} onChangeQuantity={changeQuantity} onRemove={(id) => setCart((items) => items.filter((item) => item.id !== id))} onRequest={requestQuote} /></DrawerContent></Drawer></div></header>
-    {requestSent && <div className="border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">Votre demande a été préparée. Notre équipe vous contactera pour établir le devis.</div>}
-    <section className="grid gap-3 rounded-lg border border-border bg-card p-4 lg:grid-cols-[minmax(0,1fr)_auto_auto_auto_auto]"><div className="relative"><Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" /><Input className="h-11 pl-9" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher un produit, une marque…" aria-label="Rechercher un produit" /></div><select value={category} onChange={(event) => { setCategory(event.target.value); setSubCategory(''); }} className="h-11 min-w-44 border border-border bg-background px-3 text-sm" aria-label="Filtrer par catégorie"><option value="">Toutes les catégories</option>{catalogueCategories.map((value) => <option key={value} value={value}>{value}</option>)}</select><select value={subCategory} onChange={(event) => setSubCategory(event.target.value)} className="h-11 min-w-44 border border-border bg-background px-3 text-sm" aria-label="Filtrer par sous-catégorie"><option value="">Toutes les sous-catégories</option>{subCategories.map((value) => <option key={value} value={value}>{value}</option>)}</select><select value={brand} onChange={(event) => setBrand(event.target.value)} className="h-11 min-w-40 border border-border bg-background px-3 text-sm" aria-label="Filtrer par marque"><option value="">Toutes les marques</option>{catalogueBrands.map((value) => <option key={value} value={value}>{value}</option>)}</select><select value={sortBy} onChange={(event) => setSortBy(event.target.value as 'popular' | 'name')} className="h-11 min-w-36 border border-border bg-background px-3 text-sm" aria-label="Trier par"><option value="popular">Plus populaires</option><option value="name">Nom (A–Z)</option></select></section>
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]"><section>{pageItems.length === 0 ? <div className="border border-dashed border-border p-12 text-center"><h2 className="font-bold">Aucun produit trouvé</h2><p className="mt-2 text-sm text-muted-foreground">Modifiez ou réinitialisez vos filtres.</p></div> : <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{pageItems.map((product) => <article key={product.id} className="group flex flex-col overflow-hidden border border-border bg-card"><button className="relative aspect-[4/3] overflow-hidden text-left" onClick={() => setSelected(product)}><ProductVisual product={product} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" /></button><div className="flex flex-1 flex-col p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-[11px] font-bold uppercase tracking-wider text-[#b7212d]">{product.marque}</p><h2 className="mt-1 font-bold leading-5">{product.nom}</h2></div><Button variant="ghost" size="icon" className="-mr-2 -mt-1" aria-label={`Ajouter ${product.nom} aux favoris`} onClick={() => toggleFavorite(product)}><Heart className={`h-4 w-4 ${hasFavorite(favorites, 'article', product.id) ? 'fill-[#b7212d] text-[#b7212d]' : ''}`} /></Button></div><p className="mt-3 text-sm text-muted-foreground">{product.sousCategorie}</p><p className="mt-3 line-clamp-2 text-sm leading-6 text-muted-foreground">{product.descriptionCourte}</p><div className="mt-5 flex gap-2"><Button variant="outline" className="h-10 flex-1" onClick={() => setSelected(product)}>Détails</Button><Button className="h-10 flex-1 bg-[#124a93] hover:bg-[#0b3978]" onClick={() => addToCart(product)}><Plus className="mr-1 h-4 w-4" />Devis</Button></div></div></article>)}</div>}{pageCount > 1 && <nav className="mt-6 flex items-center justify-center gap-3" aria-label="Pagination du catalogue"><Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage((page) => page - 1)}><ChevronLeft className="mr-1 h-4 w-4" />Précédent</Button><span className="text-sm text-muted-foreground">Page {currentPage} / {pageCount}</span><Button variant="outline" size="sm" disabled={currentPage === pageCount} onClick={() => setCurrentPage((page) => page + 1)}>Suivant<ChevronRight className="ml-1 h-4 w-4" /></Button></nav>}</section><aside className="hidden lg:block lg:sticky lg:top-6"><div className="min-h-[28rem] border border-border bg-card"><QuoteCart cart={cart} onChangeQuantity={changeQuantity} onRemove={(id) => setCart((items) => items.filter((item) => item.id !== id))} onRequest={requestQuote} /></div></aside></div>
-    {selected && <Drawer open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}><DrawerContent className="ml-auto h-full w-full max-w-2xl overflow-y-auto rounded-none"><DrawerHeader className="sr-only"><DrawerTitle>{selected.nom}</DrawerTitle></DrawerHeader><CatalogueProductDetails product={selected} isFavorite={hasFavorite(favorites, 'article', selected.id)} onToggleFavorite={() => toggleFavorite(selected)} onAddToQuote={() => { addToCart(selected); setSelected(null); }} /></DrawerContent></Drawer>}
-  </div>;
+  useEffect(() => {
+    setCategory(initialCategory ?? '');
+    setSubCategory(initialSubCategory ?? '');
+  }, [initialCategory, initialSubCategory]);
+  const subCategories = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          catalogueProducts
+            .filter((item) => !category || item.categorie === category)
+            .map((item) => item.sousCategorie)
+        )
+      ).sort((a, b) => a.localeCompare(b, 'fr')),
+    [category]
+  );
+  const products = useMemo(() => {
+    const filtered = filterCatalogueProducts(catalogueProducts, {
+      category: category || undefined,
+      brand: brand || undefined,
+      query,
+    });
+    const visible = filtered.filter(
+      (product) =>
+        (!subCategory || product.sousCategorie === subCategory) &&
+        (!showFavoritesOnly || hasFavorite(favorites, 'article', product.id))
+    );
+    return sortBy === 'name'
+      ? [...visible].sort((a, b) => a.nom.localeCompare(b.nom, 'fr'))
+      : visible;
+  }, [brand, category, favorites, query, showFavoritesOnly, sortBy, subCategory]);
+  const pageCount = Math.max(1, Math.ceil(products.length / SHOP_PAGE_SIZE));
+  const pageItems = products.slice(
+    (currentPage - 1) * SHOP_PAGE_SIZE,
+    currentPage * SHOP_PAGE_SIZE
+  );
+  useEffect(
+    () => setCurrentPage(1),
+    [brand, category, subCategory, query, showFavoritesOnly, sortBy]
+  );
+  useEffect(() => {
+    if (currentPage > pageCount) setCurrentPage(pageCount);
+  }, [currentPage, pageCount]);
+  const toggleFavorite = (product: CatalogueShopProduct) => {
+    const saved = hasFavorite(favorites, 'article', product.id)
+      ? favorites.filter(
+          (favorite) =>
+            !(favorite.id === product.id && (!favorite.type || favorite.type === 'article'))
+        )
+      : [...favorites, { id: product.id, type: 'article' as const }];
+    setFavorites(saved);
+    writeFavorites(user?.id, saved);
+  };
+  const addToCart = (product: CatalogueShopProduct) =>
+    setCart((items) => {
+      const found = items.find((item) => item.id === product.id);
+      return found
+        ? items.map((item) =>
+            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        : [...items, { ...product, quantity: 1 }];
+    });
+  const changeQuantity = (id: string, change: number) =>
+    setCart((items) =>
+      items.flatMap((item) =>
+        item.id !== id
+          ? item
+          : item.quantity + change > 0
+            ? { ...item, quantity: item.quantity + change }
+            : []
+      )
+    );
+  const requestQuote = () => {
+    if (!cart.length) return;
+    window.location.assign(
+      createQuoteRequestMailto(
+        cart.map(({ nom, marque, quantity }) => ({ name: nom, brand: marque, quantity }))
+      )
+    );
+    setRequestSent(true);
+    setCart([]);
+    setIsCartOpen(false);
+  };
+  return (
+    <div className="space-y-6 pb-24 lg:pb-8">
+      <header className="flex flex-col gap-5 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex items-start gap-3 sm:gap-4">
+          {onBack && showBackButton && (
+            <Button
+              variant="outline"
+              className="h-11 shrink-0 font-bold"
+              onClick={onBack}
+              aria-label="Retour"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour
+            </Button>
+          )}
+          <div>
+            <p className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.15em] text-[#b7212d]">
+              <PackageSearch className="h-4 w-4" />
+              Catalogue SaddlePoint
+            </p>
+            <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+              Solutions électriques
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {products.length} produits · disponibilité sur demande
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={showFavoritesOnly ? 'secondary' : 'outline'}
+            onClick={() => setShowFavoritesOnly((value) => !value)}
+          >
+            <Heart className={`mr-2 h-4 w-4 ${showFavoritesOnly ? 'fill-current' : ''}`} />
+            Mes favoris
+          </Button>
+          <Drawer open={isCartOpen} onOpenChange={setIsCartOpen}>
+            <DrawerTrigger
+              className="relative inline-flex h-10 items-center rounded-md border border-input bg-background px-3 text-sm font-medium shadow-sm hover:bg-accent"
+              aria-label="Ouvrir le panier"
+            >
+              <ShoppingCart className="h-4 w-4" />
+              {cart.length > 0 && (
+                <span className="ml-2 rounded-full bg-[#b7212d] px-1.5 py-0.5 text-xs text-white">
+                  {cart.reduce((total, item) => total + item.quantity, 0)}
+                </span>
+              )}
+            </DrawerTrigger>
+            <DrawerContent className="ml-auto flex h-full w-full max-w-md flex-col rounded-none">
+              <DrawerHeader className="sr-only">
+                <DrawerTitle>Ma demande de devis</DrawerTitle>
+              </DrawerHeader>
+              <QuoteCart
+                cart={cart}
+                onChangeQuantity={changeQuantity}
+                onRemove={(id) => setCart((items) => items.filter((item) => item.id !== id))}
+                onRequest={requestQuote}
+              />
+            </DrawerContent>
+          </Drawer>
+        </div>
+      </header>
+      {requestSent && (
+        <div className="border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          Votre demande a été préparée. Notre équipe vous contactera pour établir le devis.
+        </div>
+      )}
+      <section className="space-y-3 rounded-lg border border-border bg-card p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-11 pl-9"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Rechercher un produit, une marque…"
+            aria-label="Rechercher un produit"
+          />
+        </div>
+        <div data-testid="shop-filters" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <select
+            value={category}
+            onChange={(event) => {
+              setCategory(event.target.value);
+              setSubCategory('');
+            }}
+            className="h-11 min-w-44 border border-border bg-background px-3 text-sm"
+            aria-label="Filtrer par catégorie"
+          >
+            <option value="">Toutes les catégories</option>
+            {catalogueCategories.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+          <select
+            value={subCategory}
+            onChange={(event) => setSubCategory(event.target.value)}
+            className="h-11 min-w-44 border border-border bg-background px-3 text-sm"
+            aria-label="Filtrer par sous-catégorie"
+          >
+            <option value="">Toutes les sous-catégories</option>
+            {subCategories.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+          <select
+            value={brand}
+            onChange={(event) => setBrand(event.target.value)}
+            className="h-11 min-w-40 border border-border bg-background px-3 text-sm"
+            aria-label="Filtrer par marque"
+          >
+            <option value="">Toutes les marques</option>
+            {catalogueBrands.map((value) => (
+              <option key={value} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+          <select
+            value={sortBy}
+            onChange={(event) => setSortBy(event.target.value as 'popular' | 'name')}
+            className="h-11 min-w-36 border border-border bg-background px-3 text-sm"
+            aria-label="Trier par"
+          >
+            <option value="popular">Plus populaires</option>
+            <option value="name">Nom (A–Z)</option>
+          </select>
+        </div>
+      </section>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
+        <section>
+          {pageItems.length === 0 ? (
+            <div className="border border-dashed border-border p-12 text-center">
+              <h2 className="font-bold">Aucun produit trouvé</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Modifiez ou réinitialisez vos filtres.
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {pageItems.map((product) => (
+                <article
+                  key={product.id}
+                  className="group flex flex-col overflow-hidden border border-border bg-card"
+                >
+                  <button
+                    className="relative aspect-[4/3] overflow-hidden text-left"
+                    onClick={() => setSelected(product)}
+                  >
+                    <ProductVisual
+                      product={product}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </button>
+                  <div className="flex flex-1 flex-col p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-[#b7212d]">
+                          {product.marque}
+                        </p>
+                        <h2 className="mt-1 font-bold leading-5">{product.nom}</h2>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="-mr-2 -mt-1"
+                        aria-label={`Ajouter ${product.nom} aux favoris`}
+                        onClick={() => toggleFavorite(product)}
+                      >
+                        <Heart
+                          className={`h-4 w-4 ${hasFavorite(favorites, 'article', product.id) ? 'fill-[#b7212d] text-[#b7212d]' : ''}`}
+                        />
+                      </Button>
+                    </div>
+                    <p className="mt-3 text-sm text-muted-foreground">{product.sousCategorie}</p>
+                    <p className="mt-3 line-clamp-2 text-sm leading-6 text-muted-foreground">
+                      {product.descriptionCourte}
+                    </p>
+                    <div className="mt-5 flex gap-2">
+                      <Button
+                        variant="outline"
+                        className="h-10 flex-1"
+                        onClick={() => setSelected(product)}
+                      >
+                        Détails
+                      </Button>
+                      <Button
+                        className="h-10 flex-1 bg-[#124a93] hover:bg-[#0b3978]"
+                        onClick={() => addToCart(product)}
+                      >
+                        <Plus className="mr-1 h-4 w-4" />
+                        Devis
+                      </Button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+          {pageCount > 1 && (
+            <nav
+              className="mt-6 flex items-center justify-center gap-3"
+              aria-label="Pagination du catalogue"
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((page) => page - 1)}
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" />
+                Précédent
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                Page {currentPage} / {pageCount}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={currentPage === pageCount}
+                onClick={() => setCurrentPage((page) => page + 1)}
+              >
+                Suivant
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+            </nav>
+          )}
+        </section>
+        <aside className="hidden lg:block lg:sticky lg:top-6">
+          <div className="min-h-[28rem] border border-border bg-card">
+            <QuoteCart
+              cart={cart}
+              onChangeQuantity={changeQuantity}
+              onRemove={(id) => setCart((items) => items.filter((item) => item.id !== id))}
+              onRequest={requestQuote}
+            />
+          </div>
+        </aside>
+      </div>
+      {selected && (
+        <Drawer open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
+          <DrawerContent className="ml-auto h-full w-full max-w-2xl overflow-y-auto rounded-none">
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>{selected.nom}</DrawerTitle>
+            </DrawerHeader>
+            <CatalogueProductDetails
+              product={selected}
+              isFavorite={hasFavorite(favorites, 'article', selected.id)}
+              onToggleFavorite={() => toggleFavorite(selected)}
+              onAddToQuote={() => {
+                addToCart(selected);
+                setSelected(null);
+              }}
+            />
+          </DrawerContent>
+        </Drawer>
+      )}
+    </div>
+  );
 }

@@ -15,7 +15,8 @@
     "test": "vitest --configLoader runner",
     "test:ui": "vitest --configLoader runner --ui",
     "test:coverage": "vitest --configLoader runner run --coverage",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "catalogue:media-prompts": "node scripts/export-product-media-prompts.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
