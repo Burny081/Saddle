@@ -18,5 +18,12 @@ test('combines every SaddlePoint catalogue category into a scalable, filterable 
   );
   expect(generatedProduct?.images).toHaveLength(4);
   expect(new Set(generatedProduct?.images).size).toBe(4);
+  const ip65Product = catalogueProducts.find(
+    (product) =>
+      product.mediaKey ===
+      'catalogue-energie-et-distribution-electrique-energie-et-distribution-electrique-transformateur-sec-basse-tension-ip65',
+  );
+  expect(ip65Product?.images).toHaveLength(4);
+  expect(new Set(ip65Product?.images).size).toBe(4);
   expect(JSON.stringify(catalogueProducts).toLocaleLowerCase('fr')).not.toMatch(/prix|price|promotion|remise|fcfa|xaf|€/);
 });
