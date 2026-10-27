@@ -1,4 +1,5 @@
 import { expect, test } from 'vitest';
+import type { Sale } from '@/types/compatibility';
 import { buildAdminCommandCenterData } from './adminCommandCenterData';
 
 test('builds factual operational metrics and stock alerts', () => {
@@ -18,14 +19,14 @@ test('builds factual operational metrics and stock alerts', () => {
     expect.objectContaining({ id: 'attention', value: 1 }),
   ]);
   expect(data.lowStockArticles.map((article) => article.name)).toEqual(['Coffret']);
-  expect(data.metrics.every((metric) => metric.change === undefined)).toBe(true);
+  expect(data.metrics.every((metric) => !('change' in metric))).toBe(true);
 });
 
 test('orders recent sales without mutating source data', () => {
   const sales = [
     { id: 'older', clientName: 'B', total: 1000, date: '2026-10-01' },
     { id: 'newer', clientName: 'A', total: 2000, date: '2026-10-27' },
-  ] as never[];
+  ] as unknown as Sale[];
 
   const data = buildAdminCommandCenterData({ articles: [], clients: [], sales });
 
