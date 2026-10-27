@@ -62,13 +62,17 @@ export function CatalogueProductDetails({
         <h1 className="mt-4 text-3xl font-bold leading-tight text-foreground">{product.nom}</h1>
       </header>
 
-      <section aria-label="Galerie produit">
+      <section
+        data-testid="product-gallery"
+        aria-label="Galerie produit"
+        className="mx-auto w-full max-w-2xl"
+      >
         {activeImage ? (
           <>
             <img
               src={activeImage}
               alt={product.altImage}
-              className="aspect-[4/3] w-full border border-border bg-slate-100 object-cover"
+              className="aspect-[16/7] max-h-[28vh] w-full border border-border bg-slate-100 object-contain"
             />
             <div className="mt-3 grid grid-cols-4 gap-2">
               {images.map((image, index) => (

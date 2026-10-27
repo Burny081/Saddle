@@ -39,6 +39,7 @@ test('shows a complete catalogue product detail with a selectable image gallery'
   expect(screen.getByRole('heading', { name: 'Variantes disponibles' })).toBeInTheDocument();
   expect(screen.getByText(new RegExp(product.usage))).toBeInTheDocument();
   expect(screen.getByTestId('quote-request-cta')).toHaveClass('sticky');
+  expect(screen.getByTestId('product-gallery')).toHaveClass('max-w-2xl');
   expect(screen.getAllByRole('button', { name: /Voir l’image/i })).toHaveLength(
     product.images.length
   );
