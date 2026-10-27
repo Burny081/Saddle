@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Heart, ImageOff, Layers3, PackageCheck, Plus } from 'lucide-react';
+import { CheckCircle2, Heart, ImageOff, Layers3, PackageCheck, Plus, X } from 'lucide-react';
 import { Button } from '@/app/components/ui/button';
 import type { CatalogueShopProduct } from '@/data/catalogue';
 import {
@@ -12,6 +12,7 @@ interface CatalogueProductDetailsProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
   onAddToQuote: (configuration: SelectedProductConfiguration) => void;
+  onClose: () => void;
 }
 
 export function CatalogueProductDetails({
@@ -19,6 +20,7 @@ export function CatalogueProductDetails({
   isFavorite,
   onToggleFavorite,
   onAddToQuote,
+  onClose,
 }: CatalogueProductDetailsProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const images = product.images ?? (product.image ? [product.image] : []);
@@ -34,9 +36,6 @@ export function CatalogueProductDetails({
             <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#b7212d]">
               {product.marque}
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground">
-              Fiche produit
-            </h2>
             <p className="mt-1 text-sm text-muted-foreground">
               {product.categorie} · {product.sousCategorie}
             </p>
@@ -49,6 +48,15 @@ export function CatalogueProductDetails({
             onClick={onToggleFavorite}
           >
             <Heart className={`h-5 w-5 ${isFavorite ? 'fill-[#b7212d] text-[#b7212d]' : ''}`} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-11 w-11 shrink-0"
+            aria-label="Fermer la fiche produit"
+            onClick={onClose}
+          >
+            <X className="h-5 w-5" />
           </Button>
         </div>
         <h1 className="mt-4 text-3xl font-bold leading-tight text-foreground">{product.nom}</h1>
@@ -198,13 +206,18 @@ export function CatalogueProductDetails({
         data-testid="quote-request-cta"
         className="sticky bottom-0 -mx-5 border-t border-border bg-background/95 p-4 backdrop-blur sm:-mx-6 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none"
       >
-        <Button
-          className="h-12 w-full bg-[#124a93] font-bold text-white hover:bg-[#0b3978]"
-          onClick={() => onAddToQuote(configuration)}
-        >
-          <Plus className="mr-2 h-5 w-5" />
-          Ajouter à ma demande de devis
-        </Button>
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="outline" className="h-12 font-bold" onClick={onClose}>
+            Fermer
+          </Button>
+          <Button
+            className="h-12 bg-[#124a93] font-bold text-white hover:bg-[#0b3978]"
+            onClick={() => onAddToQuote(configuration)}
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            Ajouter au devis
+          </Button>
+        </div>
       </div>
     </article>
   );

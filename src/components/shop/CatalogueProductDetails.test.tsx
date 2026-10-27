@@ -21,10 +21,11 @@ test('shows a complete catalogue product detail with a selectable image gallery'
       isFavorite={false}
       onToggleFavorite={vi.fn()}
       onAddToQuote={vi.fn()}
+      onClose={vi.fn()}
     />
   );
 
-  expect(screen.getByRole('heading', { name: 'Fiche produit' })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Fermer la fiche produit' })).toBeInTheDocument();
   expect(screen.getByRole('heading', { name: 'Caractéristiques techniques' })).toBeInTheDocument();
   expect(
     screen.getByRole('heading', { name: 'Configuration technique souhaitée' })

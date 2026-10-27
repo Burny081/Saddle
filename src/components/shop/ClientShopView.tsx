@@ -187,6 +187,7 @@ export function ClientShopView({
   const [sortBy, setSortBy] = useState<'popular' | 'name'>('popular');
   const [currentPage, setCurrentPage] = useState(1);
   const [selected, setSelected] = useState<CatalogueShopProduct | null>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   useEffect(() => setFavorites(readFavorites(user?.id)), [user?.id]);
@@ -194,6 +195,14 @@ export function ClientShopView({
     setCategory(initialCategory ?? '');
     setSubCategory(initialSubCategory ?? '');
   }, [initialCategory, initialSubCategory]);
+  useEffect(() => {
+    if (!window.matchMedia) return;
+    const media = window.matchMedia('(min-width: 1024px)');
+    const update = () => setIsDesktop(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
   const subCategories = useMemo(
     () =>
       Array.from(
@@ -524,8 +533,15 @@ export function ClientShopView({
         </section>
       </div>
       {selected && (
-        <Drawer open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
-          <DrawerContent className="ml-auto h-full w-full max-w-2xl overflow-y-auto rounded-none">
+        <Drawer
+          direction={isDesktop ? 'right' : 'bottom'}
+          open={Boolean(selected)}
+          onOpenChange={(open) => !open && setSelected(null)}
+        >
+          <DrawerContent
+            data-testid="product-details-drawer"
+            className="ml-auto h-full w-full max-w-none overflow-y-auto rounded-none lg:w-[min(90vw,56rem)]"
+          >
             <DrawerHeader className="sr-only">
               <DrawerTitle>{selected.nom}</DrawerTitle>
             </DrawerHeader>
@@ -537,6 +553,7 @@ export function ClientShopView({
                 addToCart(selected, configuration);
                 setSelected(null);
               }}
+              onClose={() => setSelected(null)}
             />
           </DrawerContent>
         </Drawer>
