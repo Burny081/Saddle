@@ -59,4 +59,10 @@ describe('ClientShopView', () => {
 
     expect(screen.getByRole('button', { name: 'Ouvrir le panier' })).toBeInTheDocument();
   });
+
+  it('uses the drawer cart without a permanent desktop cart sidebar', () => {
+    const { container } = render(<ClientShopView onBack={vi.fn()} />);
+
+    expect(container.querySelector('aside')).not.toBeInTheDocument();
+  });
 });

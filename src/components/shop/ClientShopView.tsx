@@ -393,7 +393,7 @@ export function ClientShopView({
           </select>
         </div>
       </section>
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_21rem]">
+      <div>
         <section>
           {pageItems.length === 0 ? (
             <div className="border border-dashed border-border p-12 text-center">
@@ -492,16 +492,6 @@ export function ClientShopView({
             </nav>
           )}
         </section>
-        <aside className="hidden lg:block lg:sticky lg:top-6">
-          <div className="min-h-[28rem] border border-border bg-card">
-            <QuoteCart
-              cart={cart}
-              onChangeQuantity={changeQuantity}
-              onRemove={(id) => setCart((items) => items.filter((item) => item.id !== id))}
-              onRequest={requestQuote}
-            />
-          </div>
-        </aside>
       </div>
       {selected && (
         <Drawer open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
